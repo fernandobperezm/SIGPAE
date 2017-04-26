@@ -83,14 +83,21 @@ response.form_label_separator = myconf.get('forms.separator') or ''
 from gluon.tools import Auth, Service, PluginManager
 
 # host names must be a list of allowed host names (glob syntax allowed)
-auth = Auth(db, host_names=myconf.get('host.names'))
+auth = Auth(db)
+
 service = Service()
 plugins = PluginManager()
 
 # -------------------------------------------------------------------------
 # create all tables needed by auth if not custom tables
 # -------------------------------------------------------------------------
-auth.define_tables(username=False, signature=False)
+
+# Definimos campos adicionales en la tabla auth_user
+auth.settings.extra_fields['auth_user']= [
+  Field('access_key', type='string', notnull=True, required=  True, default = '')
+]
+
+auth.define_tables(username=True, signature=False)
 
 # -------------------------------------------------------------------------
 # configure email
@@ -107,7 +114,7 @@ mail.settings.ssl = myconf.get('smtp.ssl') or False
 # -------------------------------------------------------------------------
 auth.settings.registration_requires_verification = False
 auth.settings.registration_requires_approval = False
-auth.settings.reset_password_requires_verification = True
+auth.settings.reset_password_requires_verification = False
 
 # -------------------------------------------------------------------------
 # Define your tables below (or better in another model file) for example

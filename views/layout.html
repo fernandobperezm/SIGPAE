@@ -61,7 +61,27 @@
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
           <ul class="nav navbar-nav navbar-right">
-            {{='auth' in globals() and auth.navbar('Welcome',mode='dropdown') or ''}}
+
+            {{if auth.is_logged_in(): }}
+               Bienvenido, {{=auth.user['first_name']}}
+               <a class="link-btn" href="{{=URL(c='default',f='logout')}}">
+                 <button class='btn-index'>{{=T('Logout')}}</button>
+               </a>
+            {{else:}}
+
+            <!-- Para el servidor, cuando se disponga de uno -->
+
+            <!--
+            <a href="https://secure.dst.usb.ve/login?service=https%3A%2F%2Fprosigue.dex.usb.ve%2FSPE%2Fdefault%2Flogin_cas">
+              <button class='success'>Miembro USB</button>
+            </a> -->
+
+            <a class="link-btn" href="https://secure.dst.usb.ve/login?service=http%3A%2F%2Flocalhost%3A8000%2FSIGPAE%2Fdefault%2Flogin_cas">
+              <button class='btn-index'>{{=T('Login')}}</button>
+            </a>
+
+            {{pass}}
+
           </ul>
           {{if response.menu:}}
           {{=MENU(response.menu, _class='nav navbar-nav',li_class='dropdown',ul_class='dropdown-menu')}}
@@ -69,7 +89,7 @@
         </div>
       </div>
     </nav>
-    <!-- Masthead ===================================== -->    
+    <!-- Masthead ===================================== -->
     {{block header}}
     {{end}}
     <!-- Main ========================================= -->
@@ -101,7 +121,7 @@
 
     </div>
 
-    {{block footer}} <!-- this is default footer -->      
+    {{block footer}} <!-- this is default footer -->
     <footer class="footer">
       <div class="container-fluid">
         <div class="copyright pull-left">{{=T('Copyright')}} &#169; {{=request.now.year}}</div>
