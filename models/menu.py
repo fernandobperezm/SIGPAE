@@ -4,10 +4,6 @@ response.meta.author = '%(author)s <%(author_email)s>' % settings
 response.meta.keywords    = settings.keywords
 response.meta.description = settings.description
 
-response.menu = [
-    (SPAN(' ', _class='fa fa-home fa-lg'), False, URL(a='Empresas', c='default', f='index'))
-]
-
 DEVELOPMENT_MENU = True
 
 # Menu de autenticacion
@@ -18,7 +14,7 @@ else:
     texto_principal = "Bienvenido"
 
 opciones = [
-    ((SPAN(_class='fa fa-user'), '  Ver Perfil'), False, '/SIGPAE/user/profile'),
+    ((SPAN(_class='fa fa-user'), '  Ver Perfil'), False, URL('user', 'profile')),
     ((SPAN(_class='fa fa-sign-out'), '  Cerrar Sesión'), False, URL('default', 'logout'))
 ]
 
@@ -67,5 +63,5 @@ menu_autenticado = [
 ]
 
 response.menu = [
-    (T('Inicio'), URL('default', 'index') == URL(), URL('default', 'index'), []),
+    (T('Iniciar Sesión'), False , 'https://secure.dst.usb.ve/login?service=' + settings.returnurl, []),
 ]

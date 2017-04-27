@@ -26,14 +26,3 @@ settings.plugins = []
 settings.returnurl = "http%3A%2F%2Flocalhost%3A8000%2FSIGPAE%2Fdefault%2Flogin_cas"
 # SERVIDOR:
 #settings.returnurl =
-
-# Custom requires_login decorator for login with CAS
-def requires_login(function):
-
-    def wrapper():
-        if auth.is_logged_in():
-            return function()
-        else:
-            redirect('https://secure.dst.usb.ve/login?service=' + settings.returnurl)
-
-    return wrapper

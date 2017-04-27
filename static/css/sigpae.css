@@ -1,0 +1,77 @@
+/*
+  CSS para SIGPAE
+*/
+
+/*
+  COLORES
+  #F3F3F3; // Gris Claro
+  #3E3E3E  // Gris Oscuro
+  #525252  // Gris Medio
+*/
+
+/* GENERAL */
+
+body {
+  padding: 0;
+}
+
+/* HEADER Y NAVBAR */
+
+.header_home img {
+  width: 80%;
+  display: block;
+  margin: 0 auto;
+}
+
+.sigpae-navbar {
+  max-width: 80%;
+  display: block;
+  margin: 1% auto;
+  background-color: #F3F3F3;
+  border-radius: 5px;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #3E3E3E;
+    font-size: 15px;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+    color: #525252;
+}
+
+.dropdown-menu > li > a {
+    color: #3E3E3E;
+    font-size: 15px;
+    line-height: 25px;
+    font-weight: initial;
+    text-transform: uppercase;
+}
+
+/* FOOTER */
+.footer-sigpae {
+  max-width: 80%;
+  padding: 10px;
+  background-color: #F3F3F3;
+  border-radius: 5px;
+  font-size: 12px;
+  color: #3E3E3E;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+}
+
+/* MAIN CONTAINER ELEMENTS */
+
+.main-container {
+  max-width: 80%;
+  display: block;
+  margin: 0 auto;
+}
+
+.main-container h1,
+.main-container h2 {
+  margin: 2% 0;
+}

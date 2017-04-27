@@ -5,4 +5,6 @@ def profile():
     # aqui va la logica para ver/actualizar el perfil
 
     mensaje = 'Bienvenido ' + auth.user.first_name + ' ' + auth.user.last_name
-    return dict(message = mensaje)
+    usuario = auth.user
+    
+    return dict(message = mensaje, usuario = usuario)

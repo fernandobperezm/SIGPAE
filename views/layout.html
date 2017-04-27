@@ -2,41 +2,22 @@
 <!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js" lang="{{=T.accepted_language or 'en'}}"> <!--<![endif]-->
   <head>
     <meta charset="utf-8">
-    <!-- www.phpied.com/conditional-comments-block-downloads/ -->
-    <!-- Always force latest IE rendering engine
-         (even in intranet) & Chrome Frame
-         Remove this if you use the .htaccess -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge{{=not request.is_local and ',chrome=1' or ''}}">
-    <!--  Mobile Viewport Fix
-          j.mp/mobileviewport & davidbcalhoun.com/2010/viewport-metatag
-          device-width: Occupy full width of the screen in its current orientation
-          initial-scale = 1.0 retains dimensions instead of zooming out if page height > device height
-          user-scalable = yes allows the user to zoom in -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{=response.title or request.application}}</title>
-    <!-- http://dev.w3.org/html5/markup/meta.name.html -->
     <meta name="application-name" content="{{=request.application}}">
-    <!-- Speaking of Google, don't forget to set your site up:
-         http://google.com/webmasters -->
     <meta name="google-site-verification" content="">
     <!-- include stylesheets -->
     <link rel="stylesheet" href="{{=URL('static','css/bootstrap.min.css')}}"/>
     <link rel="stylesheet" href="{{=URL('static','css/web2py-bootstrap3.css')}}"/>
-
-    <link rel="stylesheet" href="{{=URL('static','css/perfil_estudiante.css')}}"/>
-    <link rel="stylesheet" href="{{=URL('static','css/navbar.css')}}"/>
-    <link rel="stylesheet" href="{{=URL('static','css/footer.css')}}"/>
     <link rel="shortcut icon" href="{{=URL('static','images/favicon.ico')}}" type="image/x-icon">
     <link rel="apple-touch-icon" href="{{=URL('static','images/favicon.png')}}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{=URL('static','css/main.css')}}"/>
+    <link rel="stylesheet" href="{{=URL('static','css/font-awesome.min.css')}}"/>
+    <link rel="stylesheet" href="{{=URL('static','css/sigpae.css')}}"/>
     <!-- All JavaScript at the bottom, except for Modernizr which enables
          HTML5 elements & feature detects -->
     <script src="{{=URL('static','js/modernizr-2.8.3.min.js')}}"></script>
-    <!--[if lt IE 9]>
-        <script src="{{=URL('static','js/respond-1.4.2.min.js')}}"></script>
-        <![endif]-->
-    <!-- Favicons -->
     {{include 'web2py_ajax.html'}} <!-- this includes jquery.js, calendar.js/.css and web2py.js -->
     {{block head}}{{end}}
     {{
@@ -55,13 +36,12 @@
     <div class="w2p_flash alert alert-dismissable">{{=response.flash or ''}}</div>
     <!-- Navbar ======================================= -->
     <div class="header_home">
-		<div class="container transparent">
-            <div class="col-xs-3 logo">
-		    	{{=IMG(_src=URL('static','images/home/sigpaebaner.png'),alt="SIGPAE")}}
-		    </div>
+          <a href="{{=URL('default','index')}}">
+	    	    {{=IMG(_src=URL('static','images/home/sigpaebaner.png'),alt="SIGPAE")}}
+          </a>
 	  </div>
 
-    <nav class="navbar-default navbar-style" role="navigation">
+    <nav class="navbar-default navbar-style sigpae-navbar" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
             <button type = "button" class = "navbar-toggle collapsed"
@@ -78,7 +58,7 @@
             {{=MENU(menu_autenticado, _class='nav navbar-nav navbar-right',li_class='dropdown',ul_class='dropdown-menu dropdown-menu-style', li_first='dropdown', li_last='dropdown')}}
             {{else:}}
               {{if response.menu:}}
-              {{=MENU(response.menu, _class='nav navbar-nav',li_class='dropdown',ul_class='dropdown-menu dropdown-menu-style', li_first='dropdown', li_last='dropdown')}}
+              {{=MENU(response.menu, _class='nav navbar-nav navbar-right',li_class='dropdown',ul_class='dropdown-menu dropdown-menu-style', li_first='dropdown', li_last='dropdown')}}
               {{pass}}
             {{pass}}
         </div>
@@ -95,14 +75,11 @@
     </div>
 
     {{block footer}} <!-- this is default footer -->
-    <footer class="footer footer-style">
-      <div class="container-fluid">
-        <div class="col-xs-offset-1">
+    <footer class="footer footer-sigpae">
+        <p>
             Sede Sartenejas. Baruta, Edo. Miranda - Apartado 89000 - Calle Unibolívar - Caracas, Venezuela. Teléfono +58 0212-9063111 <br>
             Sede Litoral. Camurí Grande, Edo. Vargas Parroquia Naiguatá. Teléfono +25 0212-9069000
-        </div>
-        <div class="copyright pull-right">{{=T('Copyright')}} &#169; {{=request.now.year}}. &nbsp;</div>
-      </div>
+        </p>
     </footer>
     {{end}}
     <!-- The javascript =============================== -->
