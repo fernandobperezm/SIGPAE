@@ -2,16 +2,6 @@
 
 from usbutils import get_ldap_data, random_key
 
-# CONFIGURACION DE URLS
-# DESCOMENTAR LA URL DEPENDIENDO DE SI SE ESTA TRABAJANDO LOCALMENTE O ES
-# LA VERSION USADA EN EL SERVIDOR.
-
-# LOCAL:
-URL_RETORNO = "http%3A%2F%2Flocalhost%3A8000%2FSIGPAE%2Fdefault%2Flogin_cas"
-# SERVIDOR:
-#URL_RETORNO =
-
-
 def reroute():
     """
     Funcion utilizada para que nos lleve al index aunque estemos en la pagina
@@ -26,7 +16,7 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """
-    response.flash = T("¡Bienvenido!")
+    response.flash = T("¡Bienvenido al SIGPAE!")
     return dict(message=T('Sistema de Gestión de Planes Académicos de Estudio'))
 
 def user():
@@ -45,6 +35,18 @@ def user():
     to decorate functions that need access control
     also notice there is http://..../[app]/appadmin/manage/auth to allow administrator to manage users
     """
+
+    # Redireccionamos las entradas para la parte superior, pues estamos usando una autenticacion distinta (CAS).
+
+    if request.args(0)=='login':
+        redirect('https://secure.dst.usb.ve/login?service=' + settings.returnurl)
+    if request.args(0)=='logout':
+        redirect(URL(c='default',f='logout'))
+    if request.args(0)=='profile':
+        redirect(URL(c='user',f='profile'))
+    if request.args(0) in ['register','retrieve_password','change_password', 'bulk_register']:
+        redirect(URL(c='default',f='index'))
+
     return dict(form=auth())
 
 def login_cas():
@@ -59,7 +61,7 @@ def login_cas():
 
         # url para iniciar sesion
         url = "https://secure.dst.usb.ve/validate?ticket=" +\
-              request.vars.getfirst('ticket') + "&service=" + URL_RETORNO
+              request.vars.getfirst('ticket') + "&service=" + settings.returnurl
 
         req = urllib2.Request(url)
         response = urllib2.urlopen(req)

@@ -22,8 +22,14 @@
     <!-- include stylesheets -->
     <link rel="stylesheet" href="{{=URL('static','css/bootstrap.min.css')}}"/>
     <link rel="stylesheet" href="{{=URL('static','css/web2py-bootstrap3.css')}}"/>
+
+    <link rel="stylesheet" href="{{=URL('static','css/perfil_estudiante.css')}}"/>
+    <link rel="stylesheet" href="{{=URL('static','css/navbar.css')}}"/>
+    <link rel="stylesheet" href="{{=URL('static','css/footer.css')}}"/>
     <link rel="shortcut icon" href="{{=URL('static','images/favicon.ico')}}" type="image/x-icon">
     <link rel="apple-touch-icon" href="{{=URL('static','images/favicon.png')}}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{=URL('static','css/main.css')}}"/>
     <!-- All JavaScript at the bottom, except for Modernizr which enables
          HTML5 elements & feature detects -->
     <script src="{{=URL('static','js/modernizr-2.8.3.min.js')}}"></script>
@@ -48,87 +54,55 @@
     <!--[if lt IE 8]><p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
     <div class="w2p_flash alert alert-dismissable">{{=response.flash or ''}}</div>
     <!-- Navbar ======================================= -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="header_home">
+		<div class="container transparent">
+            <div class="col-xs-3 logo">
+		    	{{=IMG(_src=URL('static','images/home/sigpaebaner.png'),alt="SIGPAE")}}
+		    </div>
+	  </div>
+
+    <nav class="navbar-default navbar-style" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          {{=response.logo or ''}}
+            <button type = "button" class = "navbar-toggle collapsed"
+               data-toggle = "collapse" data-target = "#navbar">
+               <span class = "sr-only">Toggle navigation</span>
+               <span class = "icon-bar"></span>
+               <span class = "icon-bar"></span>
+               <span class = "icon-bar"></span>
+            </button>
         </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-          <ul class="nav navbar-nav navbar-right">
 
-            {{if auth.is_logged_in(): }}
-               Bienvenido, {{=auth.user['first_name']}}
-               <a class="link-btn" href="{{=URL(c='default',f='logout')}}">
-                 <button class='btn-index'>{{=T('Logout')}}</button>
-               </a>
+        <div id="navbar" class="collapse navbar-collapse navbar-content-style">
+            {{if auth.is_logged_in():}}
+            {{=MENU(menu_autenticado, _class='nav navbar-nav navbar-right',li_class='dropdown',ul_class='dropdown-menu dropdown-menu-style', li_first='dropdown', li_last='dropdown')}}
             {{else:}}
-
-            <!-- Para el servidor, cuando se disponga de uno -->
-
-            <!--
-            <a href="https://secure.dst.usb.ve/login?service=https%3A%2F%2Fprosigue.dex.usb.ve%2FSPE%2Fdefault%2Flogin_cas">
-              <button class='success'>Miembro USB</button>
-            </a> -->
-
-            <a class="link-btn" href="https://secure.dst.usb.ve/login?service=http%3A%2F%2Flocalhost%3A8000%2FSIGPAE%2Fdefault%2Flogin_cas">
-              <button class='btn-index'>{{=T('Login')}}</button>
-            </a>
-
+              {{if response.menu:}}
+              {{=MENU(response.menu, _class='nav navbar-nav',li_class='dropdown',ul_class='dropdown-menu dropdown-menu-style', li_first='dropdown', li_last='dropdown')}}
+              {{pass}}
             {{pass}}
-
-          </ul>
-          {{if response.menu:}}
-          {{=MENU(response.menu, _class='nav navbar-nav',li_class='dropdown',ul_class='dropdown-menu')}}
-          {{pass}}
         </div>
       </div>
     </nav>
-    <!-- Masthead ===================================== -->
-    {{block header}}
-    {{end}}
+
     <!-- Main ========================================= -->
     <!-- Begin page content -->
-    <div class="container-fluid main-container">
-      {{if left_sidebar_enabled:}}
-        <div class="col-md-3 left-sidebar">
-            {{block left_sidebar}}
-            <h3>Left Sidebar</h3>
-            <p></p>
-            {{end}}
-        </div>
-      {{pass}}
 
-      <div class="{{=middle_column}}">
-        {{block center}}
-        {{include}}
-        {{end}}
-      </div>
-
-      {{if right_sidebar_enabled:}}
-        <div class="col-md-3">
-            {{block right_sidebar}}
-            <h3>Right Sidebar</h3>
-            <p></p>
-            {{end}}
-        </div>
-      {{pass}}
-
+    <div id="main" class="container-fluid main-container">
+      {{block center}}
+      {{include}}
+      {{end}}
     </div>
 
     {{block footer}} <!-- this is default footer -->
-    <footer class="footer">
+    <footer class="footer footer-style">
       <div class="container-fluid">
-        <div class="copyright pull-left">{{=T('Copyright')}} &#169; {{=request.now.year}}</div>
-          <div id="poweredBy" class="pull-right">
-            {{=T('Powered by')}}
-            <a href="http://www.web2py.com/">web2py</a>
-          </div>
+        <div class="col-xs-offset-1">
+             Edificio Ciencias Básicas 1, Piso 1, ofic 135. Sartenejas, Baruta, Edo. Miranda
+              - Apartado 89000 Calle Unibolivar - Caracas Venezuela. <br>
+              Teléfono: +58 0212-9063378. Correo: coord-ccc@usb.ve Twitter: @usbpasantias
+        </div>
+        <div class="copyright pull-right">{{=T('Copyright')}} &#169; {{=request.now.year}}. &nbsp;</div>
       </div>
     </footer>
     {{end}}
@@ -145,7 +119,10 @@
       });
     </script>
     {{pass}}
-    <!-- Share ============================y============ -->
-    <script src="{{=URL('static','js/share.js',vars=dict(static=URL('static','images')))}}"></script>
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
   </body>
 </html>
