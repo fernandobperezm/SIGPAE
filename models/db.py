@@ -94,7 +94,9 @@ plugins = PluginManager()
 
 # Definimos campos adicionales en la tabla auth_user
 auth.settings.extra_fields['auth_user']= [
-  Field('access_key', type='string', notnull=True, required=  True, default = '')
+  Field('ci', type='string', notnull=False, required=False, default=''),
+  Field('phone', type='string', notnull=False, required=False, default=''),
+  Field('access_key', type='string', notnull=False, required=True, default='')
 ]
 
 auth.define_tables(username=True, signature=False)

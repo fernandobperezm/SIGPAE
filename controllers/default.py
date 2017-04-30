@@ -89,7 +89,7 @@ def login_cas():
         #buscandolo en la tabla de usuario.
         primeravez = db(tabla_usuario.username == usbid)
 
-        print "REGISTRANDO ", usuario['first_name']
+        print "INGRESANDO ", usuario['first_name']
 
         if primeravez.isempty():
 
@@ -147,6 +147,8 @@ def registrar(usuario, auth):
     apellido = usuario['last_name']
     tipo  = usuario['tipo']
     email = usuario['email']
+    cedula  = usuario['cedula']
+    phone = usuario['phone']
     usbid = usuario['email'].split('@')[0]
     clave = random_key()
 
@@ -157,13 +159,9 @@ def registrar(usuario, auth):
     							 username = usbid,
                                  email = email,
                                  access_key = clave,
+                                 ci = cedula,
+                                 phone = phone,
     							 password = db.auth_user.password.validate(clave)[0])
-
-        print email," ",clave
-    	res = auth.login_bare(usbid, clave)
-
-        print "USER IS LOGGED ", auth.is_logged_in()
-        print res
 
     	return auth_user_id
 
