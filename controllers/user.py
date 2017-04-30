@@ -7,9 +7,9 @@ def profile():
     mensaje = 'Bienvenido ' + auth.user.first_name + ' ' + auth.user.last_name
     usuario = auth.user
 
-    form = SQLFORM(db.auth_user, fields = ['first_name', 'last_name',
-                                           'username' ,'email'],
-                   record = auth.user.id, showid = False, labels = {'username':'USBID'})
+    form = SQLFORM(db.auth_user, fields = ['first_name', 'last_name', 'ci',
+                                           'username' ,'email', 'phone'],
+                   record = auth.user.id, showid = False, labels = {'username':'USBID', 'ci':'Cédula', 'phone':'Teléfono'})
     if form.process().accepted:
         response.flash = 'form accepted'
     elif form.errors:
