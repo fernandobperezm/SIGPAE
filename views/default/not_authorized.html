@@ -1,0 +1,17 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+{{block header}}
+{{end}}
+
+{{if 'message' in globals():}}
+<h2>{{=message}}</h2>
+<p> Disculpe. Usted no tiene los privilegios suficientes para ingresar a esta área del sistema. </p>
+<p> Si cree que se trata de un error póngase en contacto con su Coordinación, Departamento o
+    la Dirección de Admisión y Control de Estudios.
+</p>
+{{elif 'content' in globals():}}
+{{=content}}
+{{else:}}
+{{=BEAUTIFY(response._vars)}}
+{{pass}}
