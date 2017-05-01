@@ -68,32 +68,55 @@ def edit():
     for role in roles:
         roles_list.append({'id' : role.group_id, 'role' : role.group_id.role })
 
-    form = SQLFORM(db.auth_user,
+    # Datos personales del usuario
+    formulario_datos = SQLFORM(db.auth_user,
                    fields = ['first_name', 'last_name', 'phone','ci', 'username' ,'email'],
                    record = idusuario,
                    showid = False,
                    formstyle = 'bootstrap',
                    labels = {'username':'USBID', 'ci':'Cédula', 'phone':'Teléfono'})
 
-    form2 = SQLFORM.factory(Field('new_rol', requires=IS_IN_DB(db,db.auth_group.id,
+    # Formulario para asignar nuevo rol
+    formulario_nuevo_rol = SQLFORM.factory(Field('new_rol', requires=IS_IN_DB(db,db.auth_group.id,
                                                                '%(role)s',
                                                                zero='Seleccione...',
                                                                error_message="Seleccione un rol")),
                             labels={'new_rol':'Agregar Rol'})
 
-    if form.process(formname="formulario_datos").accepted:
+    # Formulario para cambiar un rol
+    formulario_cambiar_rol = SQLFORM.factory(Field('new_rol', requires=IS_IN_DB(db,db.auth_group.id,
+                                                               '%(role)s',
+                                                               zero='Seleccione...',
+                                                               error_message="Seleccione un rol")),
+                                             Field('old_rol', type="string"),
+                            labels={'new_rol':'Cambiar Rol'})
+
+    if formulario_datos.process(formname="formulario_datos").accepted:
         response.flash = 'Datos actualizados correctamente.'
-    elif form.errors:
+    elif formulario_datos.errors:
         response.flash = 'Existen errores en el formulario.'
 
-    if form2.process(formname="formulario_nuevo_rol").accepted:
+    if formulario_nuevo_rol.process(formname="formulario_nuevo_rol").accepted:
         auth.add_membership(request.vars.new_rol, idusuario)
         response.flash = 'Nuevo rol agregado.'
         redirect(URL(c='users',f='edit',args=[idusuario]))
-    elif form2.errors:
+    elif formulario_nuevo_rol.errors:
         response.flash = 'Por favor seleccione un nuevo rol.'
 
-    return dict(message=message, form=form, form2 = form2, roles_list = roles_list, idusuario = idusuario)
+    if formulario_cambiar_rol.process(formname="formulario_cambiar_rol").accepted:
+        auth.del_membership(request.vars.old_rol, idusuario)
+        auth.add_membership(request.vars.new_rol, idusuario)
+        response.flash = 'Nuevo rol agregado.'
+        redirect(URL(c='users',f='edit',args=[idusuario]))
+    elif formulario_cambiar_rol.errors:
+        response.flash = 'Por favor seleccione un nuevo rol.'
+
+    return dict(message = message,
+                formulario_datos = formulario_datos,
+                formulario_nuevo_rol = formulario_nuevo_rol,
+                formulario_cambiar_rol = formulario_cambiar_rol,
+                roles_list = roles_list,
+                idusuario = idusuario)
 
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user'))

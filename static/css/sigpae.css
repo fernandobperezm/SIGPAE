@@ -91,6 +91,7 @@ body {
   padding: 1%
 }
 
+.modal-dialog .form-horizontal,
 .edit-user .form-horizontal {
   width: 100%;
   margin: 2% auto;
@@ -98,6 +99,7 @@ body {
 
 /* Tablas */
 
-tbody tr td i {
-  margin: 0 auto;
+thead tr th,
+tbody tr td {
+  text-align: center;
 }

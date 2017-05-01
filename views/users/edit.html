@@ -3,36 +3,108 @@
 
 {{if 'message' in globals():}}
   <h2> {{=message}}</h2>
+{{pass}}
 
-  <div class="row edit-user">
-    <div class="col-md-6">
-      <h2> Datos Personales </h2>
-      {{=form}}
-    </div>
-    <div class="col-md-6">
-      <h2> Roles del Usuario </h2>
-      <div class="table-responsive">
-       <table class="table table-striped">
-         <thead>
+<div class="row edit-user">
+  <div class="col-md-6">
+    <h2> Datos Personales </h2>
+    {{=formulario_datos}}
+  </div>
+  <div class="col-md-6">
+    <h2> Roles del Usuario </h2>
+    <div class="table-responsive">
+     <table class="table table-striped">
+       <thead>
+         <tr>
+           <th>Rol</th>
+           <th>Cambiar</th>
+           <th>Eliminar</th>
+         </tr>
+       </thead>
+       <tbody>
+         {{for role in roles_list:}}
            <tr>
-             <th>Rol</th>
-             <th>Cambiar</th>
-             <th>Eliminar</th>
+             <td>{{=role['role']}}</td>
+             <td>
+               <a data-toggle="modal"
+                  data-target="#modalCambiarRol"
+                  data-old-rol="{{=role['id']}}">
+                  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+               </a>
+             </td>
+             <td>
+               <a data-toggle="modal"
+                  data-target="#modalEliminar"
+                  data-nombre="{{=role['role']}}"
+                  data-link-eliminar = "{{=URL(c='users',f='deleterole',args=[idusuario, role['id']])}}">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+               </a>
+             </td>
            </tr>
-         </thead>
-         <tbody>
-           {{for role in roles_list:}}
-             <tr>
-               <td>{{=role['role']}}</td>
-               <td><a href="{{=URL(c='users',f='modifyrole',args=[role['id']])}}"<i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
-               <td><a  onclick="return confirm('¿Está seguro que desea quitar el rol {{=role['role']}} para el usuario?')" href="{{=URL(c='users',f='deleterole',args=[idusuario, role['id']])}}"<i class="fa fa-times" aria-hidden="true"></i></td>
-             </tr>
-            {{pass}}
-         </tbody>
-       </table>
-       </div>
-      {{=form2}}
+          {{pass}}
+       </tbody>
+     </table>
+     </div>
+    {{=formulario_nuevo_rol}}
+  </div>
+</div>
+
+<!-- Modal Cambiar Nombre Catalogo-->
+<div id="modalCambiarRol" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <center><h4 class="modal-title"> Cambiar Rol</h4><center>
+      </div>
+      <div class="modal-body">
+          <p>{{ = formulario_cambiar_rol }}</p>
+      </div>
     </div>
   </div>
+</div>
 
-{{pass}}
+<!-- Modal Eliminar-->
+<div class="container">
+  <div class="modal fade" id="modalEliminar" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <center> <h4 class="modal-title">Eliminar Rol</h4> </center>
+        </div>
+        <div class="modal-body">
+            <center> <p>¿Está seguro que quiere eliminar el rol <span id="nombrerol"></span> para este usuario?.</p> </center>
+            <br>
+            <center>
+                <a id="botoneliminar" style="text-decoration: none;">
+                  <button type="button" class="btn btn-danger">Eliminar</button>
+                </a>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"> Cerrar </button>
+            </center>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+  // Pasamos los argumentos para eliminar el rol del usuario.
+  $('#modalEliminar').on('show.bs.modal', function(e){
+
+      var linkEliminar = $(e.relatedTarget).data('link-eliminar');
+      $("#botoneliminar").attr("href", linkEliminar);
+
+      var nombre = $(e.relatedTarget).data('nombre');
+
+      $("#nombrerol").text(nombre);
+  });
+
+  // Pasamos los argumentos para editar el rol del usuario.
+  $('#modalCambiarRol').on('show.bs.modal', function(e){
+      var old_rol = $(e.relatedTarget).data('old-rol');
+      $("#no_table_old_rol__row").hide();
+      $(e.currentTarget).find('select[name="new_rol"]').val(old_rol);
+      $(e.currentTarget).find('input[name="old_rol"]').val(old_rol);
+  });
+</script>
