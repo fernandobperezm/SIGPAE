@@ -5,13 +5,20 @@
 {{end}}
 
 {{if 'message' in globals():}}
-<h2>{{=message}}</h2>
-<p>
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis \
-  nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-  fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-  culpa qui officia deserunt mollit anim id est laborum.
-</p>
+  <h2>{{=message}}</h2>
+  <p>
+    Bienvenido/a al <b>SIGPAE</b>. Este sistema le facilitá el proceso de creación, modificación o eliminación de
+    Programas Analíticos de Estudio, para pregrado y postgrado, ofrecidos en la Universidad Simón Bolívar.
+  </p>
 {{pass}}
+
+
+<div class="public-search">
+  <h3>Búsquedas Públicas</h3>
+  <form>
+    <div class="input-group margin-bottom-sm">
+      <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+      <input class="form-control" type="text" placeholder="Buscar por código, nombre...">
+    </div>
+  </form>
+</div>
