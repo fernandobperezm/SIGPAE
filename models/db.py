@@ -118,24 +118,80 @@ auth.settings.registration_requires_verification = False
 auth.settings.registration_requires_approval = False
 auth.settings.reset_password_requires_verification = False
 
-# -------------------------------------------------------------------------
-# Define your tables below (or better in another model file) for example
-#
-# >>> db.define_table('mytable', Field('myfield', 'string'))
-#
-# Fields can be 'string','text','password','integer','double','boolean'
-#       'date','time','datetime','blob','upload', 'reference TABLENAME'
-# There is an implicit 'id integer autoincrement' field
-# Consult manual for more options, validators, etc.
-#
-# More API examples for controllers:
-#
-# >>> db.mytable.insert(myfield='value')
-# >>> rows = db(db.mytable.myfield == 'value').select(db.mytable.ALL)
-# >>> for row in rows: print row.id, row.myfield
-# -------------------------------------------------------------------------
+#Insertando los roles en la base de datos
+ROLES = [
+    ('DACE-ADMINISTRADOR','Miembro de DACE que tiene permisos de administrador del sistema.'),
+    ('DACE-OPERADOR','Miembro de DACE que tiene permisos de consulta del sistema.'),
+    ('DECANATO','Decano de la USB.'),
+    ('DEPARTAMENTO','Jefe de Departamento de la USB.'),
+    ('COORDINACION','Coordinador de Carrera de la USB.'),
+    ('LABORATORIO','Jefe de la Unidad de Laboratorios de la USB.'),
+    ('BIBLIOTECA','Director de la Biblioteca de la USB.'),
+    ('TRANSCRIPTOR','Miembro de la USB con permiso de transcripción de Programas Académicos'),
+    ('PROFESOR','Profesor de la USB.'),
+    ('ESTUDIANTE','Estudiante de la USB.'),
+]
+
+for rol in ROLES:
+    if db(db.auth_group).count() < len(ROLES):
+        db.auth_group.insert(role = rol[0], description = rol[1])
+
+#Asignando los permisos a los roles respectivos.
+
+# Manejar Usuarios
+auth.add_permission(auth.id_group(role="DACE-ADMINISTRADOR"), 'manage_users', 'auth_user')
+auth.add_permission(auth.id_group(role="DACE-OPERADOR"),      'manage_users', 'auth_user')
+
+# Manejar Transcriptores
+auth.add_permission(auth.id_group(role="DEPARTAMENTO"), 'manage_transcriptors', 'auth_user')
+auth.add_permission(auth.id_group(role="COORDINACION"), 'manage_transcriptors', 'auth_user')
+
+# Crear Nueva Transcripcion
+auth.add_permission(auth.id_group(role="TRANSCRIPTOR"), 'create_transcription')
+
+# Aceptar y Rechazar Transcripciones
+auth.add_permission(auth.id_group(role="DEPARTAMENTO"), 'manage_transcription')
+auth.add_permission(auth.id_group(role="COORDINACION"), 'manage_transcription')
+
+# Solicitar Programa Academico
+auth.add_permission(auth.id_group(role="COORDINACION"), 'request_ap')
+auth.add_permission(auth.id_group(role="DEPARTAMENTO"), 'request_ap')
+auth.add_permission(auth.id_group(role="DECANATO"),     'request_ap')
+auth.add_permission(auth.id_group(role="PROFESOR"),     'request_ap')
+
+# Llenar Programa Academico
+auth.add_permission(auth.id_group(role="PROFESOR"), 'fill_ap')
+
+# Asignar Profesores
+auth.add_permission(auth.id_group(role="DEPARTAMENTO"), 'assign_profesor')
+
+# Aceptar y Rechazar Asignacion de Programa Academico
+auth.add_permission(auth.id_group(role="PROFESOR"), 'accept_assignment')
+auth.add_permission(auth.id_group(role="PROFESOR"), 'reject_assignment')
+
+# Aceptar y Rechazar Solicitud Programa Academico
+auth.add_permission(auth.id_group(role="DACE-ADMINISTRADOR"), 'manage_ap_request')
+auth.add_permission(auth.id_group(role="DACE-OPERADOR"), 'manage_ap_request')
+auth.add_permission(auth.id_group(role="DECANATO"), 'manage_ap_request')
+auth.add_permission(auth.id_group(role="DEPARTAMENTO"), 'manage_ap_request')
+auth.add_permission(auth.id_group(role="COORDINACION"), 'manage_ap_request')
+
+# Incorporar y Desincorporar Programa Academico
+auth.add_permission(auth.id_group(role="DACE-ADMINISTRADOR"), 'manage_ap')
+auth.add_permission(auth.id_group(role="DACE-OPERADOR"), 'manage_ap')
+
+# Consultar Referencias Bibliograficas
+auth.add_permission(auth.id_group(role="BIBLIOTECA"), 'consult_references')
+
+# Ver Programas Academicos de Materias Aprobadas
+auth.add_permission(auth.id_group(role="ESTUDIANTE"), 'consult_ap')
+
+# TEST ROLES
+auth.add_membership(auth.id_group(role="DACE-ADMINISTRADOR"), 1)
+auth.add_membership(auth.id_group(role="TRANSCRIPTOR"), 1)
+
 
 # -------------------------------------------------------------------------
 # after defining tables, uncomment below to enable auditing
 # -------------------------------------------------------------------------
-# auth.enable_record_versioning(db)
+auth.enable_record_versioning(db)

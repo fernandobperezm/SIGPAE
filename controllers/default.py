@@ -43,7 +43,9 @@ def user():
     if request.args(0)=='logout':
         redirect(URL(c='default',f='logout'))
     if request.args(0)=='profile':
-        redirect(URL(c='user',f='profile'))
+        redirect(URL(c='users',f='profile'))
+    if request.args(0)=='not_authorized':
+        redirect(URL(c='default', f='not_authorized'))
     if request.args(0) in ['register','retrieve_password','change_password', 'bulk_register']:
         redirect(URL(c='default',f='index'))
 
@@ -188,3 +190,10 @@ def call():
     supports xml, json, xmlrpc, jsonrpc, amfrpc, rss, csv
     """
     return service()
+
+def not_authorized():
+    """
+        Expose a custom page for not authorization areas.
+    """
+    message = "Área no autorizada"
+    return dict(message=message)

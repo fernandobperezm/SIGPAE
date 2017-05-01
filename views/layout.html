@@ -55,6 +55,7 @@
 
         <div id="navbar" class="collapse navbar-collapse navbar-content-style">
             {{if auth.is_logged_in():}}
+            {{=MENU(menu_opciones_rol, _class='nav navbar-nav navbar-left',li_class='dropdown',ul_class='dropdown-menu dropdown-menu-style', li_first='dropdown', li_last='dropdown')}}
             {{=MENU(menu_autenticado, _class='nav navbar-nav navbar-right',li_class='dropdown',ul_class='dropdown-menu dropdown-menu-style', li_first='dropdown', li_last='dropdown')}}
             {{else:}}
               {{if response.menu:}}

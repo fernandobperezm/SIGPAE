@@ -14,11 +14,13 @@ else:
     texto_principal = "Bienvenido"
 
 opciones = [
-    ((SPAN(_class='fa fa-user'), '  Ver Perfil'), False, URL('user', 'profile')),
+    ((SPAN(_class='fa fa-user'), '  Ver Perfil'), False, URL('users', 'profile')),
     ((SPAN(_class='fa fa-sign-out'), '  Cerrar Sesión'), False, URL('default', 'logout'))
 ]
 
-
+manejo_usuarios = [
+    ((SPAN(_class='fa fa-user'), '  Gestionar Usuarios'), False, URL('users', 'manage')),
+]
 
 # Tomado de SPE. Adecuar en futuro de acuerdo a los roles y permisologia definida
 # opciones_estudiante = [
@@ -61,6 +63,11 @@ opciones = [
 menu_autenticado = [
     (texto_principal, False, '#', opciones)
 ]
+
+menu_opciones_rol = []
+
+if auth.has_permission('manage_users', 'auth_user'):
+    menu_opciones_rol.append(('Usuarios', False, '#', manejo_usuarios ))
 
 response.menu = [
     (T('Iniciar Sesión'), False , 'https://secure.dst.usb.ve/login?service=' + settings.returnurl, []),
