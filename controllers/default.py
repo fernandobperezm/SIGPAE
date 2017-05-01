@@ -16,7 +16,12 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """
+
+    if auth.has_membership(auth.id_group(role="BLOQUEADO")):
+        redirect(URL(c='default', f='banned'))
+
     response.flash = T("¡Bienvenido al SIGPAE!")
+
     return dict(message=T('Sistema de Gestión de Planes Académicos de Estudio'))
 
 def user():
@@ -197,9 +202,18 @@ def call():
     """
     return service()
 
+@auth.requires_login()
 def not_authorized():
     """
         Expose a custom page for not authorization areas.
     """
     message = "Área no autorizada"
+    return dict(message=message)
+
+@auth.requires_login()
+def banned():
+    """
+        Expose a custom page for not banned users.
+    """
+    message = "Usuario Bloqueado"
     return dict(message=message)

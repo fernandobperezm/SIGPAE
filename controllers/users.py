@@ -1,6 +1,6 @@
 
 # Decorador solo para acceder a la vista si se ha iniciado sesion
-@auth.requires_login()
+@auth.requires(auth.is_logged_in() and auth.has_permission('update_profile', 'auth_user'))
 def profile():
     # aqui va la logica para ver/actualizar el perfil
 

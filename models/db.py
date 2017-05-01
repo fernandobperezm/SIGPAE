@@ -130,6 +130,7 @@ ROLES = [
     ('TRANSCRIPTOR','Miembro de la USB con permiso de transcripción de Programas Académicos'),
     ('PROFESOR','Profesor de la USB.'),
     ('ESTUDIANTE','Estudiante de la USB.'),
+    ('BLOQUEADO','Usuario que ha sido bloqueado del sistema SIGPAE.'),
 ]
 
 for rol in ROLES:
@@ -138,7 +139,19 @@ for rol in ROLES:
 
 #Asignando los permisos a los roles respectivos.
 
-# Manejar Usuarios
+# Actulizar Perfil Propio
+auth.add_permission(auth.id_group(role="DACE-ADMINISTRADOR"), 'update_profile', 'auth_user')
+auth.add_permission(auth.id_group(role="DACE-OPERADOR"),      'update_profile', 'auth_user')
+auth.add_permission(auth.id_group(role="DECANATO"),      'update_profile', 'auth_user')
+auth.add_permission(auth.id_group(role="DEPARTAMENTO"),      'update_profile', 'auth_user')
+auth.add_permission(auth.id_group(role="COORDINACION"),      'update_profile', 'auth_user')
+auth.add_permission(auth.id_group(role="LABORATORIO"),      'update_profile', 'auth_user')
+auth.add_permission(auth.id_group(role="BIBLIOTECA"),      'update_profile', 'auth_user')
+auth.add_permission(auth.id_group(role="TRANSCRIPTOR"),      'update_profile', 'auth_user')
+auth.add_permission(auth.id_group(role="PROFESOR"),      'update_profile', 'auth_user')
+auth.add_permission(auth.id_group(role="ESTUDIANTE"),      'update_profile', 'auth_user')
+
+# Manejar Usuario
 auth.add_permission(auth.id_group(role="DACE-ADMINISTRADOR"), 'manage_users', 'auth_user')
 auth.add_permission(auth.id_group(role="DACE-OPERADOR"),      'manage_users', 'auth_user')
 
