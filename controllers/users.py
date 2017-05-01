@@ -28,6 +28,27 @@ def profile():
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user'))
 def manage():
 
-    message = "Hello!"
+    message = "Gestión de Usuarios"
 
-    return dict(message=message)
+    # Obtenemos los usuarios
+    usuarios = db(db.auth_user).select(db.auth_user.id,
+                                       db.auth_user.username,
+                                       db.auth_user.first_name,
+                                       db.auth_user.last_name,
+                                       db.auth_user.email)
+
+    lista_usuarios = []
+    # Obtenemos los roles de cada usuario
+    for usuario in usuarios:
+        roles =  db(db.auth_membership.user_id == usuario.id).select()
+        nombresroles = ""
+        for role in roles:
+            nombresroles += role.group_id.role + '\n'
+
+        lista_usuarios.append({'id' : usuario.id,
+                               'username': usuario.username,
+                               'name' : usuario.first_name + ' ' + usuario.last_name,
+                               'email': usuario.email,
+                               'roles': nombresroles})
+
+    return dict(message=message, usuarios = lista_usuarios)

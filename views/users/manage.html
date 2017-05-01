@@ -3,9 +3,30 @@
 
 {{if 'message' in globals():}}
 <h2> {{=message}}</h2>
-<p> Usted puede actualizar sus nombres, appellidos y número de teléfono. Si encuentra otros de sus datos personales erróneos por favor
-contacte al adiminstrador.</p>
-{{elif 'content' in globals():}}
-{{=content}}
-{{else:}}
 {{pass}}
+
+<div class="table-responsive">
+ <table class="table table-striped">
+   <thead>
+     <tr>
+       <th>USBID</th>
+       <th>Nombre</th>
+       <th>Rol</th>
+       <th>Email</th>
+       <th>Modificar</th>
+     </tr>
+   </thead>
+   <tbody>
+     {{for usuario in usuarios:}}
+       <tr>
+         <td>{{=usuario['username']}}</td>
+         <td>{{=usuario['name']}}</td>
+         <td>{{=usuario['roles']}}</td>
+         <td>{{=usuario['email']}}</td>
+         <td><a href="{{=URL(c='users',f='edit',args=[usuario['id']])}}"<i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
+       </tr>
+      {{pass}}
+   </tbody>
+ </table>
+ </div>
+</div>

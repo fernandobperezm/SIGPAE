@@ -90,3 +90,9 @@ body {
   margin: 1%;
   padding: 1%
 }
+
+/* Tablas */
+
+tbody tr td i {
+  margin: 0 auto;
+}
