@@ -52,3 +52,55 @@ def manage():
                                'roles': nombresroles})
 
     return dict(message=message, usuarios = lista_usuarios)
+
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user'))
+def edit():
+    idusuario = request.args(0)
+    message   = "Editar usuario"
+
+    db.auth_user.username.writable = False
+    db.auth_user.email.writable = False
+
+    #we get the roles for the user
+    roles      = db(db.auth_membership.user_id == idusuario).select()
+    roles_list = []
+    for role in roles:
+        roles_list.append({'id' : role.group_id, 'role' : role.group_id.role })
+
+    form = SQLFORM(db.auth_user,
+                   fields = ['first_name', 'last_name', 'phone','ci', 'username' ,'email'],
+                   record = idusuario,
+                   showid = False,
+                   formstyle = 'bootstrap',
+                   labels = {'username':'USBID', 'ci':'Cédula', 'phone':'Teléfono'})
+
+    form2 = SQLFORM.factory(Field('new_rol', requires=IS_IN_DB(db,db.auth_group.id,
+                                                               '%(role)s',
+                                                               zero='Seleccione...',
+                                                               error_message="Seleccione un rol")),
+                            labels={'new_rol':'Agregar Rol'})
+
+    if form.process(formname="formulario_datos").accepted:
+        response.flash = 'Datos actualizados correctamente.'
+    elif form.errors:
+        response.flash = 'Existen errores en el formulario.'
+
+    if form2.process(formname="formulario_nuevo_rol").accepted:
+        auth.add_membership(request.vars.new_rol, idusuario)
+        response.flash = 'Nuevo rol agregado.'
+        redirect(URL(c='users',f='edit',args=[idusuario]))
+    elif form2.errors:
+        response.flash = 'Por favor seleccione un nuevo rol.'
+
+    return dict(message=message, form=form, form2 = form2, roles_list = roles_list, idusuario = idusuario)
+
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user'))
+def deleterole():
+    idusuario = request.args(0)
+    idrole    = request.args(1)
+
+    auth.del_membership(idrole, idusuario)
+
+    redirect(URL(c='users',f='edit',args=[idusuario]))

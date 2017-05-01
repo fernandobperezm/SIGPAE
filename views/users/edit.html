@@ -1,0 +1,38 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+{{if 'message' in globals():}}
+  <h2> {{=message}}</h2>
+
+  <div class="row edit-user">
+    <div class="col-md-6">
+      <h2> Datos Personales </h2>
+      {{=form}}
+    </div>
+    <div class="col-md-6">
+      <h2> Roles del Usuario </h2>
+      <div class="table-responsive">
+       <table class="table table-striped">
+         <thead>
+           <tr>
+             <th>Rol</th>
+             <th>Cambiar</th>
+             <th>Eliminar</th>
+           </tr>
+         </thead>
+         <tbody>
+           {{for role in roles_list:}}
+             <tr>
+               <td>{{=role['role']}}</td>
+               <td><a href="{{=URL(c='users',f='modifyrole',args=[role['id']])}}"<i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
+               <td><a  onclick="return confirm('¿Está seguro que desea quitar el rol {{=role['role']}} para el usuario?')" href="{{=URL(c='users',f='deleterole',args=[idusuario, role['id']])}}"<i class="fa fa-times" aria-hidden="true"></i></td>
+             </tr>
+            {{pass}}
+         </tbody>
+       </table>
+       </div>
+      {{=form2}}
+    </div>
+  </div>
+
+{{pass}}

@@ -91,6 +91,11 @@ body {
   padding: 1%
 }
 
+.edit-user .form-horizontal {
+  width: 100%;
+  margin: 2% auto;
+}
+
 /* Tablas */
 
 tbody tr td i {
