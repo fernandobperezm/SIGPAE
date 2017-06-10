@@ -1,0 +1,124 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout_transcripcion.html'}}
+
+<div class="row">
+  <div class="col-md-5">
+    <iframe src="{{=pdfurl}}" class="pdf-display">
+      <p>Su navegador no soporta la visualización de documentos. Por favor actualícelo
+         O use otro navegador.
+      </p>
+    </iframe>
+  </div>
+  <div class="col-md-7">
+    <div class="transcription-tag">
+      <b>Texto Extraido</b>
+    </div>
+    <div class="text-extract h-scroll">
+      {{= text}}
+    </div>
+    <div class="transcription-tag">
+      <b>Campos</b>
+    </div>
+    <div class="text-extract h-scroll">
+      <div class="row">
+  		<div class="table-responsive">
+
+  			<table class="table table-programa">
+  				<thead>
+  					<h1>Detalles del programa de </h1>
+  				</thead>
+  				<tr>
+  					<td class="detail"> Código de la materia:</td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Período de entrada en vigencia:</td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Requisitos de créditos: </td>
+  						<td class="content">Si tiene</td>
+  						<td class="content">No tiene requisitos</td>
+  				</tr>
+  				<tr>
+  					<td class="detail">Objetivos Generales:</td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Objetivos Específicos:</td>
+  						<td class="content"></td>
+  						<td>No han sido detallados los objetivos específicos</td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Horas de teoría:</td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Horas de práctica:</td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Horas de laboratorio:</td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Total de horas semanales:</td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Contenidos Sinópticos:</td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Estrategias Metodológicas:</td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Estrategias de Evaluación:</td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Fuentes de Información</td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Coordinacion: </td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Créditos: </td>
+
+  					<td class="content"></td>
+  				</tr>
+  				<tr>
+  					<td class="detail"> Decanato: </td>
+
+  					<td class="content"></td>
+  				</tr>
+
+  			</table>
+
+  		</div>
+  		</div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="transcription-buttons">
+    <button class="btn btn-danger">Cancelar</button>
+    <button class="btn btn-primary">Guardar</button>
+  </div>
+</div>
