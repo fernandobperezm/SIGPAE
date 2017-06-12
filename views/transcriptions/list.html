@@ -1,0 +1,95 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+{{if 'message' in globals():}}
+<h2> {{=message}}</h2>
+{{pass}}
+
+<div class="table-responsive">
+ <table class="table table-striped">
+   <thead>
+     <tr>
+       <th>ID</th>
+       <th>Código</th>
+       <th>Fecha Elaboración</th>
+       <th>Última Modificación</th>
+       <th>Modificar</th>
+       <th>Eliminar</th>
+       <th>Enviar</th>
+     </tr>
+   </thead>
+   <tbody>
+     {{for trans in transcripciones:}}
+       <tr>
+         <td>{{=trans['id']}}</td>
+         <td>{{=trans['codigo']}}</td>
+         <td>{{=trans['fecha_elaboracion']}}</td>
+         <td>{{=trans['fecha_modificacion']}}</td>
+         <td><a href="{{=URL(c='transcriptions',f='edit',vars=dict(id=trans['id']))}}"<i class="fa fa-pencil-square-o blue" aria-hidden="true"></i></td>
+         <td>
+           <a data-toggle="modal"
+              data-target="#modalEliminar"
+              data-id="{{=trans['id']}}"
+              data-cod="{{=trans['codigo']}}"
+              data-link-eliminar = "{{=URL(c='transcriptions',f='delete_transcription',args=[trans['id']])}}">
+              <i class="fa fa-times red" aria-hidden="true"></i>
+           </a>
+         </td>
+         <td><a href="#"><i class="fa fa-arrow-right green" aria-hidden="true"></i></td>
+       </tr>
+      {{pass}}
+   </tbody>
+ </table>
+ </div>
+</div>
+
+<!-- Modal Eliminar-->
+<div class="container">
+  <div class="modal fade" id="modalEliminar" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <center> <h4 class="modal-title">Eliminar Rol</h4> </center>
+        </div>
+        <div class="modal-body">
+            <center> <p>¿Está seguro que quiere eliminar la transcripcion con los siguientes detalles?</p>
+                     <b>ID: </b> <span id="transid"></span>
+                     <br>
+                     <b>Código: </b><span id="transcod"></span>
+            </center>
+            <br>
+            <center>
+                <a id="botoneliminar" style="text-decoration: none;">
+                  <button type="button" class="btn btn-danger">Eliminar</button>
+                </a>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"> Cerrar </button>
+            </center>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+  // Pasamos los argumentos para eliminar el rol del usuario.
+  $('#modalEliminar').on('show.bs.modal', function(e){
+
+      var linkEliminar = $(e.relatedTarget).data('link-eliminar');
+      $("#botoneliminar").attr("href", linkEliminar);
+
+      var id  = $(e.relatedTarget).data('id');
+      var cod = $(e.relatedTarget).data('cod');
+
+      $("#transid").text(id);
+      $("#transcod").text(cod);
+  });
+
+  // Pasamos los argumentos para editar el rol del usuario.
+  // $('#modalCambiarRol').on('show.bs.modal', function(e){
+  //     var old_rol = $(e.relatedTarget).data('old-rol');
+  //     $("#no_table_old_rol__row").hide();
+  //     $(e.currentTarget).find('select[name="new_rol"]').val(old_rol);
+  //     $(e.currentTarget).find('input[name="old_rol"]').val(old_rol);
+  // });
+</script>

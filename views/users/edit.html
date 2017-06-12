@@ -29,7 +29,7 @@
                <a data-toggle="modal"
                   data-target="#modalCambiarRol"
                   data-old-rol="{{=role['id']}}">
-                  <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                  <i class="fa fa-pencil-square-o blue" aria-hidden="true"></i>
                </a>
              </td>
              <td>
@@ -37,7 +37,7 @@
                   data-target="#modalEliminar"
                   data-nombre="{{=role['role']}}"
                   data-link-eliminar = "{{=URL(c='users',f='deleterole',args=[idusuario, role['id']])}}">
-                  <i class="fa fa-times" aria-hidden="true"></i>
+                  <i class="fa fa-times red" aria-hidden="true"></i>
                </a>
              </td>
            </tr>

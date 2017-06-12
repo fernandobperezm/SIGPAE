@@ -1,0 +1,192 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout_transcripcion.html'}}
+
+<div class="row">
+  <div class="col-md-5">
+    <iframe src="{{=pdfurl}}" class="pdf-display">
+      <p>Su navegador no soporta la visualización de documentos. Por favor actualícelo
+         O use otro navegador.
+      </p>
+    </iframe>
+  </div>
+  <div class="col-md-7">
+    <div class="transcription-tag">
+      <b>Texto Extraido</b>
+    </div>
+    <div class="text-extract h-scroll">
+      {{= text}}
+    </div>
+    <div class="transcription-tag">
+      <b>Campos</b>
+    </div>
+    <div class="text-extract h-scroll">
+      {{=form.custom.begin}}
+
+      <div class="field-tag">
+        <b>Código </b>
+        {{=form.custom.widget.codigo}}
+      </div>
+        {{if form.errors:}}
+          {{if 'codigo' in form.errors:}}
+            <div class="error">
+              {{=form.errors['codigo']}}
+            </div>
+          {{pass}}
+        {{pass}}
+
+      <div class="field-tag">
+        <b>Denominación</b>
+        {{=form.custom.widget.denominacion}}
+      </div>
+      {{if form.errors:}}
+        {{if 'denominacion' in form.errors:}}
+          <div class="error">
+            {{=form.errors['denominacion']}}
+          </div>
+        {{pass}}
+      {{pass}}
+
+      <div class="field-tag">
+        <b>Fecha de Elaboración </b>
+        {{=form.custom.widget.fecha_elaboracion}}
+      </div>
+      {{if form.errors:}}
+        {{if 'fecha_elaboracion' in form.errors:}}
+          <div class="error">
+            {{=form.errors['fecha_elaboracion']}}
+          </div>
+        {{pass}}
+      {{pass}}
+
+      <div class="transcription-tag">
+        <b>Periodo de Vigencia</b>
+      </div>
+
+      <div class="field-tag">
+        <b>Periodo </b>
+        {{=form.custom.widget.periodo}}
+      </div>
+      {{if form.errors:}}
+        {{if 'periodo' in form.errors:}}
+          <div class="error">
+            {{=form.errors['periodo']}}
+          </div>
+        {{pass}}
+      {{pass}}
+
+      <div class="field-tag">
+        <b>Año </b>
+        {{=form.custom.widget.anio}}
+      </div>
+      {{if form.errors:}}
+        {{if 'anio' in form.errors:}}
+          <div class="error">
+            {{=form.errors['anio']}}
+          </div>
+        {{pass}}
+      {{pass}}
+
+      <div class="field-tag">
+        <b>Horas de Teoría</b>
+        {{=form.custom.widget.horas_teoria}}
+      </div>
+      {{if form.errors:}}
+        {{if 'horas_teoria' in form.errors:}}
+          <div class="error">
+            {{=form.errors['horas_teoria']}}
+          </div>
+        {{pass}}
+      {{pass}}
+
+      <div class="field-tag">
+        <b>Horas de Práctica</b>
+        {{=form.custom.widget.horas_practica}}
+      </div>
+      {{if form.errors:}}
+        {{if 'horas_practica' in form.errors:}}
+          <div class="error">
+            {{=form.errors['horas_practica']}}
+          </div>
+        {{pass}}
+      {{pass}}
+
+      <div class="field-tag">
+        <b>Horas de Laboratorio</b>
+        {{=form.custom.widget.horas_laboratorio}}
+      </div>
+      {{if form.errors:}}
+        {{if 'horas_laboratorio' in form.errors:}}
+          <div class="error">
+            {{=form.errors['horas_laboratorio']}}
+          </div>
+        {{pass}}
+      {{pass}}
+
+      <div class="field-tag">
+        <b>Créditos</b>
+        {{=form.custom.widget.creditos}}
+      </div>
+      {{if form.errors:}}
+        {{if 'creditos' in form.errors:}}
+          <div class="error">
+            {{=form.errors['creditos']}}
+          </div>
+        {{pass}}
+      {{pass}}
+
+      <div class="field-tag-wide">
+        <b>Objetivos Generales</b>
+        {{=form.custom.widget.objetivos_generales}}
+      </div>
+
+      <div class="field-tag-wide">
+        <b>Objetivos Especificos</b>
+        {{=form.custom.widget.objetivos_especificos}}
+      </div>
+
+      <div class="field-tag-wide">
+        <b>Contenidos Sinopticós</b>
+        {{=form.custom.widget.sinopticos}}
+      </div>
+
+      <div class="field-tag-wide">
+        <b>Requisitos</b>
+        {{=form.custom.widget.requisitos}}
+      </div>
+
+      <div class="field-tag-wide">
+        <b>Estrategias Metodológicas</b>
+        {{=form.custom.widget.estrategias_met}}
+      </div>
+
+      <div class="field-tag-wide">
+        <b>Estrategias de Evaluación</b>
+        {{=form.custom.widget.estrategias_eval}}
+      </div>
+
+      <div class="field-tag-wide">
+        <b>Justificación</b>
+        {{=form.custom.widget.justificacion}}
+      </div>
+
+      <div class="field-tag-wide">
+        <b>Fuentes de Información Recomendadas</b>
+        {{=form.custom.widget.ftes_info_recomendadas}}
+      </div>
+
+      <div class="field-tag-wide">
+        <b>Observacioness</b>
+        {{=form.custom.widget.observaciones}}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="transcription-buttons">
+    <button class="btn btn-danger">Cancelar</button>
+    {{=form.custom.submit}}
+    {{=form.custom.end}}
+  </div>
+</div>

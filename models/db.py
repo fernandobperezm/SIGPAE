@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 
 # -------------------------------------------------------------------------
 # This scaffolding model makes your app work on Google App Engine too
@@ -30,8 +31,8 @@ if not request.env.web2py_runtime_gae:
     # ---------------------------------------------------------------------
     db = DAL(settings.database_uri,
              pool_size=myconf.get('db.pool_size'),
-             migrate_enabled=myconf.get('db.migrate'),
-             check_reserved=['all'])
+             migrate_enabled = True,
+             check_reserved = ['all'])
 else:
     # ---------------------------------------------------------------------
     # connect to Google BigTable (optional 'google:datastore://namespace')
@@ -203,6 +204,71 @@ auth.add_permission(auth.id_group(role="ESTUDIANTE"), 'consult_ap')
 auth.add_membership(auth.id_group(role="DACE-ADMINISTRADOR"), 1)
 
 
+# TRANSCRIPCIONES
+# Definición del dominio del periodo de vigencia del programa que se transcribe
+SEP_DIC = 'SEP-DIC'
+ENE_MAR = 'ENE-MAR'
+ABR_JUL = 'ABR-JUL'
+VERANO  = 'INTENSIVO'
+
+PERIODOS = (
+    (SEP_DIC, SEP_DIC),
+    (ENE_MAR, ENE_MAR),
+    (ABR_JUL, ABR_JUL),
+    (VERANO, VERANO),
+)
+
+# Definición del dominio de las horas de dedicación al curso del programa
+HORAS = tuple([(i, i) for i in range(41)])
+
+# Definición del dominio de los creditos de un programa
+CREDITOS = tuple([(i, i) for i in range(17)])
+
+
+#     Field('ci',type='string',length=8, notnull=True,required=True),
+#     Field('usbid', type='string', unique=True,notnull=True,required=True),
+#     Field('nombres',type='string',length=50,required=True),
+#     Field('apellidos',type='string',length=50,required=True),
+#     Field('telefono',type='string',length=15),
+#     Field('correo_inst', type='string',notnull=True),
+#     Field('correo_alter', type='string'),
+#     Field('tipo',type='string',length=15,requires=IS_IN_SET(['Usuario', 'DEX', 'Administrador','Bloqueado'])),
+#     primarykey=['usbid'],
+#     migrate=False,
+# );
+
+db.define_table('TRANSCRIPCION',
+    Field('original_pdf', type='string', notnull = True, required = True),
+    Field('texto', type='text',   notnull = False),
+    Field('codigo',type='string', length = 8, requires = IS_MATCH('([A-Z]{2,2}[0-9]{4,4})|([A-Z]{3,3}[0-9]{3,3})',
+                                                                 error_message = 'Codigo de asignatura no válido.')),
+    Field('denominacion', type = 'string',length = 100),
+    Field('fecha_elaboracion', type = 'date', requires = IS_DATE_IN_RANGE(format=T('%Y-%m-%d'),
+                                                                          minimum=datetime.date(1967,1,1),
+                                                                          maximum=datetime.date.today(),
+                                                                          error_message='Debe seleccionar una fecha en formato DD/MM/AAAA no mayor a la fecha actual.')),
+    Field('periodo', type ='string', length = 9, requires =  IS_IN_SET(PERIODOS, zero='Seleccione', error_message = 'Seleccione un periodo.')),
+    Field('anio', type = 'integer',  length = 4,  requires = [IS_INT_IN_RANGE(1967, 1e100,
+                                                                            error_message='El año debe ser un numero positivo de la forma YYYY a partir de 1967.'),
+                                                              IS_LENGTH(4,  error_message ='El año debe ser de la forma YYYY.')]),
+    Field('horas_teoria', type ='integer', requires =  IS_IN_SET(HORAS, zero='Seleccione', error_message = 'Seleccione un número de horas.')),
+    Field('horas_practica', type ='integer', requires =  IS_IN_SET(HORAS, zero='Seleccione', error_message = 'Seleccione un número de horas.')),
+    Field('horas_laboratorio', type ='integer', requires =  IS_IN_SET(HORAS, zero='Seleccione', error_message = 'Seleccione un número de horas.')),
+    Field('creditos', type ='integer', requires =  IS_IN_SET(CREDITOS, zero='Seleccione', error_message = 'Seleccione un número de creditos.')),
+    Field('sinopticos', type="text"),
+    Field('ftes_info_recomendadas', type="text"),
+    Field('requisitos', type="text"),
+    Field('estrategias_met', type="text"),
+    Field('estrategias_eval', type="text"),
+    Field('justificacion', type="text"),
+    Field('observaciones', type="text"),
+    Field('objetivos_generales', type="text"),
+    Field('objetivos_especificos', type="text"),
+    Field('fecha_modificacion', type="date", notnull = True, default = datetime.date.today()),
+    # encargado = models.CharField('Encargado', max_length=100, null=True)
+    # pasa = models.BooleanField(default= False)
+    # propuesto = models.BooleanField(default= False)
+    )
 # -------------------------------------------------------------------------
 # after defining tables, uncomment below to enable auditing
 # -------------------------------------------------------------------------
