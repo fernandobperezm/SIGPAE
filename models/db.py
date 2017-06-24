@@ -123,7 +123,7 @@ auth.settings.reset_password_requires_verification = False
 ROLES = [
     ('DACE-ADMINISTRADOR','Miembro de DACE que tiene permisos de administrador del sistema.'),
     ('DACE-OPERADOR','Miembro de DACE que tiene permisos de consulta del sistema.'),
-    ('DECANATO','Decano de la USB.'),
+    ('DECANATO','Decanato de la USB.'),
     ('DEPARTAMENTO','Jefe de Departamento de la USB.'),
     ('COORDINACION','Coordinador de Carrera de la USB.'),
     ('LABORATORIO','Jefe de la Unidad de Laboratorios de la USB.'),
@@ -131,7 +131,7 @@ ROLES = [
     ('TRANSCRIPTOR','Miembro de la USB con permiso de transcripción de Programas Académicos'),
     ('PROFESOR','Profesor de la USB.'),
     ('ESTUDIANTE','Estudiante de la USB.'),
-    ('BLOQUEADO','Usuario que ha sido bloqueado del sistema SIGPAE.'),
+    ('INACTIVO','Usuario que ha sido marcado como Inactivo en el sistema SIGPAE.'),
 ]
 
 for rol in ROLES:

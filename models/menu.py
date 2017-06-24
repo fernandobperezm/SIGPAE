@@ -18,6 +18,10 @@ opciones = [
     ((SPAN(_class='fa fa-sign-out'), '  Cerrar Sesión'), False, URL('default', 'logout'))
 ]
 
+opciones_inactivo = [
+    ((SPAN(_class='fa fa-sign-out'), '  Cerrar Sesión'), False, URL('default', 'logout'))
+]
+
 manejo_usuarios = [
     ((SPAN(_class='fa fa-user'), '  Gestionar Usuarios'), False, URL('users', 'manage')),
 ]
@@ -81,3 +85,11 @@ if auth.has_permission('create_transcription'):
 response.menu = [
     (T('Iniciar Sesión'), False , 'https://secure.dst.usb.ve/login?service=' + settings.returnurl, []),
 ]
+
+if auth.has_membership(auth.id_group(role="INACTIVO")):
+
+    menu_autenticado = [
+        (texto_principal, False, '#', opciones_inactivo)
+    ]
+
+    menu_opciones_rol = []

@@ -17,8 +17,8 @@ def index():
     return auth.wiki()
     """
 
-    if auth.has_membership(auth.id_group(role="BLOQUEADO")):
-        redirect(URL(c='default', f='banned'))
+    if auth.has_membership(auth.id_group(role="INACTIVO")):
+        redirect(URL(c='default', f='inactive'))
 
     response.flash = T("¡Bienvenido al SIGPAE!")
 
@@ -211,9 +211,9 @@ def not_authorized():
     return dict(message=message)
 
 @auth.requires_login()
-def banned():
+def inactive():
     """
-        Expose a custom page for not banned users.
+        Expose a custom page for inactive users.
     """
-    message = "Usuario Bloqueado"
+    message = "Usuario Inactivo"
     return dict(message=message)
