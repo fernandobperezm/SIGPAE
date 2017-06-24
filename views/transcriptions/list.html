@@ -6,7 +6,7 @@
 {{pass}}
 
 <div class="table-responsive">
- <table class="table table-striped">
+ <table id="list-transcriptions" class="table table-striped">
    <thead>
      <tr>
        <th>ID</th>
@@ -85,11 +85,44 @@
       $("#transcod").text(cod);
   });
 
-  // Pasamos los argumentos para editar el rol del usuario.
-  // $('#modalCambiarRol').on('show.bs.modal', function(e){
-  //     var old_rol = $(e.relatedTarget).data('old-rol');
-  //     $("#no_table_old_rol__row").hide();
-  //     $(e.currentTarget).find('select[name="new_rol"]').val(old_rol);
-  //     $(e.currentTarget).find('input[name="old_rol"]').val(old_rol);
-  // });
+  // initializing datatable
+  $(document).ready( function () {
+    var opciones = {
+          responsive: true,
+            "language": {
+                search:         "Buscar: ",
+                searchPlaceholder: "ID, Código, Fecha...",
+                lengthMenu:     "Mostrar _MENU_ entradas.",
+                info:           "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+                infoEmpty:      "",
+                infoFiltered:   "",
+                infoPostFix:    "",
+                loadingRecords: "Cargando datos...",
+                zeroRecords:    "No se encontraron Transcripciones que correspondan a la búsqueda.",
+                emptyTable:     "No hay información disponible.",
+                processing:     "Procesando...",
+                paginate: {
+                    first:      "Primero",
+                    previous:   "Anterior",
+                    next:       "Siguiente",
+                    last:       "Último"
+                },
+                aria: {
+                    sortAscending:  ": Se ordenan las columnas por orden creciente.",
+                    sortDescending: ": Se ordenan las columnas por orden decreciente."
+                }
+            },
+             "columns": [
+                null,
+                null,
+                null,
+                null,
+                { "orderable": false },
+                { "orderable": false },
+                { "orderable": false }
+            ]
+        };
+      $('#list-transcriptions').DataTable(opciones);
+  } );
+
 </script>
