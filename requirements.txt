@@ -5,3 +5,4 @@ tesseract-ocr
 tesseract-ocr-eng
 tesseract-ocr-spa
 pyocr
+wand
