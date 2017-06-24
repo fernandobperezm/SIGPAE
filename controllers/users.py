@@ -1,6 +1,6 @@
 
 # Decorador solo para acceder a la vista si se ha iniciado sesion
-@auth.requires(auth.is_logged_in() and auth.has_permission('update_profile', 'auth_user'))
+@auth.requires(auth.is_logged_in() and auth.has_permission('update_profile', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def profile():
     # aqui va la logica para ver/actualizar el perfil
 
@@ -25,7 +25,7 @@ def profile():
 
     return dict(message = mensaje, form = form)
 
-@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user'))
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def manage():
 
     message = "Gestión de Usuarios"
@@ -54,7 +54,7 @@ def manage():
     return dict(message=message, usuarios = lista_usuarios)
 
 
-@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user'))
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def edit():
     idusuario = request.args(0)
     message   = "Editar usuario"
@@ -119,7 +119,7 @@ def edit():
                 idusuario = idusuario)
 
 
-@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user'))
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def deleterole():
     idusuario = request.args(0)
     idrole    = request.args(1)

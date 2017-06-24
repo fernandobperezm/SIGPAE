@@ -7,7 +7,7 @@ from PIL import Image as Pi
 import pyocr
 import pyocr.builders
 
-@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription'))
+@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def add():
 
     mensaje = 'Nueva Transcripción'
@@ -36,7 +36,7 @@ def add():
 
     return dict(message = mensaje, form = form)
 
-@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription'))
+@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def edit():
 
     id =  request.vars['id']
@@ -85,7 +85,7 @@ def edit():
 
     return dict(text=text, pdfurl=pdfurl, code=code, id = id, form = form)
 
-@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription'))
+@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def list():
     message = "Transcripciones"
 
@@ -105,7 +105,6 @@ def list():
 
     return dict(message=message, transcripciones = lista_transcripciones)
 
-@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription'))
 def match_codigo_asig(text):
     expresion = '([A-Z]{2,3} *(-|\s|[^a-z|^A-Z|^0-9]|) *[0-9]{3,4})'
     patron = re.compile(expresion)
@@ -116,7 +115,6 @@ def match_codigo_asig(text):
     else:
         return None
 
-@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription'))
 def extract_text(path):
     os.system("pdftotext -layout " + path + " extraccion.txt")
     file = open("extraccion.txt", "r")
@@ -125,7 +123,6 @@ def extract_text(path):
     os.system("rm extraccion.txt")
     return text
 
-@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription'))
 def extract_text_from_image(path):
     tool = pyocr.get_available_tools()[0]
     lang = tool.get_available_languages()[2]
@@ -156,7 +153,7 @@ def extract_text_from_image(path):
 
     return trancription
 
-@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription'))
+@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def delete_transcription():
 
     transid = request.args(0)
