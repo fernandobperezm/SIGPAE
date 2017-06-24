@@ -6,7 +6,7 @@
 {{pass}}
 
 <div class="table-responsive">
- <table class="table table-striped">
+ <table id='manange-users-table' class="table table-striped">
    <thead>
      <tr>
        <th>USBID</th>
@@ -30,3 +30,43 @@
  </table>
  </div>
 </div>
+
+<script>
+  // initializing datatable
+  $(document).ready( function () {
+    var opciones = {
+          responsive: true,
+            "language": {
+                search:         "Buscar: ",
+                searchPlaceholder: "USBID, Nombre...",
+                lengthMenu:     "Mostrar _MENU_ entradas.",
+                info:           "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+                infoEmpty:      "",
+                infoFiltered:   "",
+                infoPostFix:    "",
+                loadingRecords: "Cargando datos...",
+                zeroRecords:    "No se encontraron Usuarios que correspondan a la búsqueda.",
+                emptyTable:     "No hay información disponible.",
+                processing:     "Procesando...",
+                paginate: {
+                    first:      "Primero",
+                    previous:   "Anterior",
+                    next:       "Siguiente",
+                    last:       "Último"
+                },
+                aria: {
+                    sortAscending:  ": Se ordenan las columnas por orden creciente.",
+                    sortDescending: ": Se ordenan las columnas por orden decreciente."
+                }
+            },
+             "columns": [
+                null,
+                null,
+                null,
+                null,
+                { "orderable": false }
+            ]
+        };
+      $('#manange-users-table').DataTable(opciones);
+  } );
+</script>
