@@ -225,3 +225,8 @@ tbody tr td {
 .blue {
   color: #3498db;
 }
+
+.bottom-right-buttom {
+  float: right;
+  margin: 20px 0;
+}

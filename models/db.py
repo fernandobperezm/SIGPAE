@@ -265,6 +265,7 @@ db.define_table('TRANSCRIPCION',
     Field('objetivos_generales', type="text"),
     Field('objetivos_especificos', type="text"),
     Field('fecha_modificacion', type="date", notnull = True, default = datetime.date.today()),
+    Field('transcriptor', type="string", notnull = True, default = auth.user.username),
     # encargado = models.CharField('Encargado', max_length=100, null=True)
     # pasa = models.BooleanField(default= False)
     # propuesto = models.BooleanField(default= False)

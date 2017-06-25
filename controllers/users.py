@@ -20,8 +20,6 @@ def profile():
         response.flash = 'Datos actualizados correctamente.'
     elif form.errors:
         response.flash = 'Existen errores en el formulario.'
-    else:
-        response.flash = 'Por favor llene el formulario.'
 
     return dict(message = mensaje, form = form)
 

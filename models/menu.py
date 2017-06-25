@@ -31,6 +31,10 @@ crear_transcripciones = [
     ((SPAN(_class='fa fa-files-o'), ' Ver Transcipciones'), False, URL('transcriptions', 'list')),
 ]
 
+manejar_transcripciones = [
+    ((SPAN(_class='fa fa-user'), '  Transcriptores'), False, URL('transcriptions', 'transcriptors')),
+]
+
 
 # Tomado de SPE. Adecuar en futuro de acuerdo a los roles y permisologia definida
 # opciones_estudiante = [
@@ -81,6 +85,11 @@ if auth.has_permission('manage_users', 'auth_user'):
 
 if auth.has_permission('create_transcription'):
     menu_opciones_rol.append(('Transcripciones', False, '#', crear_transcripciones))
+
+if auth.has_permission('manage_transcription'):
+    menu_opciones_rol.append(('Transcripciones', False, '#', manejar_transcripciones))
+
+
 
 response.menu = [
     (T('Iniciar Sesión'), False , 'https://secure.dst.usb.ve/login?service=' + settings.returnurl, []),

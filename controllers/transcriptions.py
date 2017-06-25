@@ -7,6 +7,55 @@ from PIL import Image as Pi
 import pyocr
 import pyocr.builders
 
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def transcriptors():
+    message = "Trancriptores"
+
+    group_id = auth.id_group(role="TRANSCRIPTOR")
+
+    all_users_in_group = db(db.auth_membership.group_id == group_id)._select(db.auth_membership.user_id)
+
+    transcriptors = db(db.auth_user.id.belongs(all_users_in_group)).select(db.auth_user.id,
+                                                                           db.auth_user.username,
+                                                                           db.auth_user.first_name,
+                                                                           db.auth_user.last_name,
+                                                                           db.auth_user.email)
+    lista_transcriptores = []
+    # Obtenemos los roles de cada usuario
+    for transcriptor in transcriptors:
+        lista_transcriptores.append({'id' : transcriptor.id,
+                                     'username': transcriptor.username,
+                                     'name' : transcriptor.first_name + ' ' + transcriptor.last_name,
+                                     'email': transcriptor.email})
+
+    # formulario para nuevos transcriptores
+    form = SQLFORM.factory(Field('correo', type="string",
+                                  requires = IS_MATCH(r'\b([a-zA-Z0-9-]+@usb\.ve)\b',
+                                  error_message = 'Correo no corresponde a un Correo Institucional.')),
+                           labels={'correo':'Correo'})
+
+    if form.process(formname="formulario_cambiar_rol").accepted:
+        email = form.vars.correo
+        usuario = db(db.auth_user.email == email).select().first()
+        auth.add_membership(group_id, usuario.id)
+        session.flash = 'Usuario agregado como Transcriptor.'
+        redirect(URL(c='transcriptions',f='transcriptors'))
+    elif form.errors:
+        response.flash = 'No se pudo agregar al usuario.'
+
+    return dict(message = message, transcriptores = lista_transcriptores, group_id = group_id, form=form)
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def deletetranscriptor():
+    idusuario = request.args(0)
+    idrole    = request.args(1)
+
+    auth.del_membership(idrole, idusuario)
+
+    session.flash = 'Usuario eliminado como Transcriptor.'
+    redirect(URL(c='transcriptions',f='transcriptors'))
+
+
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def add():
 
@@ -90,10 +139,10 @@ def list():
     message = "Transcripciones"
 
     # Obtenemos las transcripciones
-    transcripciones = db(db.TRANSCRIPCION).select(db.TRANSCRIPCION.id,
-                                                  db.TRANSCRIPCION.codigo,
-                                                  db.TRANSCRIPCION.fecha_elaboracion,
-                                                  db.TRANSCRIPCION.fecha_modificacion)
+    transcripciones = db(db.TRANSCRIPCION.transcriptor == auth.user.username).select(db.TRANSCRIPCION.id,
+                                                                                     db.TRANSCRIPCION.codigo,
+                                                                                     db.TRANSCRIPCION.fecha_elaboracion,
+                                                                                     db.TRANSCRIPCION.fecha_modificacion)
 
     lista_transcripciones = []
     # Obtenemos los roles de cada usuario
@@ -157,6 +206,8 @@ def extract_text_from_image(path):
 def delete_transcription():
 
     transid = request.args(0)
+    transcripcion = db(db.TRANSCRIPCION.id == transid).select().first()
+    os.remove(os.path.join(request.folder,'static/transcriptions/originalpdf',transcripcion.original_pdf))
     db(db.TRANSCRIPCION.id == transid).delete()
 
     session.flash = "Transcripción eliminada exitosamente."

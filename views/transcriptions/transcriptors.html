@@ -1,0 +1,136 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+{{if 'message' in globals():}}
+<h2> {{=message}}</h2>
+{{pass}}
+
+<div class="table-responsive">
+ <table id='manange-users-table' class="table table-striped">
+   <thead>
+     <tr>
+       <th>USBID</th>
+       <th>Nombre</th>
+       <th>Email</th>
+       <th>Eliminar</th>
+     </tr>
+   </thead>
+   <tbody>
+     {{for transcriptor in transcriptores:}}
+       <tr>
+         <td>{{=transcriptor['username']}}</td>
+         <td>{{=transcriptor['name']}}</td>
+         <td>{{=transcriptor['email']}}</td>
+         <td>
+           <a data-toggle="modal"
+              data-target="#modalEliminar"
+              data-link-eliminar = "{{=URL(c='transcriptions',f='deletetranscriptor',args=[transcriptor['id'], group_id])}}">
+              <i class="fa fa-times red" aria-hidden="true"></i>
+           </a>
+          </td>
+       </tr>
+      {{pass}}
+   </tbody>
+ </table>
+</div>
+
+<a data-toggle="modal"
+   data-target="#modalAgregar">
+  <button type="button" class="btn btn-primary bottom-right-buttom">
+    <i class="fa fa-plus" aria-hidden="true"></i> Agregar Transcriptor
+  </button>
+</a>
+
+<!-- Modal Eliminar-->
+<div class="container">
+  <div class="modal fade" id="modalEliminar" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <center> <h4 class="modal-title">Eliminar Transcriptor</h4> </center>
+        </div>
+        <div class="modal-body">
+            <center> <p>¿Está seguro que quiere eliminar el rol de TRANSCRIPTOR para este usuario?</p>
+                     <p>Las transcripciones incompletas de usuario se elminarán.</p>
+            </center>
+            <br>
+            <center>
+                <a id="botoneliminar" style="text-decoration: none;">
+                  <button type="button" class="btn btn-danger">Eliminar</button>
+                </a>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"> Cerrar </button>
+            </center>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Modal Agregar-->
+<div class="container">
+  <div class="modal fade" id="modalAgregar" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <center> <h4 class="modal-title">Agregar Transcriptor</h4> </center>
+        </div>
+        <div class="modal-body">
+            <center> <p>Escriba el correo institucional del usuario que desea agregar como Transcriptor.</p>
+                     {{=form}}
+            </center>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+
+  // Pasamos los argumentos para eliminar el rol del usuario.
+  $('#modalEliminar').on('show.bs.modal', function(e){
+
+      var linkEliminar = $(e.relatedTarget).data('link-eliminar');
+      $("#botoneliminar").attr("href", linkEliminar);
+
+  });
+
+  // initializing datatable
+  $(document).ready( function () {
+    var opciones = {
+          responsive: true,
+            "language": {
+                search:         "Buscar: ",
+                searchPlaceholder: "USBID, Nombre...",
+                lengthMenu:     "Mostrar _MENU_ entradas.",
+                info:           "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+                infoEmpty:      "",
+                infoFiltered:   "",
+                infoPostFix:    "",
+                loadingRecords: "Cargando datos...",
+                zeroRecords:    "No se encontraron Transcriptores que correspondan a la búsqueda.",
+                emptyTable:     "No hay información disponible.",
+                processing:     "Procesando...",
+                paginate: {
+                    first:      "Primero",
+                    previous:   "Anterior",
+                    next:       "Siguiente",
+                    last:       "Último"
+                },
+                aria: {
+                    sortAscending:  ": Se ordenan las columnas por orden creciente.",
+                    sortDescending: ": Se ordenan las columnas por orden decreciente."
+                }
+            },
+             "columns": [
+                null,
+                null,
+                null,
+                { "orderable": false }
+            ]
+        };
+      $('#manange-users-table').DataTable(opciones);
+  } );
+</script>
