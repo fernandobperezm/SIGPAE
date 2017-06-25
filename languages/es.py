@@ -62,6 +62,7 @@
 'cache': 'caché',
 'Cache Keys': 'Llaves de la Caché',
 'cache, errors and sessions cleaned': 'caché, errores y sesiones eliminados',
+'cancel': 'cancel',
 'Cannot be empty': 'No puede estar vacío',
 'Cannot compile: there are errors in your app.        Debug it, correct errors and try again.': 'No se puede compilar: hay errores en su aplicación. Depure, corrija errores y vuelva a intentarlo.',
 'cannot create file': 'no es posible crear archivo',

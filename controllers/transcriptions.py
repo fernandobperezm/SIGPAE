@@ -125,6 +125,8 @@ def edit():
                    submit_button=T('save')
                    )
 
+    form.append(INPUT(_type='button', _value='Cancel', _onclick='window.location=\'%s\';;return false' % URL(c='transcriptions', f='list')))
+
     if form.accepts(request, session, hideerror=True, formname = "transcription_form"):
         form.process()
         redirect(URL('list'))

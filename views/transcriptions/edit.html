@@ -185,8 +185,22 @@
 
 <div class="row">
   <div class="transcription-buttons">
-    <button class="btn btn-danger">Cancelar</button>
     {{=form.custom.submit}}
     {{=form.custom.end}}
+    <a href="{{=URL(c='transcriptions', f='list')}}">
+      <button class="btn btn-danger">Cancelar</button>
+    </a>
   </div>
 </div>
+
+<script>
+  document.querySelector('.btn-primary').addEventListener("click", function(){
+      window.btn_clicked = true;      //set btn_clicked to true
+  });
+
+  window.onbeforeunload = function(){
+      if(!window.btn_clicked){
+          return 'Los cambios realizados podrían no guardarse.';
+      }
+  };
+</script>
