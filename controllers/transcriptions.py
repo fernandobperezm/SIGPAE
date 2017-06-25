@@ -122,7 +122,7 @@ def edit():
                              'sinopticos','ftes_info_recomendadas','requisitos',
                              'estrategias_met','estrategias_eval','justificacion',
                              'observaciones','objetivos_generales','objetivos_especificos'],
-                   submit_button=T('save')
+                   submit_button=T('Guardar')
                    )
 
     form.append(INPUT(_type='button', _value='Cancel', _onclick='window.location=\'%s\';;return false' % URL(c='transcriptions', f='list')))

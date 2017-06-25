@@ -9,17 +9,18 @@
       </p>
     </iframe>
   </div>
-  <div class="col-md-7">
+  <div class="col-md-7 column-data">
     <div class="transcription-tag">
       <b>Texto Extraido</b>
+      <i id="eye" class="fa fa-eye" aria-hidden="true" data-toggle="collapse" data-target="#colapse-text"></i>
     </div>
-    <div class="text-extract h-scroll">
+    <div id="colapse-text" class="text-extract h-scroll collapse in">
       {{= text}}
     </div>
     <div class="transcription-tag">
       <b>Campos</b>
     </div>
-    <div class="text-extract h-scroll">
+    <div id="colapse-campos" class="text-extract h-scroll">
       {{=form.custom.begin}}
 
       <div class="field-tag">
@@ -203,4 +204,21 @@
           return 'Los cambios realizados podrían no guardarse.';
       }
   };
+
+  // Colapsar el area de texto extraido
+  $("#eye").click(function(){
+    if($( "#colapse-campos" ).hasClass( "campos-large")){
+      $( "#colapse-campos" ).removeClass("campos-large");
+    } else {
+      $( "#colapse-campos" ).addClass("campos-large");
+    }
+    if($( "#eye" ).hasClass( "fa-eye")){
+      $( "#eye" ).removeClass("fa-eye");
+      $( "#eye" ).addClass("fa-eye-slash");
+    } else {
+      $( "#eye" ).removeClass("fa-eye-slash");
+      $( "#eye" ).addClass("fa-eye");
+    }
+  });
+
 </script>

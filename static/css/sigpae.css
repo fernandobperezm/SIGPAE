@@ -152,17 +152,25 @@ tbody tr td {
     width: 100%;
 }
 
+.column-data {
+  max-height: 80vh;
+}
+
 .h-scroll {
-  height: 35vh;
+  max-height: 35vh;
   position: static;
   overflow-y: scroll;
   overflow-x: hidden;
   margin-bottom: 1vh;
 }
 
+.campos-large {
+  max-height: 70vh;
+}
+
 .pdf-display {
   width: 100%;
-  height: 80vh;
+  height: 85vh;
 }
 
 .transcription-tag {

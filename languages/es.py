@@ -187,6 +187,7 @@
 'Group ID': 'ID de Grupo',
 'Group uniquely assigned to user %(id)s': 'Grupo asignado únicamente al usuario %(id)s',
 'Groups': 'Grupos',
+'Guardar': 'Guardar',
 'Hello World': 'Hola Mundo',
 'help': 'ayuda',
 'Helping web2py': 'Helping web2py',
