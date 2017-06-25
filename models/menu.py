@@ -23,6 +23,10 @@ opciones_inactivo = [
     ((SPAN(_class='fa fa-sign-out'), '  Cerrar Sesión'), False, URL('default', 'logout'))
 ]
 
+manejo_administrador = [
+    ((SPAN(_class='fa fa-archive'), '  Registro del Eventos'), False, URL('administration', 'log')),
+]
+
 manejo_usuarios = [
     ((SPAN(_class='fa fa-user'), '  Gestionar Usuarios'), False, URL('users', 'manage')),
 ]
@@ -36,6 +40,9 @@ manejar_transcripciones = [
     ((SPAN(_class='fa fa-user'), '  Transcriptores'), False, URL('transcriptions', 'transcriptors')),
 ]
 
+consultar_programas = [
+    ((SPAN(_class='fa fa-file-powerpoint-o'), '  Listar Programas'), False, URL('programs', 'list')),
+]
 
 # Tomado de SPE. Adecuar en futuro de acuerdo a los roles y permisologia definida
 # opciones_estudiante = [
@@ -82,7 +89,13 @@ menu_autenticado = [
 menu_opciones_rol = []
 
 if auth.has_permission('manage_users', 'auth_user'):
+    menu_opciones_rol.append(('Administración', False, '#', manejo_administrador ))
     menu_opciones_rol.append(('Usuarios', False, '#', manejo_usuarios ))
+
+
+# agrega consulta de programas para todos los usuarios
+if not(auth.has_membership(auth.id_group(role="INACTIVO"))):
+    menu_opciones_rol.append(('Programas', False, '#', consultar_programas))
 
 if auth.has_permission('create_transcription'):
     menu_opciones_rol.append(('Transcripciones', False, '#', crear_transcripciones))

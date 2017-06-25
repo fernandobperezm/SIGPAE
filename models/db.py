@@ -154,8 +154,6 @@ auth.add_permission(auth.id_group(role="ESTUDIANTE"),      'update_profile', 'au
 
 # Manejar Usuario
 auth.add_permission(auth.id_group(role="DACE-ADMINISTRADOR"), 'manage_users', 'auth_user')
-auth.add_permission(auth.id_group(role="DACE-OPERADOR"),      'manage_users', 'auth_user')
-
 # Manejar Transcriptores
 auth.add_permission(auth.id_group(role="DEPARTAMENTO"), 'manage_transcriptors', 'auth_user')
 auth.add_permission(auth.id_group(role="COORDINACION"), 'manage_transcriptors', 'auth_user')

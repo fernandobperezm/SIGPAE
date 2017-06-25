@@ -1,0 +1,9 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+
+{{if 'message' in globals():}}
+  <h2>{{=message}}</h2>
+{{pass}}
+
+<h2> Listar los Programas por Departamento....</h2>

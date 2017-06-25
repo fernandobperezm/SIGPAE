@@ -7,18 +7,22 @@
 {{pass}}
 
 
-<div class="panel panel-info" style="max-width: 30%">
-  <div class="panel-heading">Contenido</div>
-  <div class="panel-body">
-    <p><a href="#RyP">Roles y Permisología</a></p>
-    <ul class="help-list">
-      <li> <a href="#RyP1">Roles Disponibles</a> </li>
-      <li> <a href="#RyP2">Permisos</a> </li>
-      <li> <a href="#RyP3">Vínculo entre Roles y Permisos</a> </li>
-    </ul>
+<div class='row'>
+  <div class='col-md-5 col-sm-12'>
+    <div class="panel panel-info help-content">
+      <div class="panel-heading">Contenido</div>
+      <div class="panel-body">
+        <p><a href="#RyP">Roles y Permisología</a></p>
+        <ul class="help-list">
+          <li> <a href="#RyP1">Roles Disponibles</a> </li>
+          <li> <a href="#RyP2">Permisos</a> </li>
+          <li> <a href="#RyP3">Vínculo entre Roles y Permisos</a> </li>
+          <li> <a href="#RyP4">Roles y Usuarios</a> </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>
-
 
 <div id="RyP" class="page-header">
   <h1>Roles y Permisología</h1>
@@ -245,3 +249,16 @@
         </tr>
         </tbody>
       </table>
+
+      <h2 id="RyP4"> Roles y Usuarios </h2>
+
+      <p> Se pueden asignar Roles a Usuarios desde el menú <b>Usuarios -> Gestionar Usuarios.</b>
+          Un usuario puede tener varios roles asignados a la vez. Siempre el rol <b>INACTIVO</b> bloqueará la permisología del
+          resto de los roles.
+      </p>
+      <div class='block-info' >
+        <p>
+            Un Usuario con varios Roles contará con los privilegios de todos ellos. Por ejemplo, un <b>PROFESOR</b> con rol de
+            <b>TRANSCRIPTOR</b> puede llenar nuevos Programas y a la vez transcribir Programas históricos.
+        </p>
+      </div>
