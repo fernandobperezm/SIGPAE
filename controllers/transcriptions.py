@@ -80,7 +80,7 @@ def add():
                         'extract_type': 'Si desea detectar automáticamente el Código y  Departamento seleccione "Código y Departamento", sino seleccione "Solo Texto".' })
 
     if form.process().accepted:
-        id = db.TRANSCRIPCION.insert(original_pdf = form.vars.file)['id']
+        id = db.TRANSCRIPCION.insert(original_pdf = form.vars.file, transcriptor = auth.user.username)['id']
         redirect(URL('edit', vars = dict(id = id, file = form.vars.file, file_type = form.vars.file_type, extract_type = form.vars.extract_type)))
 
     return dict(message = mensaje, form = form)

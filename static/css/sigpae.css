@@ -230,3 +230,7 @@ tbody tr td {
   float: right;
   margin: 20px 0;
 }
+
+.help-list > li {
+  list-style-type: none;
+}

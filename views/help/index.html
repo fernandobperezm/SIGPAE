@@ -1,0 +1,247 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+
+{{if 'message' in globals():}}
+  <h2> {{=message}}</h2>
+{{pass}}
+
+
+<div class="panel panel-info" style="max-width: 30%">
+  <div class="panel-heading">Contenido</div>
+  <div class="panel-body">
+    <p><a href="#RyP">Roles y Permisología</a></p>
+    <ul class="help-list">
+      <li> <a href="#RyP1">Roles Disponibles</a> </li>
+      <li> <a href="#RyP2">Permisos</a> </li>
+      <li> <a href="#RyP3">Vínculo entre Roles y Permisos</a> </li>
+    </ul>
+  </div>
+</div>
+
+
+<div id="RyP" class="page-header">
+  <h1>Roles y Permisología</h1>
+</div>
+
+  <h2 id="RyP1" >Roles Disponibles</h2>
+
+    <ul>
+      <p> <b>DACE-ADMINISTRADOR:</b> Miembro de DACE que tiene permisos de administrador del sistema.</p>
+      <p> <b>DACE-OPERADOR:</b> Miembro de DACE.</p>
+      <p> <b>DECANATO:</b> Decanato de la USB.</p>
+      <p> <b>DEPARTAMENTO:</b> Jefe de Departamento de la USB.</p>
+      <p> <b>COORDINACION:</b> Coordinador de Carrera de la USB.</p>
+      <p> <b>LABORATORIO:</b> Jefe de la Unidad de Laboratorios de la USB.</p>
+      <p> <b>BIBLIOTECA:</b> Director de la Biblioteca de la USB.</p>
+      <p> <b>TRANSCRIPTOR:</b> Miembro de la USB con permiso de transcripción de Programas Académicos.</p>
+      <p> <b>PROFESOR:</b> Profesor de la USB.</p>
+      <p> <b>ESTUDIANTE:</b> Estudiante de la USB.</p>
+      <p> <b>INACTIVO:</b> Usuario que ha sido marcado como Inactivo en el sistema SIGPAE.</p>
+    </ul>
+
+    <h2 id="RyP2"> Permisos</h2>
+
+      <ul>
+        <p> <b>manage_users (MU):</b> Modificación de datos personales y roles de los usuarios. </p>
+        <p> <b>manage_ap (MP):</b> Rechazo o aprobación de un nuevos Programas Analíticos de Estudio.</p>
+        <p> <b>manage_transcriptors (MT1): </b> Gestionar a los Transcriptores de programas, gestión del rol de TRANSCRIPTOR.</p>
+        <p> <b>manage_transcription (MT2): </b> Aceptar o rechazar una Transcripción realizada.</p>
+        <p> <b>create_transcription (CT): </b> Comenzar, editar y eliminar Transcripciones de Programas.</p>
+        <p> <b>request_ap (RP):</b> Solicitar creación, modificación o desincorporación de un Programa. </p>
+        <p> <b>manage_ap_request (MPR):</b> Rechazo o validación de solicitudes relacionadas a Programas.</p>
+        <p> <b>assign_profesor (AP):</b> Asignación de Programas a un PROFESOR.</p>
+        <p> <b>manage_assignment (MA):</b> Aceptar o rechazar la asignación de un Programa.</p>
+        <p> <b>fill_ap (FP):</b> Llenar o modificar un Programa.</p>
+        <p> <b>consult_references (CR):</b> Consulta de las Referencias en los Programas.</p>
+        <p> <b>consult_ap (CP):</b> Consulta de los Programas de Asignaturas Aprobados.</p>
+      </ul>
+
+      <h2 id="RyP3"> Vínculo entre Roles y Permisos </h2>
+
+      <table class="table table-responsive table-bordered">
+        <thead>
+          <tr class="bg-primary">
+            <th>Rol</th>
+            <th>MU</th>
+            <th>MP</th>
+            <th>MT1</th>
+            <th>MT2</th>
+            <th>CT</th>
+            <th>RP</th>
+            <th>MPR</th>
+            <th>AP</th>
+            <th>MA</th>
+            <th>FP</th>
+            <th>CR</th>
+            <th>CP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope='row'>DACE-ADMINISTRADOR</th>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope='row'>DACE-OPERADOR</th>
+            <td></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope='row'>DECANATO</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope='row'>DEPARTAMENTO</th>
+            <td></td>
+            <td></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope='row'>COORDINACION</th>
+            <td></td>
+            <td></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        <tr>
+          <th scope='row'>LABORATORIO</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+          <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope='row'>BIBLIOTECA</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope='row'>PROFESOR</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+          <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope='row'>TRANSCRIPTOR</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope='row'>ESTUDIANTE</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="bg-success"><i class="fa fa-check green" aria-hidden="true"></i></td>
+        </tr>
+        <tr>
+          <th scope='row'>INACTIVO</th>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        </tbody>
+      </table>

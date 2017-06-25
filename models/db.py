@@ -180,8 +180,7 @@ auth.add_permission(auth.id_group(role="PROFESOR"), 'fill_ap')
 auth.add_permission(auth.id_group(role="DEPARTAMENTO"), 'assign_profesor')
 
 # Aceptar y Rechazar Asignacion de Programa Academico
-auth.add_permission(auth.id_group(role="PROFESOR"), 'accept_assignment')
-auth.add_permission(auth.id_group(role="PROFESOR"), 'reject_assignment')
+auth.add_permission(auth.id_group(role="PROFESOR"), 'manage_assignment')
 
 # Aceptar y Rechazar Solicitud Programa Academico
 auth.add_permission(auth.id_group(role="DACE-ADMINISTRADOR"), 'manage_ap_request')
@@ -265,7 +264,7 @@ db.define_table('TRANSCRIPCION',
     Field('objetivos_generales', type="text"),
     Field('objetivos_especificos', type="text"),
     Field('fecha_modificacion', type="date", notnull = True, default = datetime.date.today()),
-    Field('transcriptor', type="string", notnull = True, default = auth.user.username),
+    Field('transcriptor', type="string", notnull = True),
     # encargado = models.CharField('Encargado', max_length=100, null=True)
     # pasa = models.BooleanField(default= False)
     # propuesto = models.BooleanField(default= False)

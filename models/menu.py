@@ -15,6 +15,7 @@ else:
 
 opciones = [
     ((SPAN(_class='fa fa-user'), '  Ver Perfil'), False, URL('users', 'profile')),
+    ((SPAN(_class='fa fa-question-circle'), '  Ayuda'), False, URL('help', 'index')),
     ((SPAN(_class='fa fa-sign-out'), '  Cerrar Sesión'), False, URL('default', 'logout'))
 ]
 
@@ -28,7 +29,7 @@ manejo_usuarios = [
 
 crear_transcripciones = [
     ((SPAN(_class='fa fa-file-text-o'), ' Nueva Transcipción'), False, URL('transcriptions', 'add')),
-    ((SPAN(_class='fa fa-files-o'), ' Ver Transcipciones'), False, URL('transcriptions', 'list')),
+    ((SPAN(_class='fa fa-files-o'), '  Ver Transcipciones'), False, URL('transcriptions', 'list')),
 ]
 
 manejar_transcripciones = [

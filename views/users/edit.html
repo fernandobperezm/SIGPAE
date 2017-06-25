@@ -26,7 +26,8 @@
            <tr>
              <td>{{=role['role']}}</td>
              <td>
-               <a data-toggle="modal"
+               <a id = "botonCambiarRol"
+                  data-toggle="modal"
                   data-target="#modalCambiarRol"
                   data-old-rol="{{=role['id']}}">
                   <i class="fa fa-pencil-square-o blue" aria-hidden="true"></i>
@@ -57,7 +58,7 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <center><h4 class="modal-title"> Cambiar Rol</h4><center>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" data-error-cambiar="{{=error_cambiar}}">
           <p>{{ = formulario_cambiar_rol }}</p>
       </div>
     </div>
@@ -107,4 +108,5 @@
       $(e.currentTarget).find('select[name="new_rol"]').val(old_rol);
       $(e.currentTarget).find('input[name="old_rol"]').val(old_rol);
   });
+
 </script>
