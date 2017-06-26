@@ -1,6 +1,8 @@
 {{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
 {{extend 'layout_transcripcion.html'}}
 
+<link rel="stylesheet" type="text/css" href="{{=URL('static','datepicker/css/bootstrap-datepicker.standalone.min.css')}}">
+
 <div class="row">
   <div class="col-md-5">
     <iframe src="{{=pdfurl}}" class="pdf-display">
@@ -194,6 +196,10 @@
   </div>
 </div>
 
+
+<script type="text/javascript" charset="utf8" src="{{=URL('static','datepicker/js/bootstrap-datepicker.min.js')}}"></script>
+<script type="text/javascript" charset="utf8" src="{{=URL('static','datepicker/js/bootstrap-datepicker.es.min.js')}}"></script>
+
 <script>
   document.querySelector('.btn-primary').addEventListener("click", function(){
       window.btn_clicked = true;      //set btn_clicked to true
@@ -218,6 +224,120 @@
     } else {
       $( "#eye" ).removeClass("fa-eye-slash");
       $( "#eye" ).addClass("fa-eye");
+    }
+  });
+</script>
+
+<script type="text/javascript">
+
+  var min_date = new Date("1967/1/1");
+  var max_date = new Date();
+
+  var hay_errores = false;
+
+  $('#TRANSCRIPCION_anio').datepicker({
+    minViewMode: 2,
+    maxViewMode: 2,
+    format: 'yyyy',
+    autoclose: true,
+    language: 'es',
+    startDate: min_date,
+    endDate: max_date
+  });
+
+  $('#TRANSCRIPCION_fecha_elaboracion').removeClass("date");
+  $('#TRANSCRIPCION_fecha_elaboracion').datepicker({
+    minViewMode: 0,
+    maxViewMode: 2,
+    format: 'dd/mm/yyyy',
+    autoclose: true,
+    language: 'es',
+    startDate: min_date,
+    endDate: max_date
+  });
+
+  $('#TRANSCRIPCION_fecha_elaboracion').change(function(){
+    var fecha = new Date($(this).val());
+    $("#TRANSCRIPCION_periodo").css('background-color','rgb(255, 255, 255)');
+    $("#TRANSCRIPCION_anio").css('background-color','rgb(255, 255, 255)');
+    $(this).css('background-color','rgb(255, 255, 255)');
+
+    if (fecha.getMonth() == '0'){
+        $('#TRANSCRIPCION_periodo').val('ENE-MAR');
+        $('#TRANSCRIPCION_anio').val(fecha.getFullYear());
+
+    }
+    else if (fecha.getMonth() == '1' || fecha.getMonth() == '2' || (fecha.getMonth() == '3' && fecha.getDate() <= 15) ){
+        $('#TRANSCRIPCION_periodo').val('ABR-JUL');
+        $('#TRANSCRIPCION_anio').val(fecha.getFullYear());
+    }
+    else if(( fecha.getMonth() >=4 && fecha.getMonth()<=8) || fecha.getMonth() == '3' && fecha.getDate() > 15){
+        $('#TRANSCRIPCION_periodo').val('SEP-DIC');
+        $('#TRANSCRIPCION_anio').val(fecha.getFullYear());
+    }
+    else{
+        $('#TRANSCRIPCION_periodo').val('ENE-MAR');
+        $('#TRANSCRIPCION_anio').val(fecha.getFullYear()+1);
+    }
+  });
+
+  var horas_teoria  =  -1;
+  var horas_practica  =  -1;
+  var horas_laboratorio  =  -1;
+  var total_horas = 0;
+  $('#TRANSCRIPCION_horas_teoria').change(function() {
+    var value = $('#TRANSCRIPCION_horas_teoria').val();
+    if (value != ''){
+      horas_teoria = parseInt(value);
+    } else {
+      horas_teoria = 0;
+    }
+    total_horas = horas_teoria + horas_practica + horas_laboratorio;
+    if (total_horas > 40){
+      alert("El número total de horas no puede ser superior a 40.");
+      var hay_errores = false;
+    }
+    if ((horas_teoria == 0) & (horas_practica == 0) & (horas_laboratorio == 0)) {
+      alert("El número total de horas debe ser mayor a 0.");
+      var hay_errores = false;
+    }
+  });
+
+  $('#TRANSCRIPCION_horas_practica').change(function() {
+    var value = $('#TRANSCRIPCION_horas_practica').val();
+    if (value != ''){
+      horas_practica = parseInt(value);
+    } else {
+      horas_practica = 0;
+    }
+    total_horas = horas_teoria + horas_practica + horas_laboratorio;
+
+    if (total_horas > 40){
+      alert("El número total de horas no puede ser superior a 40.");
+      var hay_errores = false;
+    }
+    if ((horas_teoria == 0) & (horas_practica == 0) & (horas_laboratorio == 0)) {
+      alert("El número total de horas debe ser mayor a 0.");
+      var hay_errores = false;
+    }
+  });
+
+  $('#TRANSCRIPCION_horas_laboratorio').change(function() {
+    var value = $('#TRANSCRIPCION_horas_laboratorio').val();
+    if (value != ''){
+      horas_laboratorio = parseInt(value);
+    } else {
+      horas_laboratorio = 0;
+    }
+    total_horas = horas_teoria + horas_practica + horas_laboratorio;
+
+    if (total_horas > 40){
+      alert("El número total de horas no puede ser superior a 40.");
+      var hay_errores = false;
+    }
+    if ((horas_teoria == 0) & (horas_practica == 0) & (horas_laboratorio == 0)) {
+      alert("El número total de horas debe ser mayor a 0.");
+      var hay_errores = false;
     }
   });
 

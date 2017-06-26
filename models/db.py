@@ -206,13 +206,11 @@ auth.add_membership(auth.id_group(role="DACE-ADMINISTRADOR"), 1)
 SEP_DIC = 'SEP-DIC'
 ENE_MAR = 'ENE-MAR'
 ABR_JUL = 'ABR-JUL'
-VERANO  = 'INTENSIVO'
 
 PERIODOS = (
     (SEP_DIC, SEP_DIC),
     (ENE_MAR, ENE_MAR),
-    (ABR_JUL, ABR_JUL),
-    (VERANO, VERANO),
+    (ABR_JUL, ABR_JUL)
 )
 
 # Definición del dominio de las horas de dedicación al curso del programa
@@ -240,7 +238,7 @@ db.define_table('TRANSCRIPCION',
     Field('codigo',type='string', length = 8, requires = IS_MATCH('([A-Z]{2,2}[0-9]{4,4})|([A-Z]{3,3}[0-9]{3,3})',
                                                                  error_message = 'Codigo de asignatura no válido.')),
     Field('denominacion', type = 'string',length = 100),
-    Field('fecha_elaboracion', type = 'date', requires = IS_DATE_IN_RANGE(format=T('%Y-%m-%d'),
+    Field('fecha_elaboracion', type = 'date', requires = IS_DATE_IN_RANGE(format=T('%d/%m/%Y'),
                                                                           minimum=datetime.date(1967,1,1),
                                                                           maximum=datetime.date.today(),
                                                                           error_message='Debe seleccionar una fecha en formato DD/MM/AAAA no mayor a la fecha actual.')),
