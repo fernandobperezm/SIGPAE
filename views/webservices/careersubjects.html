@@ -14,18 +14,20 @@
      <thead>
        <tr>
          <th>Nombre</th>
-         <th>Siglas</th>
          <th>Código</th>
-         <th>Email</th>
+         <th>Tipo </th>
        </tr>
      </thead>
      <tbody>
-       {{for dep in departments:}}
+       {{for sub in subjects:}}
          <tr>
-           <td><a href="{{=URL(c='webservices', f='departmentsubjects', args = [dep['siglas_depto']])}}">{{=dep['nombre']}}</a></td>
-           <td>{{=dep['siglas_depto']}}</td>
-           <td>{{=dep['cod_depto']}}</td>
-           <td>{{=dep['email']}}</td>
+           <td><a href="{{=URL(c='webservices', f='subjectdetail', args = [sub['cod_asignatura']])}}">{{=sub['nombre']}}</a></td>
+           <td>{{=sub['cod_asignatura']}}</td>
+           {{if sub['tipo'] == 'O' :}}
+              <td>Obligatoria</td>
+           {{else:}}
+              <td>Electiva</td>
+           {{pass}}
          </tr>
         {{pass}}
      </tbody>
@@ -47,7 +49,7 @@
                   infoFiltered:   "",
                   infoPostFix:    "",
                   loadingRecords: "Cargando datos...",
-                  zeroRecords:    "No se encontraron Departamentos que correspondan a la búsqueda.",
+                  zeroRecords:    "No se encontraron Asignaturas que correspondan a la búsqueda.",
                   emptyTable:     "No hay información disponible.",
                   processing:     "Procesando...",
                   paginate: {
@@ -62,7 +64,6 @@
                   }
               },
                "columns": [
-                  null,
                   null,
                   null,
                   null

@@ -103,3 +103,37 @@ def studentdetail():
         return dict(message=message, error = e.reason, student_data = [], aproved_subjects = [])
 
     return dict(message=message, student_data = student_data, aproved_subjects = aproved_subjects)
+
+@auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def departmentsubjects():
+    cod =  request.args(0)
+    if not isinstance(cod, str):
+        redirect(URL(c='default', f='not_authorized'))
+
+    message =  "Asignaturas del Departamento %s"%(cod)
+
+    try:
+        page = urllib2.urlopen('http://127.0.0.1:8080/webservices/asignaturas?siglas_depto=%s'%(cod)).read()
+        subjects = json.loads(page)
+    except urllib2.URLError as e:
+        response.flash = 'Error de conexión con el Web Service.'
+        return dict(message=message, error = e.reason, subjects = [])
+
+    return dict(message=message, subjects = subjects)
+
+@auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def careersubjects():
+    cod =  request.args(0)
+    if not isinstance(cod, str):
+        redirect(URL(c='default', f='not_authorized'))
+
+    message =  "Asignaturas de la Carrera %s"%(cod)
+
+    try:
+        page = urllib2.urlopen('http://127.0.0.1:8080/webservices/asignaturas?cod_carrera=%s'%(cod)).read()
+        subjects = json.loads(page)
+    except urllib2.URLError as e:
+        response.flash = 'Error de conexión con el Web Service.'
+        return dict(message=message, error = e.reason, subjects = [])
+
+    return dict(message=message, subjects = subjects)

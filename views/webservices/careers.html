@@ -21,7 +21,7 @@
      <tbody>
        {{for car in careers:}}
          <tr>
-           <td>{{=car['nombre']}}</a></td>
+           <td><a href="{{=URL(c='webservices', f='careersubjects', args = [car['cod_carrera']])}}">{{=car['nombre']}}</a></td>
            <td>{{=car['cod_carrera']}}</td>
            {{if car['tipo'] == 'L': }}
               <td>Larga</td>
