@@ -1,0 +1,68 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+{{if 'message' in globals():}}
+  <h2> {{=message}}</h2>
+{{pass}}
+
+{{if 'error' in globals():}}
+  <p>No se pudo conectar con el Web Service. </p>
+  <h3>Error: {{=error}}</h3>
+{{else:}}
+  <div class="table-responsive">
+   <table id="list-transcriptions" class="table table-striped">
+     <thead>
+       <tr>
+         <th>Nombre</th>
+         <th>Código</th>
+       </tr>
+     </thead>
+     <tbody>
+       {{for sub in subjects:}}
+         <tr>
+           <td><a href="{{=URL(c='webservices', f='subjectdetail', args = [sub['cod_asignatura']])}}">{{=sub['nombre']}}</a></td>
+           <td>{{=sub['cod_asignatura']}}</td>
+         </tr>
+        {{pass}}
+     </tbody>
+   </table>
+   </div>
+  </div>
+
+  <script type="text/javascript">
+    // initializing datatable
+    $(document).ready( function () {
+      var opciones = {
+            responsive: true,
+              "language": {
+                  search:         "Buscar: ",
+                  searchPlaceholder: "ID, Código, Fecha...",
+                  lengthMenu:     "Mostrar _MENU_ entradas.",
+                  info:           "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+                  infoEmpty:      "",
+                  infoFiltered:   "",
+                  infoPostFix:    "",
+                  loadingRecords: "Cargando datos...",
+                  zeroRecords:    "No se encontraron Asignaturas que correspondan a la búsqueda.",
+                  emptyTable:     "No hay información disponible.",
+                  processing:     "Procesando...",
+                  paginate: {
+                      first:      "Primero",
+                      previous:   "Anterior",
+                      next:       "Siguiente",
+                      last:       "Último"
+                  },
+                  aria: {
+                      sortAscending:  ": Se ordenan las columnas por orden creciente.",
+                      sortDescending: ": Se ordenan las columnas por orden decreciente."
+                  }
+              },
+               "columns": [
+                  null,
+                  null
+              ]
+          };
+        $('#list-transcriptions').DataTable(opciones);
+    } );
+  </script>
+{{pass}}

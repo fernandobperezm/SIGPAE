@@ -1,0 +1,24 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+{{if 'message' in globals():}}
+  <h2> {{=message}}</h2>
+{{pass}}
+
+{{if 'error' in globals():}}
+  <p>No se pudo conectar con el Web Service. </p>
+  <h3>Error: {{=error}}</h3>
+{{else:}}
+  {{if subject == []:}}
+    <h2> Asignatura no encontrada. </h2>
+  {{else:}}
+    <p><b>Nombre:</b> {{=subject['nombre']}}.</p>
+    <p><b>Código:</b> {{=subject['cod_asignatura']}}.</p>
+    <p><b>Créditos:</b> {{=subject['creditos']}}.</p>
+    <p><b>Vigente Desde:</b> {{=subject['vig_desde']}}.</p>
+    <p><b>Vigente Hasta:</b> {{=subject['vig_hasta']}}.</p>
+    <p><b>Horas de Teoría:</b> {{=subject['h_teoria']}}.</p>
+    <p><b>Horas de Práctica:</b> {{=subject['h_practica']}}.</p>
+    <p><b>Horas de Laboratorio:</b> {{=subject['h_laboratorio']}}.</p>
+  {{pass}}
+{{pass}}

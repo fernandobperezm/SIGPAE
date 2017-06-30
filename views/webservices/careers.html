@@ -1,0 +1,75 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+{{if 'message' in globals():}}
+  <h2> {{=message}}</h2>
+{{pass}}
+
+{{if 'error' in globals():}}
+  <p>No se pudo conectar con el Web Service. </p>
+  <h3>Error: {{=error}}</h3>
+{{else:}}
+  <div class="table-responsive">
+   <table id="list-transcriptions" class="table table-striped">
+     <thead>
+       <tr>
+         <th>Nombre</th>
+         <th>Código</th>
+         <th>Tipo</th>
+       </tr>
+     </thead>
+     <tbody>
+       {{for car in careers:}}
+         <tr>
+           <td>{{=car['nombre']}}</a></td>
+           <td>{{=car['cod_carrera']}}</td>
+           {{if car['tipo'] == 'L': }}
+              <td>Larga</td>
+           {{else:}}
+              <td>Corta</td>
+           {{pass}}
+         </tr>
+        {{pass}}
+     </tbody>
+   </table>
+   </div>
+  </div>
+
+  <script type="text/javascript">
+    // initializing datatable
+    $(document).ready( function () {
+      var opciones = {
+            responsive: true,
+              "language": {
+                  search:         "Buscar: ",
+                  searchPlaceholder: "ID, Código, Fecha...",
+                  lengthMenu:     "Mostrar _MENU_ entradas.",
+                  info:           "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+                  infoEmpty:      "",
+                  infoFiltered:   "",
+                  infoPostFix:    "",
+                  loadingRecords: "Cargando datos...",
+                  zeroRecords:    "No se encontraron Carreras que correspondan a la búsqueda.",
+                  emptyTable:     "No hay información disponible.",
+                  processing:     "Procesando...",
+                  paginate: {
+                      first:      "Primero",
+                      previous:   "Anterior",
+                      next:       "Siguiente",
+                      last:       "Último"
+                  },
+                  aria: {
+                      sortAscending:  ": Se ordenan las columnas por orden creciente.",
+                      sortDescending: ": Se ordenan las columnas por orden decreciente."
+                  }
+              },
+               "columns": [
+                  null,
+                  null,
+                  null
+              ]
+          };
+        $('#list-transcriptions').DataTable(opciones);
+    } );
+  </script>
+{{pass}}

@@ -44,6 +44,13 @@ consultar_programas = [
     ((SPAN(_class='fa fa-file-powerpoint-o'), '  Listar Programas'), False, URL('programs', 'list')),
 ]
 
+webservices = [
+    ((SPAN(_class='fa fa-chevron-down'), '  Departamentos'), False, URL('webservices', 'departments')),
+    ((SPAN(_class='fa fa-chevron-down'), '  Asignaturas'),   False, URL('webservices', 'subjects')),
+    ((SPAN(_class='fa fa-chevron-down'), '  Carreras'),   False, URL('webservices', 'careers')),
+    ((SPAN(_class='fa fa-chevron-down'), '  Estudiantes'),   False, URL('webservices', 'students')),
+]
+
 # Tomado de SPE. Adecuar en futuro de acuerdo a los roles y permisologia definida
 # opciones_estudiante = [
 #     ((SPAN(_class='fa fa-user'), '  Ver Perfil'), False, '/SPE/mi_perfil/ver'),
@@ -91,6 +98,7 @@ menu_opciones_rol = []
 if auth.has_permission('manage_users', 'auth_user'):
     menu_opciones_rol.append(('Administración', False, '#', manejo_administrador ))
     menu_opciones_rol.append(('Usuarios', False, '#', manejo_usuarios ))
+    menu_opciones_rol.append(('WebServices', False, '#', webservices ))
 
 
 # agrega consulta de programas para todos los usuarios
