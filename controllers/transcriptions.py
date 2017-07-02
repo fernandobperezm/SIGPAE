@@ -38,11 +38,28 @@ def transcriptors():
         email = form.vars.correo
         usuario = db(db.auth_user.email == email).select().first()
         if usuario:
-            auth.add_membership(group_id, usuario.id)
 
-            new_id = db.REGISTRO_TRANSCRIPTORES.insert(transcriptor = usuario.username,
-                                                       supervisor   = auth.user.username)
-            session.flash = 'Usuario agregado como Transcriptor.'
+            # primero revisamos que el usuario pertenece a un grupo que puede ser transcriptor
+            puede_transcribir = True
+            roles      = db(db.auth_membership.user_id == usuario.id).select(db.auth_membership.group_id)
+
+            no_permitidos = [int(auth.id_group(role="DECANATO")),
+                             int(auth.id_group(role="COORDINACION")),
+                             int(auth.id_group(role="DEPARTAMENTO"))]
+
+            print(roles, no_permitidos)
+            for i in roles:
+                if i['group_id'] in no_permitidos:
+                    puede_transcribir = False
+
+            if puede_transcribir:
+                auth.add_membership(group_id, usuario.id)
+
+                new_id = db.REGISTRO_TRANSCRIPTORES.insert(transcriptor = usuario.username,
+                                                           supervisor   = auth.user.username)
+                session.flash = 'Usuario agregado como Transcriptor.'
+            else:
+                session.flash = 'Usuarios con rol de DECANATO, COORDINACION o DEPARTAMENTO no pueden transcribir programas.'
         else:
             session.flash = 'Usuario no encontrado.'
 

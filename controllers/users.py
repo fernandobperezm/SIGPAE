@@ -208,9 +208,29 @@ def edit():
         response.flash = 'Existen errores en el formulario.'
 
     if formulario_nuevo_rol.process(formname="formulario_nuevo_rol").accepted:
-        auth.add_membership(request.vars.new_rol, idusuario)
-        response.flash = 'Nuevo rol agregado.'
+
+        new_rol = request.vars.new_rol
+        aregar  = True
+
+        # si el rol es el de transcriptor, verificamos que pueda ser asignado
+        idrole_transcriptor = auth.id_group(role="TRANSCRIPTOR")
+        if int(new_rol) == int(idrole_transcriptor):
+            roles      = db(db.auth_membership.user_id == idusuario).select(db.auth_membership.group_id)
+
+            no_permitidos = [int(auth.id_group(role="DECANATO")),
+                             int(auth.id_group(role="COORDINACION")),
+                             int(auth.id_group(role="DEPARTAMENTO"))]
+            for i in roles:
+                if i['group_id'] in no_permitidos:
+                    agregar = False
+                    session.flash = 'Usuarios con rol de DECANATO, COORDINACION o DEPARTAMENTO no pueden transcribir programas.'
+
+        if agregar:
+            auth.add_membership(request.vars.new_rol, idusuario)
+            session.flash = 'Nuevo rol agregado.'
+
         redirect(URL(c='users',f='edit',args=[idusuario]))
+
     elif formulario_nuevo_rol.errors:
         response.flash = 'Por favor seleccione un nuevo rol.'
 
