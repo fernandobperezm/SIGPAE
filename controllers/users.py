@@ -19,11 +19,11 @@ def profile():
     db.auth_user.username.writable = False
     db.auth_user.email.writable = False
     form = SQLFORM(db.auth_user,
-                   fields = ['first_name', 'last_name', 'phone','ci', 'username' ,'email'],
+                   fields = ['first_name', 'last_name', 'phone', 'phone2', 'ci', 'username' ,'email'],
                    record = auth.user.id,
                    showid = False,
                    formstyle = 'bootstrap',
-                   labels = {'username':'USBID', 'ci':'Cédula', 'phone':'Teléfono'})
+                   labels = {'username':'USBID', 'ci':'Cédula', 'phone':'Teléfono', 'phone2' : 'Teléfono Secundario'})
 
     if form.process().accepted:
         response.flash = 'Datos actualizados correctamente.'
@@ -181,11 +181,11 @@ def edit():
 
     # Datos personales del usuario
     formulario_datos = SQLFORM(db.auth_user,
-                   fields = ['first_name', 'last_name', 'phone','ci', 'username' ,'email'],
+                   fields = ['first_name', 'last_name', 'phone', 'phone2', 'ci', 'username' ,'email'],
                    record = idusuario,
                    showid = False,
                    formstyle = 'bootstrap',
-                   labels = {'username':'USBID', 'ci':'Cédula', 'phone':'Teléfono'})
+                   labels = {'username':'USBID', 'ci':'Cédula', 'phone':'Teléfono', 'phone2' : 'Teléfono Secundario'})
 
     # Formulario para asignar nuevo rol
     formulario_nuevo_rol = SQLFORM.factory(Field('new_rol', requires=IS_IN_DB(db,db.auth_group.id,

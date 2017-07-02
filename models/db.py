@@ -97,6 +97,7 @@ plugins = PluginManager()
 auth.settings.extra_fields['auth_user']= [
   Field('ci', type='string', notnull=False, required=False, default=''),
   Field('phone', type='string', notnull=False, required=False, default=''),
+  Field('phone2', type='string', notnull=False, required=False, default=''),
   Field('access_key', type='string', notnull=False, required=True, default='')
 ]
 
@@ -209,10 +210,21 @@ SEP_DIC = 'SEP-DIC'
 ENE_MAR = 'ENE-MAR'
 ABR_JUL = 'ABR-JUL'
 
+# Periodos para programas de Pasantias
+ENE_MAY = 'ENE-MAY'
+ABR_SEP = 'ABR-SEP'
+JUL_DIC = 'JUL-DIC'
+OCT_FEB = 'OCT_FEB'
+
+
 PERIODOS = (
     (SEP_DIC, SEP_DIC),
     (ENE_MAR, ENE_MAR),
-    (ABR_JUL, ABR_JUL)
+    (ABR_JUL, ABR_JUL),
+    (ENE_MAY, ENE_MAY),
+    (ABR_SEP, ABR_SEP),
+    (JUL_DIC, JUL_DIC),
+    (OCT_FEB, OCT_FEB)
 )
 
 # Definición del dominio de las horas de dedicación al curso del programa
@@ -221,18 +233,6 @@ HORAS = tuple([(i, i) for i in range(41)])
 # Definición del dominio de los creditos de un programa
 CREDITOS = tuple([(i, i) for i in range(17)])
 
-
-#     Field('ci',type='string',length=8, notnull=True,required=True),
-#     Field('usbid', type='string', unique=True,notnull=True,required=True),
-#     Field('nombres',type='string',length=50,required=True),
-#     Field('apellidos',type='string',length=50,required=True),
-#     Field('telefono',type='string',length=15),
-#     Field('correo_inst', type='string',notnull=True),
-#     Field('correo_alter', type='string'),
-#     Field('tipo',type='string',length=15,requires=IS_IN_SET(['Usuario', 'DEX', 'Administrador','Bloqueado'])),
-#     primarykey=['usbid'],
-#     migrate=False,
-# );
 
 db.define_table('TRANSCRIPCION',
     Field('original_pdf', type='string', notnull = True, required = True),
@@ -246,6 +246,10 @@ db.define_table('TRANSCRIPCION',
                                                                           error_message='Debe seleccionar una fecha en formato DD/MM/AAAA no mayor a la fecha actual.')),
     Field('periodo', type ='string', length = 9, requires =  IS_IN_SET(PERIODOS, zero='Seleccione', error_message = 'Seleccione un periodo.')),
     Field('anio', type = 'integer',  length = 4,  requires = [IS_INT_IN_RANGE(1967, 1e100,
+                                                                            error_message='El año debe ser un numero positivo de la forma YYYY a partir de 1967.'),
+                                                              IS_LENGTH(4,  error_message ='El año debe ser de la forma YYYY.')]),
+    Field('periodo_hasta', type ='string', length = 9, requires =  IS_IN_SET(PERIODOS, zero='Seleccione', error_message = 'Seleccione un periodo.')),
+    Field('anio_hasta', type = 'integer',  length = 4,  requires = [IS_INT_IN_RANGE(1967, 1e100,
                                                                             error_message='El año debe ser un numero positivo de la forma YYYY a partir de 1967.'),
                                                               IS_LENGTH(4,  error_message ='El año debe ser de la forma YYYY.')]),
     Field('horas_teoria', type ='integer', requires =  IS_IN_SET(HORAS, zero='Seleccione', error_message = 'Seleccione un número de horas.')),
