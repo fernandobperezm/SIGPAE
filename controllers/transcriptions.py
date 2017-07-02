@@ -74,6 +74,60 @@ def deletetranscriptor():
     session.flash = 'Usuario eliminado como Transcriptor.'
     redirect(URL(c='transcriptions',f='transcriptors'))
 
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def following():
+    message = "Seguimiento de Transcripciones"
+
+    # obtenemos los transcriptores asociados
+    all_transcriptors_for_user = db(db.REGISTRO_TRANSCRIPTORES.supervisor == auth.user.username)._select(db.REGISTRO_TRANSCRIPTORES.transcriptor)
+
+
+    # Obtenemos las transcripciones
+    transcripciones = db(db.TRANSCRIPCION.transcriptor.belongs(all_transcriptors_for_user)).select(db.TRANSCRIPCION.id,
+                                                                                                   db.TRANSCRIPCION.codigo,
+                                                                                                   db.TRANSCRIPCION.transcriptor,
+                                                                                                   db.TRANSCRIPCION.fecha_elaboracion,
+                                                                                                   db.TRANSCRIPCION.fecha_modificacion)
+
+    transcriptores =  db(db.auth_user.username.belongs(all_transcriptors_for_user)).select(db.auth_user.username,
+                                                                                           db.auth_user.first_name,
+                                                                                           db.auth_user.last_name)
+    lista_transcripciones = []
+    # Obtenemos los roles de cada usuario
+    for transcripcion in transcripciones:
+        lista_transcripciones.append({'id' : transcripcion.id,
+                                      'transcriptor' : transcripcion.transcriptor,
+                                      'codigo': transcripcion.codigo,
+                                      'fecha_elaboracion' : transcripcion.fecha_elaboracion,
+                                      'fecha_modificacion': transcripcion.fecha_modificacion})
+
+    lista_transcriptores = []
+    for transcriptor in transcriptores:
+        lista_transcriptores.append((transcriptor.username, transcriptor.first_name + ' ' + transcriptor.last_name))
+
+    # formulario para reasignar transcripcion a otro transcriptor
+    formulario_reasignar = SQLFORM.factory(Field('transcriptor', type="string",
+                                                  requires = IS_IN_SET(lista_transcriptores,
+                                                  error_message = 'Seleccione un Transcriptor.',
+                                                  zero = "Seleccione...")),
+                                           Field('transcription_id', type='string'),
+                                                  labels={'transcriptor':'Nuevo Transcriptor'})
+
+    if formulario_reasignar.process(formname="formulario_reasignar").accepted:
+
+        transcription_id = formulario_reasignar.vars.transcription_id
+        transcriptor = formulario_reasignar.vars.transcriptor
+
+        # buscamos la transcripcion a reasignar y la actualizamos
+        db.TRANSCRIPCION[transcription_id] = dict(transcriptor = transcriptor)
+
+        session.flash = "Reasignación exitosa."
+        redirect(URL(c='transcriptions', f='following'))
+    elif formulario_reasignar.errors:
+        response.flash = 'Error en la reasignación, intente nuevamente.'
+
+    return dict(message=message, transcripciones = lista_transcripciones, formulario_reasignar = formulario_reasignar)
+
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def add():

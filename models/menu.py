@@ -38,6 +38,7 @@ crear_transcripciones = [
 
 manejar_transcripciones = [
     ((SPAN(_class='fa fa-user'), '  Transcriptores'), False, URL('transcriptions', 'transcriptors')),
+    ((SPAN(_class='fa fa-eye'), '  Seguimiento de Transcripciones'), False, URL('transcriptions', 'following')),
 ]
 
 consultar_programas = [

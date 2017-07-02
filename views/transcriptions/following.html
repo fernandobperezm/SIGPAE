@@ -3,6 +3,9 @@
 
 {{if 'message' in globals():}}
 <h2> {{=message}}</h2>
+<p> Esta es una lista de todas las Transcripciones en curso pertenecientes a los
+    Transcriptores bajo su supervisión. <br>
+</p>
 {{pass}}
 
 <div class="table-responsive">
@@ -10,22 +13,29 @@
    <thead>
      <tr>
        <th>ID</th>
+       <th>Transcriptor</th>
        <th>Código</th>
-       <th>Fecha Elaboración</th>
        <th>Última Modificación</th>
-       <th>Modificar</th>
+       <th>Ver</th>
+       <th>Reasignar</th>
        <th>Eliminar</th>
-       <th>Enviar</th>
      </tr>
    </thead>
    <tbody>
      {{for trans in transcripciones:}}
        <tr>
          <td>{{=trans['id']}}</td>
+         <td>{{=trans['transcriptor']}}</td>
          <td>{{=trans['codigo']}}</td>
-         <td>{{=trans['fecha_elaboracion']}}</td>
          <td>{{=trans['fecha_modificacion']}}</td>
-         <td><a href="{{=URL(c='transcriptions',f='edit',vars=dict(id=trans['id']))}}"<i class="fa fa-pencil-square-o blue" aria-hidden="true"></i></td>
+         <td><a href="{{=URL(c='transcriptions',f='edit',vars=dict(id=trans['id']))}}"<i class="fa fa-eye blue" aria-hidden="true"></i></td>
+         <td>
+           <a data-toggle="modal"
+              data-target="#modalReasignar"
+              data-id="{{=trans['id']}}"
+             <i class="fa fa-refresh green" aria-hidden="true"></i>
+           </a>
+        </td>
          <td>
            <a data-toggle="modal"
               data-target="#modalEliminar"
@@ -35,12 +45,31 @@
               <i class="fa fa-times red" aria-hidden="true"></i>
            </a>
          </td>
-         <td><a href="#"><i class="fa fa-arrow-right green" aria-hidden="true"></i></td>
        </tr>
       {{pass}}
    </tbody>
  </table>
  </div>
+</div>
+
+<!-- Modal Reasignar-->
+<div class="container">
+  <div class="modal fade" id="modalReasignar" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <center> <h4 class="modal-title">Reasignar Trascripción </h4> </center>
+        </div>
+        <div class="modal-body">
+            <center> Seleccione un nuevo Transcriptor al cual se le reasignará la Transcripción.
+              {{=formulario_reasignar}}
+            </center>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
 </div>
 
 <!-- Modal Eliminar-->
@@ -71,6 +100,7 @@
     </div>
 </div>
 
+
 <script type="text/javascript">
   // Pasamos los argumentos para eliminar el rol del usuario.
   $('#modalEliminar').on('show.bs.modal', function(e){
@@ -83,6 +113,12 @@
 
       $("#transid").text(id);
       $("#transcod").text(cod);
+  });
+
+  $('#modalReasignar').on('show.bs.modal', function(e){
+    var id = $(e.relatedTarget).data('id');
+    $("#no_table_transcription_id__row").hide();
+    $(e.currentTarget).find('input[name="transcription_id"]').val(id);
   });
 
   // initializing datatable
