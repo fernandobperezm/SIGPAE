@@ -1,4 +1,3 @@
-# webservices test
 import urllib2
 import json
 
@@ -64,17 +63,17 @@ def careers():
 def students():
     message = "Estudiantes"
 
-    # formulario para nuevos transcriptores
-    form = SQLFORM.factory(Field('carnet', type="string",
-                                  requires = IS_MATCH(r'\b([0-9]){2}-([0-9]){5}\b',
-                                  error_message = 'Formato de carnet no válido.')),
-                           labels={'carnet':'Carnet'},
-                           col3  ={'carnet':'Ingrese un carnet de la forma XX-XXXXX'})
+    # formulario para buscar Estudiantes
+    form = SQLFORM.factory(Field('param', type="string",
+                                  requires = IS_MATCH(r'\b([0-9]){2}-([0-9]){5}\b|\b([0-9]{6,10})\b',
+                                  error_message = 'Formato de carnet o cédula no válido.')),
+                           labels={'param':'Carnet o Cédula'},
+                           col3  ={'param':'Ingrese un carnet de la forma XX-XXXXX o una cédula en forma numérica sin puntos, por ejemplo: 12345678.'})
 
     if form.process(formname="formulario_carnet").accepted:
-        redirect(URL(c='webservices', f='studentdetail',args = [form.vars.carnet]))
+        redirect(URL(c='queries', f='studentdetail',args = [form.vars.param]))
     elif form.errors:
-        response.flash = 'Carnet no válido.'
+        response.flash = 'Carnet o Cédula no válido.'
 
     return dict(form=form, message = message)
 

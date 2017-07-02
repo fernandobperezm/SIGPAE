@@ -24,16 +24,16 @@ opciones_inactivo = [
 ]
 
 manejo_administrador = [
-    ((SPAN(_class='fa fa-archive'), '  Registro del Eventos'), False, URL('administration', 'log')),
+    ((SPAN(_class='fa fa-archive'), '  Registro de Eventos'), False, URL('administration', 'log')),
 ]
 
 manejo_usuarios = [
-    ((SPAN(_class='fa fa-user'), '  Gestionar Usuarios'), False, URL('users', 'manage')),
+    ((SPAN(_class='fa fa-user'), '  Gestionar Usuarios'), False, URL('users', 'filter')),
 ]
 
 crear_transcripciones = [
-    ((SPAN(_class='fa fa-file-text-o'), ' Nueva Transcipción'), False, URL('transcriptions', 'add')),
-    ((SPAN(_class='fa fa-files-o'), '  Ver Transcipciones'), False, URL('transcriptions', 'list')),
+    ((SPAN(_class='fa fa-file-text-o'), ' Nueva Transcripción'), False, URL('transcriptions', 'add')),
+    ((SPAN(_class='fa fa-files-o'), '  Ver Transcripciones'), False, URL('transcriptions', 'list')),
 ]
 
 manejar_transcripciones = [
@@ -44,11 +44,11 @@ consultar_programas = [
     ((SPAN(_class='fa fa-file-powerpoint-o'), '  Listar Programas'), False, URL('programs', 'list')),
 ]
 
-webservices = [
-    ((SPAN(_class='fa fa-chevron-down'), '  Departamentos'), False, URL('webservices', 'departments')),
-    ((SPAN(_class='fa fa-chevron-down'), '  Asignaturas'),   False, URL('webservices', 'subjects')),
-    ((SPAN(_class='fa fa-chevron-down'), '  Carreras'),   False, URL('webservices', 'careers')),
-    ((SPAN(_class='fa fa-chevron-down'), '  Estudiantes'),   False, URL('webservices', 'students')),
+queries = [
+    ((SPAN(_class='fa fa-chevron-down'), '  Departamentos'), False, URL('queries', 'departments')),
+    ((SPAN(_class='fa fa-chevron-down'), '  Asignaturas'),   False, URL('queries', 'subjects')),
+    ((SPAN(_class='fa fa-chevron-down'), '  Carreras'),   False, URL('queries', 'careers')),
+    ((SPAN(_class='fa fa-chevron-down'), '  Estudiantes'),   False, URL('queries', 'students')),
 ]
 
 # Tomado de SPE. Adecuar en futuro de acuerdo a los roles y permisologia definida
@@ -98,7 +98,7 @@ menu_opciones_rol = []
 if auth.has_permission('manage_users', 'auth_user'):
     menu_opciones_rol.append(('Administración', False, '#', manejo_administrador ))
     menu_opciones_rol.append(('Usuarios', False, '#', manejo_usuarios ))
-    menu_opciones_rol.append(('WebServices', False, '#', webservices ))
+    menu_opciones_rol.append(('Consultas', False, '#', queries ))
 
 
 # agrega consulta de programas para todos los usuarios

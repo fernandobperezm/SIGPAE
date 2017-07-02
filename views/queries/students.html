@@ -1,0 +1,18 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+{{if 'message' in globals():}}
+  <h2> {{=message}}</h2>
+{{pass}}
+
+<center>
+  <div class="col-md-6 col-md-offset-3 col-sm-12 full-width-form">
+    <div class="panel panel-default help-content">
+      <div class="panel-heading">Búsqueda de Estudiantes</div>
+      <div class="panel-body">
+        {{=form}}
+      </div>
+      </div>
+    </div>
+  </div>
+</center>

@@ -1,3 +1,12 @@
+import re
+
+def get_roles():
+    roles      = db(db.auth_group).select()
+    roles_list = []
+    for role in roles:
+        roles_list.append(role.role)
+    return roles_list
+
 
 # Decorador solo para acceder a la vista si se ha iniciado sesion
 @auth.requires(auth.is_logged_in() and auth.has_permission('update_profile', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
@@ -24,18 +33,100 @@ def profile():
     return dict(message = mensaje, form = form)
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
-def manage():
+def filter():
+    '''
 
+    '''
     message = "Gestión de Usuarios"
 
-    # Obtenemos los usuarios
-    usuarios = db(db.auth_user).select(db.auth_user.id,
-                                       db.auth_user.username,
-                                       db.auth_user.first_name,
-                                       db.auth_user.last_name,
-                                       db.auth_user.email)
+    # recolectamos la lista de todos los roles
 
+    roles_list = ['TODOS']
+    roles_list = roles_list + get_roles()
+
+    # formulario para buscar usuarios por rol
+    formulario_rol = SQLFORM.factory(Field('rol', type="string",
+                                  requires = IS_IN_SET(roles_list,
+                                  error_message = 'Seleccione un Rol de Usuario.',
+                                  zero = "Seleccione...")),
+                           labels={'rol':'Rol'},
+                           col3  ={'rol':'Seleccione un Rol para listar los usuarios.'})
+
+    # formulario para buscar usuarios por cedula
+    formulario_ci = SQLFORM.factory(Field('cedula', type="string",
+                                  requires = IS_MATCH(r'\b([0-9]){6,10}\b',
+                                  error_message = 'Formato de cédula no válido.')),
+                           labels={'cedula':'Cédula'},
+                           col3  ={'cedula':'Ingrese una cédula en forma numérica sin puntos, por ejemplo: 12345678.'})
+
+    if formulario_rol.process(formname="formulario_filtro_rol").accepted:
+        redirect(URL(c='users', f='manage',args = [formulario_rol.vars.rol]))
+    elif formulario_rol.errors:
+        response.flash = 'Error en la búsqueda de Usuarios.'
+
+    if formulario_ci.process(formname="formulario_filtro_cedula").accepted:
+        redirect(URL(c='users', f='manage',args = [formulario_ci.vars.cedula]))
+        response.flash = formulario_ci.vars.cedula
+    elif formulario_ci.errors:
+        response.flash = 'Error en la búsqueda de Usuarios.'
+
+    return dict(message=message, formulario_rol = formulario_rol, formulario_ci = formulario_ci)
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def manage():
+
+    # param puede ser un rol o una cédula
+    param =  request.args(0)
+
+    # verificamos que llegue un elemento correcto mediante la url
+    if not isinstance(param, str):
+        redirect(URL(c='default', f='not_authorized'))
+
+    usuarios = []
+
+    message = "Gestión de Usuarios: %s"%(param)
+
+    # Expresion regular para comprobar las cedulas
+    pattern = re.compile(r'\b([0-9]){6,10}\b',)
+
+    # match con la cedula
+    if pattern.match(param):
+        usuarios = db(db.auth_user.ci == param).select(db.auth_user.id,
+                                                       db.auth_user.ci,
+                                                       db.auth_user.username,
+                                                       db.auth_user.first_name,
+                                                       db.auth_user.last_name,
+                                                       db.auth_user.email)
+
+    # match con los roles
+    elif param == "TODOS":
+
+        usuarios = db(db.auth_user).select(db.auth_user.id,
+                                           db.auth_user.ci,
+                                           db.auth_user.username,
+                                           db.auth_user.first_name,
+                                           db.auth_user.last_name,
+                                           db.auth_user.email)
+    else:
+        roles_list = get_roles()
+        if not (param in roles_list):
+            redirect(URL(c='default', f='not_authorized'))
+
+        # obtenemos el id del grupo (rol)
+        group_id = auth.id_group(role=param)
+
+        # obtenemos los id de todos los usuarios dentro del rol
+        all_users_in_group = db(db.auth_membership.group_id == group_id)._select(db.auth_membership.user_id)
+
+        # Obtenemos los usuarios
+        usuarios = db(db.auth_user.id.belongs(all_users_in_group)).select(db.auth_user.id,
+                                                                          db.auth_user.ci,
+                                                                          db.auth_user.username,
+                                                                          db.auth_user.first_name,
+                                                                          db.auth_user.last_name,
+                                                                          db.auth_user.email)
     lista_usuarios = []
+
     # Obtenemos los roles de cada usuario
     for usuario in usuarios:
         roles =  db(db.auth_membership.user_id == usuario.id).select()
@@ -45,6 +136,7 @@ def manage():
 
         lista_usuarios.append({'id' : usuario.id,
                                'username': usuario.username,
+                               'ci'   : usuario.ci,
                                'name' : usuario.first_name + ' ' + usuario.last_name,
                                'email': usuario.email,
                                'roles': nombresroles})
@@ -60,11 +152,32 @@ def edit():
     db.auth_user.username.writable = False
     db.auth_user.email.writable = False
 
-    #we get the roles for the user
+    # obtenemos todos los roles del usuario
     roles      = db(db.auth_membership.user_id == idusuario).select()
     roles_list = []
     for role in roles:
-        roles_list.append({'id' : role.group_id, 'role' : role.group_id.role })
+        roles_list.append({'id' : role.group_id, 'role' : role.group_id.role, 'mid' : role.id })
+
+    primary_role = []
+
+    # encontramos el rol primario, para deshabilitar su cambio en la vista. 
+    if len(roles_list) == 1:
+        primary_role = roles_list[0]
+        roles_list = []
+
+    else:
+        min_id = roles_list[0]['mid']
+        for i in range(1, len(roles_list)):
+            if min_id > roles_list[i]['mid']:
+                min_id = roles_list[i]['mid']
+
+        roles_list_aux = []
+        for i in roles_list:
+            if i['mid'] == min_id:
+                primary_role = i
+            else:
+                roles_list_aux.append(i)
+        roles_list = roles_list_aux
 
     # Datos personales del usuario
     formulario_datos = SQLFORM(db.auth_user,
@@ -113,6 +226,7 @@ def edit():
                 formulario_datos = formulario_datos,
                 formulario_nuevo_rol = formulario_nuevo_rol,
                 formulario_cambiar_rol = formulario_cambiar_rol,
+                primary_role = primary_role,
                 roles_list = roles_list,
                 idusuario = idusuario)
 

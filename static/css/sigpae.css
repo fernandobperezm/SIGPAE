@@ -252,3 +252,8 @@ tbody tr td {
   border-radius: 10px;
   margin: 20px;
 }
+
+.full-width-form .form-horizontal {
+    width: 100%;
+    margin: 2% auto;
+}

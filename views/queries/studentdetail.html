@@ -6,8 +6,10 @@
 {{pass}}
 
 {{if 'error' in globals():}}
-  <p>No se pudo conectar con el Web Service. </p>
-  <h3>Error: {{=error}}</h3>
+  <p>No se pudo conectar con el servicio de consultas. <br>
+     Inténte de nuevo más tarde. Si el error persiste póngase en contacto con la Dirección de
+     Admisión y Control de Estudios (DACE).
+  </p>
 {{else:}}
   {{if student_data == []:}}
     <h2>Estudiante no encontrado. </h2>
@@ -29,7 +31,7 @@
        <tbody>
          {{for sub in aproved_subjects:}}
            <tr>
-             <td><a href="{{=URL(c='webservices', f='subjectdetail', args = [sub['cod_asignatura']])}}">{{=sub['nombre']}}</a></td>
+             <td><a href="{{=URL(c='queries', f='subjectdetail', args = [sub['cod_asignatura']])}}">{{=sub['nombre']}}</a></td>
              <td>{{=sub['cod_asignatura']}}</td>
            </tr>
           {{pass}}

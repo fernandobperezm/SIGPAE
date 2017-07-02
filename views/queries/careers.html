@@ -6,8 +6,10 @@
 {{pass}}
 
 {{if 'error' in globals():}}
-  <p>No se pudo conectar con el Web Service. </p>
-  <h3>Error: {{=error}}</h3>
+  <p>No se pudo conectar con el servicio de consultas. <br>
+     Inténte de nuevo más tarde. Si el error persiste póngase en contacto con la Dirección de
+     Admisión y Control de Estudios (DACE).
+  </p>
 {{else:}}
   <div class="table-responsive">
    <table id="list-transcriptions" class="table table-striped">
@@ -21,7 +23,7 @@
      <tbody>
        {{for car in careers:}}
          <tr>
-           <td><a href="{{=URL(c='webservices', f='careersubjects', args = [car['cod_carrera']])}}">{{=car['nombre']}}</a></td>
+           <td><a href="{{=URL(c='queries', f='careersubjects', args = [car['cod_carrera']])}}">{{=car['nombre']}}</a></td>
            <td>{{=car['cod_carrera']}}</td>
            {{if car['tipo'] == 'L': }}
               <td>Larga</td>

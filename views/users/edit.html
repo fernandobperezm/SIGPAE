@@ -11,7 +11,23 @@
     {{=formulario_datos}}
   </div>
   <div class="col-md-6">
-    <h2> Roles del Usuario </h2>
+    <h2> Rol Primario </h2>
+    <div class="table-responsive">
+     <table class="table table-striped">
+       <thead>
+         <tr>
+           <th></th>
+         </tr>
+       </thead>
+       <tbody>
+           <tr>
+             <td>{{=primary_role['role']}}</td>
+           </tr>
+       </tbody>
+     </table>
+   </div>
+
+    <h2> Roles Adicionales </h2>
     <div class="table-responsive">
      <table class="table table-striped">
        <thead>

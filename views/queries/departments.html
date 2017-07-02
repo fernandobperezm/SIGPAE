@@ -6,28 +6,28 @@
 {{pass}}
 
 {{if 'error' in globals():}}
-  <p>No se pudo conectar con el Web Service. </p>
-  <h3>Error: {{=error}}</h3>
+  <p>No se pudo conectar con el servicio de consultas. <br>
+     Inténte de nuevo más tarde. Si el error persiste póngase en contacto con la Dirección de
+     Admisión y Control de Estudios (DACE).
+  </p>
 {{else:}}
   <div class="table-responsive">
    <table id="list-transcriptions" class="table table-striped">
      <thead>
        <tr>
          <th>Nombre</th>
+         <th>Siglas</th>
          <th>Código</th>
-         <th>Tipo </th>
+         <th>Email</th>
        </tr>
      </thead>
      <tbody>
-       {{for sub in subjects:}}
+       {{for dep in departments:}}
          <tr>
-           <td><a href="{{=URL(c='webservices', f='subjectdetail', args = [sub['cod_asignatura']])}}">{{=sub['nombre']}}</a></td>
-           <td>{{=sub['cod_asignatura']}}</td>
-           {{if sub['tipo'] == 'O' :}}
-              <td>Obligatoria</td>
-           {{else:}}
-              <td>Electiva</td>
-           {{pass}}
+           <td><a href="{{=URL(c='queries', f='departmentsubjects', args = [dep['siglas_depto']])}}">{{=dep['nombre']}}</a></td>
+           <td>{{=dep['siglas_depto']}}</td>
+           <td>{{=dep['cod_depto']}}</td>
+           <td>{{=dep['email']}}</td>
          </tr>
         {{pass}}
      </tbody>
@@ -49,7 +49,7 @@
                   infoFiltered:   "",
                   infoPostFix:    "",
                   loadingRecords: "Cargando datos...",
-                  zeroRecords:    "No se encontraron Asignaturas que correspondan a la búsqueda.",
+                  zeroRecords:    "No se encontraron Departamentos que correspondan a la búsqueda.",
                   emptyTable:     "No hay información disponible.",
                   processing:     "Procesando...",
                   paginate: {
@@ -64,6 +64,7 @@
                   }
               },
                "columns": [
+                  null,
                   null,
                   null,
                   null

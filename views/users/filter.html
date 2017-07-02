@@ -1,0 +1,25 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+{{if 'message' in globals():}}
+  <h2> {{=message}}</h2>
+{{pass}}
+
+<center>
+  <div class='col-md-6 col-sm-12 full-width-form'>
+    <div class="panel panel-default help-content">
+      <div class="panel-heading">Búsqueda por Rol</div>
+      <div class="panel-body">
+        {{=formulario_rol}}
+      </div>
+    </div>
+  </div>
+  <div class='col-md-6 col-sm-12 full-width-form'>
+    <div class="panel panel-default help-content">
+      <div class="panel-heading">Búsqueda por Cédula</div>
+      <div class="panel-body">
+        {{=formulario_ci}}
+      </div>
+    </div>
+  </div>
+</center>

@@ -9,7 +9,7 @@ import pyocr.builders
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def transcriptors():
-    message = "Trancriptores"
+    message = "Transcriptores"
 
     group_id = auth.id_group(role="TRANSCRIPTOR")
 
@@ -177,10 +177,7 @@ def extract_text(path):
 def extract_text_from_image(path):
     tool = pyocr.get_available_tools()[0]
     lang = tool.get_available_languages()[2]
-
-    print("Will use tool '%s'" % (tool.get_name()))
-    print(tool.get_available_languages())
-
+    
     req_image = []
     final_text = []
 

@@ -96,27 +96,23 @@ def login_cas():
         #buscandolo en la tabla de usuario.
         primeravez = db(tabla_usuario.username == usbid)
 
-        print "INGRESANDO ", usuario['first_name']
-
         if primeravez.isempty():
 
+            # registrar al usuario
             authUserId  = registrar(usuario, auth)
 
-            # respuesta = Usuario.getByRole(authUserId)
-            #
-            # session.currentUser = respuesta
-            #
-            # if usuario['tipo'] == 'Pregrado' or usuario['tipo'] == 'Postgrado':
-            #     redirect(URL(c='mi_perfil/configuracion'))
+            # obtenemos los datos para iniciar sesion
+            datos_usuario = db(tabla_usuario.username == usbid).select()[0]
+            clave         = datos_usuario.access_key
 
-            # print "EL USUARIO ACTUAL ES ", auth.user['first_name']
+            # inicio de sesion y redireccion
+            auth.login_bare(usbid, clave)
 
             redirect(URL(c='default',f='index'))
 
-            # auth.login_bare(usbid,clave)
-            #redirect(URL(c='default',f='registrar', vars=dict(usuario=usuario,usbid=usbid)))
 
         else:
+
             #Como el usuario ya esta registrado, buscamos sus datos y lo logueamos.
             datos_usuario = db(tabla_usuario.username == usbid).select()[0]
             clave         = datos_usuario.access_key
@@ -126,21 +122,6 @@ def login_cas():
             # respuesta = Usuario.getByRole(auth.user.id)
 
             redirect(URL(c='default',f='index'))
-
-            # Caso 1: El usuario no ha registrado sus datos
-            # if respuesta == None:
-            #     redirect(URL(c='usuarios',f='perfil'))
-            # # Caso 2: El usuario no ha verificado su correo
-            # elif correo_no_verificado(usbid):
-            #     obtener_correo(usbid)
-            #     correo_sec = obtener_correo(usbid)
-            #     redirect(URL(c='default',f='verifyEmail',vars=dict(usbid=usbid,correo=correo_sec)))
-            # # Caso 3: El usuario ha cumplido con los pasos necesarios por lo que
-            # # puede iniciar sesion
-            # else:
-            #     #Deberiamos redireccionar a un "home" dependiendo del tipo de usuario
-            #     session.currentUser = respuesta
-            #     redirect('index')
 
     return None
 
