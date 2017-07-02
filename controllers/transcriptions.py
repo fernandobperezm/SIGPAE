@@ -13,13 +13,13 @@ def transcriptors():
 
     group_id = auth.id_group(role="TRANSCRIPTOR")
 
-    all_users_in_group = db(db.auth_membership.group_id == group_id)._select(db.auth_membership.user_id)
+    all_transcriptors_for_user = db(db.REGISTRO_TRANSCRIPTORES.supervisor == auth.user.username)._select(db.REGISTRO_TRANSCRIPTORES.transcriptor)
 
-    transcriptors = db(db.auth_user.id.belongs(all_users_in_group)).select(db.auth_user.id,
-                                                                           db.auth_user.username,
-                                                                           db.auth_user.first_name,
-                                                                           db.auth_user.last_name,
-                                                                           db.auth_user.email)
+    transcriptors = db(db.auth_user.username.belongs(all_transcriptors_for_user)).select(db.auth_user.id,
+                                                                                         db.auth_user.username,
+                                                                                         db.auth_user.first_name,
+                                                                                         db.auth_user.last_name,
+                                                                                         db.auth_user.email)
     lista_transcriptores = []
     # Obtenemos los roles de cada usuario
     for transcriptor in transcriptors:
@@ -34,11 +34,18 @@ def transcriptors():
                                   error_message = 'Correo no corresponde a un Correo Institucional.')),
                            labels={'correo':'Correo'})
 
-    if form.process(formname="formulario_cambiar_rol").accepted:
+    if form.process(formname="formulario_agregar_transcriptor").accepted:
         email = form.vars.correo
         usuario = db(db.auth_user.email == email).select().first()
-        auth.add_membership(group_id, usuario.id)
-        session.flash = 'Usuario agregado como Transcriptor.'
+        if usuario:
+            auth.add_membership(group_id, usuario.id)
+
+            new_id = db.REGISTRO_TRANSCRIPTORES.insert(transcriptor = usuario.username,
+                                                       supervisor   = auth.user.username)
+            session.flash = 'Usuario agregado como Transcriptor.'
+        else:
+            session.flash = 'Usuario no encontrado.'
+
         redirect(URL(c='transcriptions',f='transcriptors'))
     elif form.errors:
         response.flash = 'No se pudo agregar al usuario.'
@@ -50,7 +57,19 @@ def deletetranscriptor():
     idusuario = request.args(0)
     idrole    = request.args(1)
 
-    auth.del_membership(idrole, idusuario)
+    # eliminamos el usuario como transcriptor para el solicitante
+    usuario  = db(db.auth_user.id == idusuario).select().first()
+    registro = db((db.REGISTRO_TRANSCRIPTORES.transcriptor == usuario.username ) &
+                  (db.REGISTRO_TRANSCRIPTORES.supervisor == auth.user.username )).delete()
+
+    # revisamos si es transcriptor de otro usuario. En caso contrario, quitamos el rol
+    # de transcriptor.
+    registro = db(db.REGISTRO_TRANSCRIPTORES.transcriptor == usuario.username).select()
+    if len(registro) == 0:
+        auth.del_membership(idrole, idusuario)
+    else:
+        session.flash = 'Usuario eliminado como Transcriptor.'
+        redirect(URL(c='transcriptions',f='transcriptors'))
 
     session.flash = 'Usuario eliminado como Transcriptor.'
     redirect(URL(c='transcriptions',f='transcriptors'))
@@ -177,7 +196,7 @@ def extract_text(path):
 def extract_text_from_image(path):
     tool = pyocr.get_available_tools()[0]
     lang = tool.get_available_languages()[2]
-    
+
     req_image = []
     final_text = []
 

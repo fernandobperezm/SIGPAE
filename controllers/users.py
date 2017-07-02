@@ -160,7 +160,7 @@ def edit():
 
     primary_role = []
 
-    # encontramos el rol primario, para deshabilitar su cambio en la vista. 
+    # encontramos el rol primario, para deshabilitar su cambio en la vista.
     if len(roles_list) == 1:
         primary_role = roles_list[0]
         roles_list = []
@@ -217,7 +217,15 @@ def edit():
     if formulario_cambiar_rol.process(formname="formulario_cambiar_rol").accepted:
         auth.del_membership(request.vars.old_rol, idusuario)
         auth.add_membership(request.vars.new_rol, idusuario)
-        response.flash = 'Nuevo rol agregado.'
+
+        # si el rol era el de transcriptor, lo eliminamos como transcriptor
+        # para todos sus supervisores.
+        idrole_transcriptor = auth.id_group(role="TRANSCRIPTOR")
+        if int(request.vars.old_rol) == int(idrole_transcriptor):
+            usuario = db(db.auth_user.id == idusuario).select().first()
+            registro = db(db.REGISTRO_TRANSCRIPTORES.transcriptor == usuario.username).delete()
+
+        response.flash = 'Rol cambiado.'
         redirect(URL(c='users',f='edit',args=[idusuario]))
     elif formulario_cambiar_rol.errors:
         response.flash = 'Por favor seleccione un nuevo rol.'
@@ -237,5 +245,12 @@ def deleterole():
     idrole    = request.args(1)
 
     auth.del_membership(idrole, idusuario)
+
+    # si el rol era el de transcriptor, lo eliminamos como transcriptor
+    # para todos sus supervisores.
+    idrole_transcriptor = auth.id_group(role="TRANSCRIPTOR")
+    if int(idrole) == int(idrole_transcriptor):
+        usuario = db(db.auth_user.id == idusuario).select().first()
+        registro = db(db.REGISTRO_TRANSCRIPTORES.transcriptor == usuario.username).delete()
 
     redirect(URL(c='users',f='edit',args=[idusuario]))

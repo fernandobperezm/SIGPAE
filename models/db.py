@@ -157,6 +157,7 @@ auth.add_permission(auth.id_group(role="DACE-ADMINISTRADOR"), 'manage_users', 'a
 # Manejar Transcriptores
 auth.add_permission(auth.id_group(role="DEPARTAMENTO"), 'manage_transcriptors', 'auth_user')
 auth.add_permission(auth.id_group(role="COORDINACION"), 'manage_transcriptors', 'auth_user')
+auth.add_permission(auth.id_group(role="DECANATO"), 'manage_transcriptors', 'auth_user')
 
 # Crear Nueva Transcripcion
 auth.add_permission(auth.id_group(role="TRANSCRIPTOR"), 'create_transcription')
@@ -164,6 +165,7 @@ auth.add_permission(auth.id_group(role="TRANSCRIPTOR"), 'create_transcription')
 # Aceptar y Rechazar Transcripciones
 auth.add_permission(auth.id_group(role="DEPARTAMENTO"), 'manage_transcription')
 auth.add_permission(auth.id_group(role="COORDINACION"), 'manage_transcription')
+auth.add_permission(auth.id_group(role="DECANATO"), 'manage_transcription')
 
 # Solicitar Programa Academico
 auth.add_permission(auth.id_group(role="COORDINACION"), 'request_ap')
@@ -264,6 +266,11 @@ db.define_table('TRANSCRIPCION',
     # encargado = models.CharField('Encargado', max_length=100, null=True)
     # pasa = models.BooleanField(default= False)
     # propuesto = models.BooleanField(default= False)
+    )
+
+db.define_table('REGISTRO_TRANSCRIPTORES',
+    Field('transcriptor', type="string", notnull = True),
+    Field('supervisor', type="string", notnull = True)
     )
 # -------------------------------------------------------------------------
 # after defining tables, uncomment below to enable auditing
