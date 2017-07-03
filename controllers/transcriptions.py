@@ -216,22 +216,61 @@ def edit():
                    fields = ['codigo', 'denominacion', 'fecha_elaboracion',
                              'periodo', 'horas_teoria', 'horas_practica',
                              'horas_laboratorio' , 'creditos', 'anio',
+                             'periodo_hasta', 'anio_hasta',
                              'sinopticos','ftes_info_recomendadas','requisitos',
                              'estrategias_met','estrategias_eval','justificacion',
-                             'observaciones','objetivos_generales','objetivos_especificos'],
+                             'observaciones','objetivos_generales','objetivos_especificos',
+                             'campo_1', 'campo_1_cont',
+                             'campo_2', 'campo_2_cont',
+                             'campo_3', 'campo_3_cont'],
                    submit_button=T('Guardar')
                    )
 
     form.append(INPUT(_type='button', _value='Cancel', _onclick='window.location=\'%s\';;return false' % URL(c='transcriptions', f='list')))
 
     if form.accepts(request, session, hideerror=True, formname = "transcription_form"):
-        form.process()
+        session.flash = 'Transcripción guardada satisfactoriamente.'
+
+        if form.vars.campo_1 != '':
+            exists = db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.nombre == form.vars.campo_1).select()
+            if len(exists) == 0:
+                db.CAMPOS_ADICIONALES_TRANSCRIPCION.insert(nombre=form.vars.campo_1.capitalize())
+        if form.vars.campo_2 != '':
+            exists = db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.nombre == form.vars.campo_2).select()
+            if len(exists) == 0:
+                db.CAMPOS_ADICIONALES_TRANSCRIPCION.insert(nombre=form.vars.campo_2.capitalize())
+        if form.vars.campo_3 != '':
+            exists = db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.nombre == form.vars.campo_3).select()
+            if len(exists) == 0:
+                db.CAMPOS_ADICIONALES_TRANSCRIPCION.insert(nombre=form.vars.campo_3.capitalize())
+
         redirect(URL('list'))
+
     elif form.errors:
         print(form.errors)
-        response.flash = SPAN('Hay errores en el formulario', _class='whatever')
+        response.flash = 'Hay errores en el formulario'
 
     return dict(text=text, pdfurl=pdfurl, code=code, id = id, form = form)
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def aditional_field_selector():
+
+    string = ''
+    if len(request.vars) == 0:
+        return ''
+    else:
+        if request.vars.campo_1:
+            string = request.vars.campo_1
+        if request.vars.campo_2:
+            string = request.vars.campo_2
+        if request.vars.campo_3:
+            string = request.vars.campo_3
+
+    pattern = '%' + string.capitalize() + '%'
+    selected = [row.nombre for row in db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.nombre.like(pattern)).select()]
+
+    return_string = ''.join([OPTION(k).xml() for k in selected])
+    return return_string
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def list():

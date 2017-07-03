@@ -120,7 +120,9 @@ auth.settings.registration_requires_verification = False
 auth.settings.registration_requires_approval = False
 auth.settings.reset_password_requires_verification = False
 
-#Insertando los roles en la base de datos
+# -------------------------------------------------------------------------
+# Roles para la Base de Datos
+# -------------------------------------------------------------------------
 ROLES = [
     ('DACE-ADMINISTRADOR','Miembro de DACE que tiene permisos de administrador del sistema.'),
     ('DACE-OPERADOR','Miembro de DACE que tiene permisos de consulta del sistema.'),
@@ -139,7 +141,9 @@ for rol in ROLES:
     if db(db.auth_group).count() < len(ROLES):
         db.auth_group.insert(role = rol[0], description = rol[1])
 
-#Asignando los permisos a los roles respectivos.
+# -------------------------------------------------------------------------
+# Permisologia para los Roles
+# -------------------------------------------------------------------------
 
 # Actulizar Perfil Propio
 auth.add_permission(auth.id_group(role="DACE-ADMINISTRADOR"), 'update_profile', 'auth_user')
@@ -203,9 +207,12 @@ auth.add_permission(auth.id_group(role="ESTUDIANTE"), 'consult_ap')
 # ASEGURA QUE EL PRIMER USUARIO EN INCIAR SESION EL EL SISTEMA (ID=1) SEA EL ADMIN.
 auth.add_membership(auth.id_group(role="DACE-ADMINISTRADOR"), 1)
 
+# -------------------------------------------------------------------------
+# Transcripciones
+# -------------------------------------------------------------------------
 
-# TRANSCRIPCIONES
 # Definición del dominio del periodo de vigencia del programa que se transcribe
+# Periodos de trimestres regulares.
 SEP_DIC = 'SEP-DIC'
 ENE_MAR = 'ENE-MAR'
 ABR_JUL = 'ABR-JUL'
@@ -233,6 +240,9 @@ HORAS = tuple([(i, i) for i in range(41)])
 # Definición del dominio de los creditos de un programa
 CREDITOS = tuple([(i, i) for i in range(17)])
 
+# -------------------------------------------------------------------------
+# Definicion de la tabla de Transcripciones
+# -------------------------------------------------------------------------
 
 db.define_table('TRANSCRIPCION',
     Field('original_pdf', type='string', notnull = True, required = True),
@@ -248,9 +258,9 @@ db.define_table('TRANSCRIPCION',
     Field('anio', type = 'integer',  length = 4,  requires = [IS_INT_IN_RANGE(1967, 1e100,
                                                                             error_message='El año debe ser un numero positivo de la forma YYYY a partir de 1967.'),
                                                               IS_LENGTH(4,  error_message ='El año debe ser de la forma YYYY.')]),
-    Field('periodo_hasta', type ='string', length = 9, requires =  IS_IN_SET(PERIODOS, zero='Seleccione', error_message = 'Seleccione un periodo.')),
-    Field('anio_hasta', type = 'integer',  length = 4,  requires = [IS_INT_IN_RANGE(1967, 1e100,
-                                                                            error_message='El año debe ser un numero positivo de la forma YYYY a partir de 1967.'),
+    Field('periodo_hasta', type ='string',required = False,  length = 9, requires = IS_EMPTY_OR( IS_IN_SET(PERIODOS, zero='Seleccione', error_message = 'Seleccione un periodo.'))),
+    Field('anio_hasta', type = 'integer', required = False,  length = 4,  requires = [IS_EMPTY_OR(IS_INT_IN_RANGE(1967, 1e100,
+                                                                            error_message='El año debe ser un numero positivo de la forma YYYY a partir de 1967.')),
                                                               IS_LENGTH(4,  error_message ='El año debe ser de la forma YYYY.')]),
     Field('horas_teoria', type ='integer', requires =  IS_IN_SET(HORAS, zero='Seleccione', error_message = 'Seleccione un número de horas.')),
     Field('horas_practica', type ='integer', requires =  IS_IN_SET(HORAS, zero='Seleccione', error_message = 'Seleccione un número de horas.')),
@@ -267,15 +277,35 @@ db.define_table('TRANSCRIPCION',
     Field('objetivos_especificos', type="text"),
     Field('fecha_modificacion', type="date", notnull = True, default = datetime.date.today()),
     Field('transcriptor', type="string", notnull = True),
+    # campos adicionales
+    Field('campo_1', type='string'),
+    Field('campo_1_cont', type='text'),
+    Field('campo_2', type='string'),
+    Field('campo_2_cont', type='text'),
+    Field('campo_3', type='string'),
+    Field('campo_3_cont', type='text'),
+
     # encargado = models.CharField('Encargado', max_length=100, null=True)
     # pasa = models.BooleanField(default= False)
     # propuesto = models.BooleanField(default= False)
     )
 
+# -------------------------------------------------------------------------
+# Definicion de la tabla para el Registro de Transcriptores
+# -------------------------------------------------------------------------
+
 db.define_table('REGISTRO_TRANSCRIPTORES',
     Field('transcriptor', type="string", notnull = True),
     Field('supervisor', type="string", notnull = True)
     )
+
+# -------------------------------------------------------------------------
+# Definicion de la tabla para el Registro de Transcriptores
+# -------------------------------------------------------------------------
+db.define_table('CAMPOS_ADICIONALES_TRANSCRIPCION',
+    Field('nombre',    type="string", notnull = True)
+    )
+
 # -------------------------------------------------------------------------
 # after defining tables, uncomment below to enable auditing
 # -------------------------------------------------------------------------
