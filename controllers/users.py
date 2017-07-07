@@ -210,7 +210,7 @@ def edit():
     if formulario_nuevo_rol.process(formname="formulario_nuevo_rol").accepted:
 
         new_rol = request.vars.new_rol
-        aregar  = True
+        agregar  = True
 
         # si el rol es el de transcriptor, verificamos que pueda ser asignado
         idrole_transcriptor = auth.id_group(role="TRANSCRIPTOR")
