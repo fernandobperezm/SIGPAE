@@ -1,0 +1,76 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+{{if 'message' in globals():}}
+<h2> {{=message}}</h2>
+<p> Esta es una lista de todas las Transcripciones que estan pendientes por revisión
+    por parte de la Coordinación, Departamento o Decanato para el que usted transcribe.<br>
+</p>
+{{pass}}
+
+<div class="table-responsive">
+ <table id="list-transcriptions" class="table table-striped">
+   <thead>
+     <tr>
+       <th>ID</th>
+       <th>Código</th>
+       <th>Fecha Elaboración</th>
+       <th>Última Modificación</th>
+       <th>Ver</th>
+     </tr>
+   </thead>
+   <tbody>
+     {{for trans in transcripciones:}}
+       <tr>
+         <td>{{=trans['id']}}</td>
+         <td>{{=trans['codigo']}}</td>
+         <td>{{=trans['fecha_elaboracion']}}</td>
+         <td>{{=trans['fecha_modificacion']}}</td>
+         <td><a href="{{=URL(c='transcriptions',f='transcriptor_view',vars=dict(id=trans['id']))}}"<i class="fa fa-eye blue" aria-hidden="true"></i></td>
+       </tr>
+      {{pass}}
+   </tbody>
+ </table>
+ </div>
+</div>
+
+<script type="text/javascript">
+  // initializing datatable
+  $(document).ready( function () {
+    var opciones = {
+          responsive: true,
+            "language": {
+                search:         "Buscar: ",
+                searchPlaceholder: "ID, Código, Fecha...",
+                lengthMenu:     "Mostrar _MENU_ entradas.",
+                info:           "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+                infoEmpty:      "",
+                infoFiltered:   "",
+                infoPostFix:    "",
+                loadingRecords: "Cargando datos...",
+                zeroRecords:    "No se encontraron Transcripciones que correspondan a la búsqueda.",
+                emptyTable:     "No hay información disponible.",
+                processing:     "Procesando...",
+                paginate: {
+                    first:      "Primero",
+                    previous:   "Anterior",
+                    next:       "Siguiente",
+                    last:       "Último"
+                },
+                aria: {
+                    sortAscending:  ": Se ordenan las columnas por orden creciente.",
+                    sortDescending: ": Se ordenan las columnas por orden decreciente."
+                }
+            },
+             "columns": [
+                null,
+                null,
+                null,
+                null,
+                { "orderable": false }
+            ]
+        };
+      $('#list-transcriptions').DataTable(opciones);
+  } );
+
+</script>

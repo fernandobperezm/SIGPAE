@@ -277,6 +277,10 @@ db.define_table('TRANSCRIPCION',
     Field('objetivos_especificos', type="text"),
     Field('fecha_modificacion', type="date", notnull = True, default = datetime.date.today()),
     Field('transcriptor', type="string", notnull = True),
+
+    # indican el estado de la transcripcion
+    Field('estado', type="string", default = 'pendiente'),
+
     # campos adicionales
     Field('campo_1', type='string'),
     Field('campo_1_cont', type='text'),
@@ -284,10 +288,6 @@ db.define_table('TRANSCRIPCION',
     Field('campo_2_cont', type='text'),
     Field('campo_3', type='string'),
     Field('campo_3_cont', type='text'),
-
-    # encargado = models.CharField('Encargado', max_length=100, null=True)
-    # pasa = models.BooleanField(default= False)
-    # propuesto = models.BooleanField(default= False)
     )
 
 # -------------------------------------------------------------------------
@@ -305,6 +305,11 @@ db.define_table('REGISTRO_TRANSCRIPTORES',
 db.define_table('CAMPOS_ADICIONALES_TRANSCRIPCION',
     Field('nombre',    type="string", notnull = True)
     )
+
+# -------------------------------------------------------------------------
+# Definicion de la tabla para la Bitacora de las Transcripciones
+# -------------------------------------------------------------------------
+
 
 # -------------------------------------------------------------------------
 # after defining tables, uncomment below to enable auditing

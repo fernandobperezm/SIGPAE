@@ -1,5 +1,6 @@
 import urllib2
 import json
+import re
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def departments():
@@ -79,29 +80,56 @@ def students():
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def studentdetail():
-    carnet =  request.args(0)
-    if not isinstance(carnet, str):
+    identificador =  request.args(0)
+    if not isinstance(identificador, str):
         redirect(URL(c='default', f='not_authorized'))
 
-    message =  "Estudiante #%s"%(carnet)
+    message =  "Datos del Estudiante"
 
-    try:
-        page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/estudiantes/%s/'%(carnet)).read()
-        student_data = json.loads(page)
-        if len(student_data) > 0:
-            student_data = student_data[0]
-    except urllib2.URLError as e:
-        response.flash = 'Error de conexión con el Web Service.'
-        return dict(message=message, error = e.reason, student_data = [], aproved_subjects = [])
+    # en caso de haber pasado un carnet, verificamos
+    pattern_carnet = re.compile(r'\b([0-9]){2}-([0-9]){5}\b')
 
-    try:
-        page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/estudiantes/%s/asig-aprobadas/'%(carnet)).read()
-        aproved_subjects = json.loads(page)
-    except urllib2.URLError as e:
-        response.flash = 'Error de conexión con el Web Service.'
-        return dict(message=message, error = e.reason, student_data = [], aproved_subjects = [])
+    if pattern_carnet.match(identificador):
+        try:
+            page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/estudiantes?carnet=%s'%(identificador)).read()
+            student_data = json.loads(page)
+            if len(student_data) > 0:
+                student_data = student_data[0]
+        except urllib2.URLError as e:
+            response.flash = 'Error de conexión con el Web Service.'
+            return dict(message=message, error = e.reason, student_data = [], aproved_subjects = [])
 
-    return dict(message=message, student_data = student_data, aproved_subjects = aproved_subjects)
+        try:
+            page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/estudiantes/asig-aprobadas/?carnet=%s'%(identificador)).read()
+            aproved_subjects = json.loads(page)
+        except urllib2.URLError as e:
+            response.flash = 'Error de conexión con el Web Service.'
+            return dict(message=message, error = e.reason, student_data = [], aproved_subjects = [])
+
+        return dict(message=message, student_data = student_data, aproved_subjects = aproved_subjects)
+
+    # en caso contrario, se trata de una cedula
+    else:
+        try:
+            page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/estudiantes?cedula=%s'%(identificador)).read()
+            student_data = json.loads(page)
+            if len(student_data) > 0:
+                student_data = student_data[0]
+        except urllib2.URLError as e:
+            response.flash = 'Error de conexión con el Web Service.'
+            return dict(message=message, error = e.reason, student_data = [], aproved_subjects = [])
+
+        carnet = student_data['carnet']
+
+        try:
+            page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/estudiantes/asig-aprobadas/?carnet=%s'%(carnet)).read()
+            aproved_subjects = json.loads(page)
+        except urllib2.URLError as e:
+            response.flash = 'Error de conexión con el Web Service.'
+            return dict(message=message, error = e.reason, student_data = [], aproved_subjects = [])
+
+        return dict(message=message, student_data = student_data, aproved_subjects = aproved_subjects)
+
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def departmentsubjects():

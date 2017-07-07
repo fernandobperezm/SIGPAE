@@ -33,12 +33,15 @@ manejo_usuarios = [
 
 crear_transcripciones = [
     ((SPAN(_class='fa fa-file-text-o'), ' Nueva Transcripción'), False, URL('transcriptions', 'add')),
-    ((SPAN(_class='fa fa-files-o'), '  Ver Transcripciones'), False, URL('transcriptions', 'list')),
+    ((SPAN(_class='fa fa-files-o'), '  Transcripciones en Curso'), False, URL('transcriptions', 'list')),
+    ((SPAN(_class='fa fa-clock-o '), '  Transcripciones en Revisión'), False, URL('transcriptions', 'list_sent')),
 ]
 
 manejar_transcripciones = [
     ((SPAN(_class='fa fa-user'), '  Transcriptores'), False, URL('transcriptions', 'transcriptors')),
     ((SPAN(_class='fa fa-eye'), '  Seguimiento de Transcripciones'), False, URL('transcriptions', 'following')),
+    ((SPAN(_class='fa fa-clock-o'), '  Transcripciones por Revisión'), False, URL('transcriptions', 'list_pending')),
+    ((SPAN(_class='fa fa-check'), '  Transcripciones Aprobadas'), False, URL('transcriptions', 'list_approved')),
 ]
 
 consultar_programas = [

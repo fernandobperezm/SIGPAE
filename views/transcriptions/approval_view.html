@@ -264,14 +264,87 @@
 <div class="row">
   <div class="transcription-buttons">
     {{=form.custom.end}}
-    <a href="{{=URL(c='transcriptions', f='following')}}">
+    <a href="{{=URL(c='transcriptions', f='list_pending')}}">
       <button class="btn btn-primary">
         <i class="fa fa-arrow-left" aria-hidden="true"></i> Regresar
+      </button>
+    </a>
+    <a data-toggle="modal"
+       data-target="#modalRechazar"
+       data-link-rechazar = "{{=URL(c='transcriptions',f='reject_transcription',args=[id])}}">
+      <button class="btn btn-danger">
+        <i class="fa fa-times" aria-hidden="true"></i> Rechazar
+      </button>
+    </a>
+    <a data-toggle="modal"
+       data-target="#modalAprobar"
+       data-link-aprobar = "{{=URL(c='transcriptions',f='approve_transcription',args=[id])}}">
+      <button class="btn btn-success">
+        <i class="fa fa-check" aria-hidden="true"></i>Aprobar
       </button>
     </a>
   </div>
 </div>
 
+
+<!-- Modal Rechazar-->
+<div class="container">
+  <div class="modal fade" id="modalRechazar" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <center> <h4 class="modal-title">Rechazar Transcripción</h4> </center>
+        </div>
+        <div class="modal-body">
+            <center> <p>¿Está seguro que quiere rechazar esta Transcripción?</p>
+                     <br>
+                     <p>El Transcriptor encarcado tendrá la oportunidad de editarla nuevamente
+                        y reenviarla a Revisión.</p>
+            </center>
+            <br>
+            <center>
+                <a id="botonrechazar" style="text-decoration: none;">
+                  <button class="btn btn-danger">
+                    <i class="fa fa-times" aria-hidden="true"></i> Rechazar
+                  </button>
+                </a>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"> Cerrar </button>
+            </center>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Modal Aprobar-->
+<div class="container">
+  <div class="modal fade" id="modalAprobar" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <center> <h4 class="modal-title">Aprobar Transcripción</h4> </center>
+        </div>
+        <div class="modal-body">
+            <center> <p>¿Está seguro que quiere aprobar esta Transcrición?</p>
+                     <p>Recuerde que una vez aprobada no podrá editarse nuevamente y se agregará a la lista de
+                        Programas Analíticos de Estudio disponibles.</p>
+            </center>
+            <br>
+            <center>
+                <a id="botonaprobar" style="text-decoration: none;">
+                  <button type="button" class="btn btn-success">
+                    <i class="fa fa-check" aria-hidden="true"></i> Aprobar
+                  </button>
+                </a>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"> Cerrar </button>
+            </center>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
 
 <script type="text/javascript" charset="utf8" src="{{=URL('static','datepicker/js/bootstrap-datepicker.min.js')}}"></script>
 <script type="text/javascript" charset="utf8" src="{{=URL('static','datepicker/js/bootstrap-datepicker.es.min.js')}}"></script>
@@ -339,4 +412,21 @@
       $( "#eye" ).addClass("fa-eye");
     }
   });
+
+  // Pasamos los argumentos al modal para rechazar la transcripcion.
+  $('#modalRechazar').on('show.bs.modal', function(e){
+
+      var linkRechazar = $(e.relatedTarget).data('link-rechazar');
+      $("#botonrechazar").attr("href", linkRechazar);
+
+  });
+
+  // Pasamos los argumentos al modal para aprobar la transcripcion.
+  $('#modalAprobar').on('show.bs.modal', function(e){
+
+      var linkRechazar = $(e.relatedTarget).data('link-aprobar');
+      $("#botonaprobar").attr("href", linkRechazar);
+
+  });
+
 </script>

@@ -112,12 +112,12 @@ def following():
     all_transcriptors_for_user = db(db.REGISTRO_TRANSCRIPTORES.supervisor == auth.user.username)._select(db.REGISTRO_TRANSCRIPTORES.transcriptor)
 
     # Obtenemos las transcripciones
-    transcripciones = db(db.TRANSCRIPCION.transcriptor.belongs(all_transcriptors_for_user) |
-                         db.TRANSCRIPCION.transcriptor == auth.user.username).select(db.TRANSCRIPCION.id,
-                                                                                     db.TRANSCRIPCION.codigo,
-                                                                                     db.TRANSCRIPCION.transcriptor,
-                                                                                     db.TRANSCRIPCION.fecha_elaboracion,
-                                                                                     db.TRANSCRIPCION.fecha_modificacion)
+    transcripciones = db((db.TRANSCRIPCION.transcriptor.belongs(all_transcriptors_for_user)) & (db.TRANSCRIPCION.estado == 'pendiente')|
+                         (db.TRANSCRIPCION.transcriptor == auth.user.username) & (db.TRANSCRIPCION.estado == 'pendiente')).select(db.TRANSCRIPCION.id,
+                                                                                                                                  db.TRANSCRIPCION.codigo,
+                                                                                                                                  db.TRANSCRIPCION.transcriptor,
+                                                                                                                                  db.TRANSCRIPCION.fecha_elaboracion,
+                                                                                                                                  db.TRANSCRIPCION.fecha_modificacion)
 
     transcriptores =  db(db.auth_user.username.belongs(all_transcriptors_for_user)).select(db.auth_user.username,
                                                                                            db.auth_user.first_name,
@@ -257,9 +257,85 @@ def edit():
 
     return dict(text=text, pdfurl=pdfurl, code=code, id = id, form = form)
 
-@auth.requires(auth.is_logged_in() and (auth.has_permission('create_transcription') or auth.has_permission('manage_transcriptors', 'auth_user'))
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user')
                and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def view():
+
+    id =  request.vars['id']
+    if not isinstance(id, str):
+        id = id[0]
+
+    transcription = db(db.TRANSCRIPCION.id == id).select()
+    if transcription:
+        transcription = transcription.first()
+    else:
+        redirect(URL(c='default', f='not_authorized'))
+
+    pdfurl = transcription.original_pdf
+    code   = transcription.codigo
+    text   = transcription.texto
+
+    pdfurl = URL('static','transcriptions/originalpdf/' + pdfurl)
+
+    form = SQLFORM(db.TRANSCRIPCION,
+                   record   = id,
+                   writable = False,
+                   fields = ['codigo', 'denominacion', 'fecha_elaboracion',
+                             'periodo', 'horas_teoria', 'horas_practica',
+                             'horas_laboratorio' , 'creditos', 'anio',
+                             'periodo_hasta', 'anio_hasta',
+                             'sinopticos','ftes_info_recomendadas','requisitos',
+                             'estrategias_met','estrategias_eval','justificacion',
+                             'observaciones','objetivos_generales','objetivos_especificos',
+                             'campo_1', 'campo_1_cont',
+                             'campo_2', 'campo_2_cont',
+                             'campo_3', 'campo_3_cont'],
+                   submit_button=T('Guardar')
+                   )
+
+    return dict(text=text, pdfurl=pdfurl, code=code, id = id, form = form)
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user')
+               and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def approval_view():
+
+    id =  request.vars['id']
+    if not isinstance(id, str):
+        id = id[0]
+
+    transcription = db(db.TRANSCRIPCION.id == id).select()
+    if transcription:
+        transcription = transcription.first()
+    else:
+        redirect(URL(c='default', f='not_authorized'))
+
+    pdfurl = transcription.original_pdf
+    code   = transcription.codigo
+    text   = transcription.texto
+
+    pdfurl = URL('static','transcriptions/originalpdf/' + pdfurl)
+
+    form = SQLFORM(db.TRANSCRIPCION,
+                   record   = id,
+                   writable = False,
+                   fields = ['codigo', 'denominacion', 'fecha_elaboracion',
+                             'periodo', 'horas_teoria', 'horas_practica',
+                             'horas_laboratorio' , 'creditos', 'anio',
+                             'periodo_hasta', 'anio_hasta',
+                             'sinopticos','ftes_info_recomendadas','requisitos',
+                             'estrategias_met','estrategias_eval','justificacion',
+                             'observaciones','objetivos_generales','objetivos_especificos',
+                             'campo_1', 'campo_1_cont',
+                             'campo_2', 'campo_2_cont',
+                             'campo_3', 'campo_3_cont'],
+                   submit_button=T('Guardar')
+                   )
+
+    return dict(text=text, pdfurl=pdfurl, code=code, id = id, form = form)
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription')
+               and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def transcriptor_view():
 
     id =  request.vars['id']
     if not isinstance(id, str):
@@ -320,10 +396,10 @@ def list():
     message = "Transcripciones"
 
     # Obtenemos las transcripciones
-    transcripciones = db(db.TRANSCRIPCION.transcriptor == auth.user.username).select(db.TRANSCRIPCION.id,
-                                                                                     db.TRANSCRIPCION.codigo,
-                                                                                     db.TRANSCRIPCION.fecha_elaboracion,
-                                                                                     db.TRANSCRIPCION.fecha_modificacion)
+    transcripciones = db((db.TRANSCRIPCION.transcriptor == auth.user.username) & (db.TRANSCRIPCION.estado == 'pendiente')).select(db.TRANSCRIPCION.id,
+                                                                                                                                  db.TRANSCRIPCION.codigo,
+                                                                                                                                  db.TRANSCRIPCION.fecha_elaboracion,
+                                                                                                                                  db.TRANSCRIPCION.fecha_modificacion)
 
     lista_transcripciones = []
     # Obtenemos los roles de cada usuario
@@ -331,6 +407,75 @@ def list():
         lista_transcripciones.append({'id' : transcripcion.id,
                                       'codigo': transcripcion.codigo,
                                       'fecha_elaboracion' : transcripcion.fecha_elaboracion,
+                                      'fecha_modificacion': transcripcion.fecha_modificacion})
+
+    return dict(message=message, transcripciones = lista_transcripciones)
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def list_sent():
+    message = "Transcripciones en Revisión"
+
+    # Obtenemos las transcripciones
+    transcripciones = db((db.TRANSCRIPCION.transcriptor == auth.user.username) &
+                         (db.TRANSCRIPCION.estado == 'propuesta')).select(db.TRANSCRIPCION.id,
+                                                                          db.TRANSCRIPCION.codigo,
+                                                                          db.TRANSCRIPCION.fecha_elaboracion,
+                                                                          db.TRANSCRIPCION.fecha_modificacion)
+
+    lista_transcripciones = []
+    # Obtenemos los roles de cada usuario
+    for transcripcion in transcripciones:
+        lista_transcripciones.append({'id' : transcripcion.id,
+                                      'codigo': transcripcion.codigo,
+                                      'fecha_elaboracion' : transcripcion.fecha_elaboracion,
+                                      'fecha_modificacion': transcripcion.fecha_modificacion})
+
+    return dict(message=message, transcripciones = lista_transcripciones)
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def list_pending():
+    message = "Transcripciones por Revisión"
+
+    # obtenemos los transcriptores asociados
+    all_transcriptors_for_user = db(db.REGISTRO_TRANSCRIPTORES.supervisor == auth.user.username)._select(db.REGISTRO_TRANSCRIPTORES.transcriptor)
+
+    # Obtenemos las transcripciones
+    transcripciones = db((db.TRANSCRIPCION.transcriptor.belongs(all_transcriptors_for_user)) &
+                         (db.TRANSCRIPCION.estado == 'propuesta')).select(db.TRANSCRIPCION.id,
+                                                                          db.TRANSCRIPCION.codigo,
+                                                                          db.TRANSCRIPCION.transcriptor,
+                                                                          db.TRANSCRIPCION.fecha_elaboracion,
+                                                                          db.TRANSCRIPCION.fecha_modificacion)
+    lista_transcripciones = []
+    # Obtenemos los roles de cada usuario
+    for transcripcion in transcripciones:
+        lista_transcripciones.append({'id' : transcripcion.id,
+                                      'transcriptor' : transcripcion.transcriptor,
+                                      'codigo': transcripcion.codigo,
+                                      'fecha_elaboracion' : transcripcion.fecha_elaboracion,
+                                      'fecha_modificacion': transcripcion.fecha_modificacion})
+
+    return dict(message=message, transcripciones = lista_transcripciones)
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def list_approved():
+    message = "Transcripciones Aprobadas"
+
+    # obtenemos los transcriptores asociados
+    all_transcriptors_for_user = db(db.REGISTRO_TRANSCRIPTORES.supervisor == auth.user.username)._select(db.REGISTRO_TRANSCRIPTORES.transcriptor)
+
+    # Obtenemos las transcripciones
+    transcripciones = db((db.TRANSCRIPCION.transcriptor == auth.user.username) &
+                         (db.TRANSCRIPCION.estado == 'aprobada')).select(db.TRANSCRIPCION.id,
+                                                                         db.TRANSCRIPCION.codigo,
+                                                                         db.TRANSCRIPCION.transcriptor,
+                                                                         db.TRANSCRIPCION.fecha_elaboracion,
+                                                                         db.TRANSCRIPCION.fecha_modificacion)
+    lista_transcripciones = []
+    # Obtenemos los roles de cada usuario
+    for transcripcion in transcripciones:
+        lista_transcripciones.append({'id' : transcripcion.id,
+                                      'codigo': transcripcion.codigo,
                                       'fecha_modificacion': transcripcion.fecha_modificacion})
 
     return dict(message=message, transcripciones = lista_transcripciones)
@@ -390,6 +535,33 @@ def delete_transcription():
 
     session.flash = "Transcripción eliminada exitosamente."
     redirect(URL(c='transcriptions',f='list'))
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def send_transcription():
+
+    transid = request.args(0)
+    db.TRANSCRIPCION[transid] = dict(estado = 'propuesta')
+
+    session.flash = "Transcripción enviada exitosamente a revisión."
+    redirect(URL(c='transcriptions',f='list'))
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def approve_transcription():
+
+    transid = request.args(0)
+    db.TRANSCRIPCION[transid] = dict(estado = 'aprobada', transcriptor = auth.user.username)
+
+    session.flash = "Transcripción aprobada exitosamente."
+    redirect(URL(c='transcriptions',f='list_pending'))
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def reject_transcription():
+
+    transid = request.args(0)
+    db.TRANSCRIPCION[transid] = dict(estado = 'pendiente')
+
+    session.flash = "Transcripción rechazada exitosamente."
+    redirect(URL(c='transcriptions',f='list_pending'))
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def delete_transcription_as_supervizer():
