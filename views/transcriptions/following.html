@@ -13,7 +13,7 @@
    <thead>
      <tr>
        <th>ID</th>
-       <th>Transcriptor</th>
+       <th>Responsable</th>
        <th>Código</th>
        <th>Última Modificación</th>
        <th>Ver</th>
@@ -28,7 +28,7 @@
          <td>{{=trans['transcriptor']}}</td>
          <td>{{=trans['codigo']}}</td>
          <td>{{=trans['fecha_modificacion']}}</td>
-         <td><a href="{{=URL(c='transcriptions',f='edit',vars=dict(id=trans['id']))}}"<i class="fa fa-eye blue" aria-hidden="true"></i></td>
+         <td><a href="{{=URL(c='transcriptions',f='view',vars=dict(id=trans['id']))}}"<i class="fa fa-eye blue" aria-hidden="true"></i></td>
          <td>
            <a data-toggle="modal"
               data-target="#modalReasignar"
@@ -41,7 +41,7 @@
               data-target="#modalEliminar"
               data-id="{{=trans['id']}}"
               data-cod="{{=trans['codigo']}}"
-              data-link-eliminar = "{{=URL(c='transcriptions',f='delete_transcription',args=[trans['id']])}}">
+              data-link-eliminar = "{{=URL(c='transcriptions',f='delete_transcription_as_supervizer',args=[trans['id']])}}">
               <i class="fa fa-times red" aria-hidden="true"></i>
            </a>
          </td>

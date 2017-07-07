@@ -86,6 +86,12 @@ def deletetranscriptor():
     registro = db((db.REGISTRO_TRANSCRIPTORES.transcriptor == usuario.username ) &
                   (db.REGISTRO_TRANSCRIPTORES.supervisor == auth.user.username )).delete()
 
+    # Reasignamos las transcriptiones pendientes al usuario que realizo la eliminacion
+    transcripciones = db(db.TRANSCRIPCION.transcriptor == usuario.username).select()
+
+    for transcripcion in transcripciones:
+      db.TRANSCRIPCION[transcripcion['id']] = dict(transcriptor = auth.user.username)
+
     # revisamos si es transcriptor de otro usuario. En caso contrario, quitamos el rol
     # de transcriptor.
     registro = db(db.REGISTRO_TRANSCRIPTORES.transcriptor == usuario.username).select()
@@ -105,13 +111,13 @@ def following():
     # obtenemos los transcriptores asociados
     all_transcriptors_for_user = db(db.REGISTRO_TRANSCRIPTORES.supervisor == auth.user.username)._select(db.REGISTRO_TRANSCRIPTORES.transcriptor)
 
-
     # Obtenemos las transcripciones
-    transcripciones = db(db.TRANSCRIPCION.transcriptor.belongs(all_transcriptors_for_user)).select(db.TRANSCRIPCION.id,
-                                                                                                   db.TRANSCRIPCION.codigo,
-                                                                                                   db.TRANSCRIPCION.transcriptor,
-                                                                                                   db.TRANSCRIPCION.fecha_elaboracion,
-                                                                                                   db.TRANSCRIPCION.fecha_modificacion)
+    transcripciones = db(db.TRANSCRIPCION.transcriptor.belongs(all_transcriptors_for_user) |
+                         db.TRANSCRIPCION.transcriptor == auth.user.username).select(db.TRANSCRIPCION.id,
+                                                                                     db.TRANSCRIPCION.codigo,
+                                                                                     db.TRANSCRIPCION.transcriptor,
+                                                                                     db.TRANSCRIPCION.fecha_elaboracion,
+                                                                                     db.TRANSCRIPCION.fecha_modificacion)
 
     transcriptores =  db(db.auth_user.username.belongs(all_transcriptors_for_user)).select(db.auth_user.username,
                                                                                            db.auth_user.first_name,
@@ -144,9 +150,9 @@ def following():
 
         # buscamos la transcripcion a reasignar y la actualizamos
         db.TRANSCRIPCION[transcription_id] = dict(transcriptor = transcriptor)
-
         session.flash = "Reasignación exitosa."
         redirect(URL(c='transcriptions', f='following'))
+
     elif formulario_reasignar.errors:
         response.flash = 'Error en la reasignación, intente nuevamente.'
 
@@ -186,7 +192,6 @@ def add():
 def edit():
 
     id =  request.vars['id']
-    print type(id)
     if not isinstance(id, str):
         id = id[0]
 
@@ -244,11 +249,49 @@ def edit():
             if len(exists) == 0:
                 db.CAMPOS_ADICIONALES_TRANSCRIPCION.insert(nombre=form.vars.campo_3.capitalize())
 
-        redirect(URL('list'))
+        redirect(URL(c='transcriptions', f='list'))
 
     elif form.errors:
         print(form.errors)
         response.flash = 'Hay errores en el formulario'
+
+    return dict(text=text, pdfurl=pdfurl, code=code, id = id, form = form)
+
+@auth.requires(auth.is_logged_in() and (auth.has_permission('create_transcription') or auth.has_permission('manage_transcriptors', 'auth_user'))
+               and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def view():
+
+    id =  request.vars['id']
+    if not isinstance(id, str):
+        id = id[0]
+
+    transcription = db(db.TRANSCRIPCION.id == id).select()
+    if transcription:
+        transcription = transcription.first()
+    else:
+        redirect(URL(c='default', f='not_authorized'))
+
+    pdfurl = transcription.original_pdf
+    code   = transcription.codigo
+    text   = transcription.texto
+
+    pdfurl = URL('static','transcriptions/originalpdf/' + pdfurl)
+
+    form = SQLFORM(db.TRANSCRIPCION,
+                   record   = id,
+                   writable = False,
+                   fields = ['codigo', 'denominacion', 'fecha_elaboracion',
+                             'periodo', 'horas_teoria', 'horas_practica',
+                             'horas_laboratorio' , 'creditos', 'anio',
+                             'periodo_hasta', 'anio_hasta',
+                             'sinopticos','ftes_info_recomendadas','requisitos',
+                             'estrategias_met','estrategias_eval','justificacion',
+                             'observaciones','objetivos_generales','objetivos_especificos',
+                             'campo_1', 'campo_1_cont',
+                             'campo_2', 'campo_2_cont',
+                             'campo_3', 'campo_3_cont'],
+                   submit_button=T('Guardar')
+                   )
 
     return dict(text=text, pdfurl=pdfurl, code=code, id = id, form = form)
 
@@ -347,3 +390,14 @@ def delete_transcription():
 
     session.flash = "Transcripción eliminada exitosamente."
     redirect(URL(c='transcriptions',f='list'))
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def delete_transcription_as_supervizer():
+
+    transid = request.args(0)
+    transcripcion = db(db.TRANSCRIPCION.id == transid).select().first()
+    os.remove(os.path.join(request.folder,'static/transcriptions/originalpdf',transcripcion.original_pdf))
+    db(db.TRANSCRIPCION.id == transid).delete()
+
+    session.flash = "Transcripción eliminada exitosamente."
+    redirect(URL(c='transcriptions',f='following'))
