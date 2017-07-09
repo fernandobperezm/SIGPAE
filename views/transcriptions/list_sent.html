@@ -26,7 +26,7 @@
          <td>{{=trans['codigo']}}</td>
          <td>{{=trans['fecha_elaboracion']}}</td>
          <td>{{=trans['fecha_modificacion']}}</td>
-         <td><a href="{{=URL(c='transcriptions',f='transcriptor_view',vars=dict(id=trans['id']))}}"<i class="fa fa-eye blue" aria-hidden="true"></i></td>
+         <td><a href="{{=URL(c='transcriptions',f='view',vars=dict(id=trans['id']))}}"<i class="fa fa-eye blue" aria-hidden="true"></i></td>
        </tr>
       {{pass}}
    </tbody>

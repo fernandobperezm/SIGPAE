@@ -23,40 +23,40 @@
       <b>Campos</b>
     </div>
     <div id="colapse-campos" class="text-extract h-scroll">
-      {{=form.custom.begin}}
+      {{=transcription_form.custom.begin}}
 
       <div class="field-tag">
-        <b>Código </b>
-        {{=form.custom.widget.codigo}}
+        <b>Código * </b>
+        {{=transcription_form.custom.widget.codigo}}
       </div>
-        {{if form.errors:}}
-          {{if 'codigo' in form.errors:}}
+        {{if transcription_form.errors:}}
+          {{if 'codigo' in transcription_form.errors:}}
             <div class="error">
-              {{=form.errors['codigo']}}
+              {{=transcription_form.errors['codigo']}}
             </div>
           {{pass}}
         {{pass}}
 
       <div class="field-tag">
-        <b>Denominación</b>
-        {{=form.custom.widget.denominacion}}
+        <b>Denominación *</b>
+        {{=transcription_form.custom.widget.denominacion}}
       </div>
-      {{if form.errors:}}
-        {{if 'denominacion' in form.errors:}}
+      {{if transcription_form.errors:}}
+        {{if 'denominacion' in transcription_form.errors:}}
           <div class="error">
-            {{=form.errors['denominacion']}}
+            {{=transcription_form.errors['denominacion']}}
           </div>
         {{pass}}
       {{pass}}
 
       <div class="field-tag">
-        <b>Fecha de Elaboración </b>
-        {{=form.custom.widget.fecha_elaboracion}}
+        <b>Fecha de Elaboración *</b>
+        {{=transcription_form.custom.widget.fecha_elaboracion}}
       </div>
-      {{if form.errors:}}
-        {{if 'fecha_elaboracion' in form.errors:}}
+      {{if transcription_form.errors:}}
+        {{if 'fecha_elaboracion' in transcription_form.errors:}}
           <div class="error">
-            {{=form.errors['fecha_elaboracion']}}
+            {{=transcription_form.errors['fecha_elaboracion']}}
           </div>
         {{pass}}
       {{pass}}
@@ -68,28 +68,28 @@
       <div class="row">
         <div class="col-md-6">
           <div class="transcription-tag">
-            <b>Desde</b>
+            <b>Desde *</b>
           </div>
           <div class="field-tag">
-            <b>Periodo</b>
-            {{=form.custom.widget.periodo}}
+            <b>Periodo *</b>
+            {{=transcription_form.custom.widget.periodo}}
           </div>
-          {{if form.errors:}}
-            {{if 'periodo' in form.errors:}}
+          {{if transcription_form.errors:}}
+            {{if 'periodo' in transcription_form.errors:}}
               <div class="error">
-                {{=form.errors['periodo']}}
+                {{=transcription_form.errors['periodo']}}
               </div>
             {{pass}}
           {{pass}}
 
           <div class="field-tag">
-            <b>Año </b>
-            {{=form.custom.widget.anio}}
+            <b>Año *</b>
+            {{=transcription_form.custom.widget.anio}}
           </div>
-          {{if form.errors:}}
-            {{if 'anio' in form.errors:}}
+          {{if transcription_form.errors:}}
+            {{if 'anio' in transcription_form.errors:}}
               <div class="error">
-                {{=form.errors['anio']}}
+                {{=transcription_form.errors['anio']}}
               </div>
             {{pass}}
           {{pass}}
@@ -101,192 +101,173 @@
 
           <div class="field-tag">
             <b>Periodo</b>
-            {{=form.custom.widget.periodo_hasta}}
+            {{=transcription_form.custom.widget.periodo_hasta}}
           </div>
-          {{if form.errors:}}
-            {{if 'periodo_hasta' in form.errors:}}
+          {{if transcription_form.errors:}}
+            {{if 'periodo_hasta' in transcription_form.errors:}}
               <div class="error">
-                {{=form.errors['periodo_hasta']}}
+                {{=transcription_form.errors['periodo_hasta']}}
               </div>
             {{pass}}
           {{pass}}
 
           <div class="field-tag">
             <b>Año </b>
-            {{=form.custom.widget.anio_hasta}}
+            {{=transcription_form.custom.widget.anio_hasta}}
           </div>
-          {{if form.errors:}}
-            {{if 'anio_hasta' in form.errors:}}
+          {{if transcription_form.errors:}}
+            {{if 'anio_hasta' in transcription_form.errors:}}
               <div class="error">
-                {{=form.errors['anio_hasta']}}
+                {{=transcription_form.errors['anio_hasta']}}
               </div>
             {{pass}}
           {{pass}}
         </div>
       </div>
-          
+
       <div class="field-tag">
-        <b>Horas de Teoría</b>
-        {{=form.custom.widget.horas_teoria}}
+        <b>Horas de Teoría *</b>
+        {{=transcription_form.custom.widget.horas_teoria}}
       </div>
-      {{if form.errors:}}
-        {{if 'horas_teoria' in form.errors:}}
+      {{if transcription_form.errors:}}
+        {{if 'horas_teoria' in transcription_form.errors:}}
           <div class="error">
-            {{=form.errors['horas_teoria']}}
+            {{=transcription_form.errors['horas_teoria']}}
           </div>
         {{pass}}
       {{pass}}
 
       <div class="field-tag">
-        <b>Horas de Práctica</b>
-        {{=form.custom.widget.horas_practica}}
+        <b>Horas de Práctica *</b>
+        {{=transcription_form.custom.widget.horas_practica}}
       </div>
-      {{if form.errors:}}
-        {{if 'horas_practica' in form.errors:}}
+      {{if transcription_form.errors:}}
+        {{if 'horas_practica' in transcription_form.errors:}}
           <div class="error">
-            {{=form.errors['horas_practica']}}
+            {{=transcription_form.errors['horas_practica']}}
           </div>
         {{pass}}
       {{pass}}
 
       <div class="field-tag">
-        <b>Horas de Laboratorio</b>
-        {{=form.custom.widget.horas_laboratorio}}
+        <b>Horas de Laboratorio *</b>
+        {{=transcription_form.custom.widget.horas_laboratorio}}
       </div>
-      {{if form.errors:}}
-        {{if 'horas_laboratorio' in form.errors:}}
+      {{if transcription_form.errors:}}
+        {{if 'horas_laboratorio' in transcription_form.errors:}}
           <div class="error">
-            {{=form.errors['horas_laboratorio']}}
+            {{=transcription_form.errors['horas_laboratorio']}}
           </div>
         {{pass}}
       {{pass}}
 
       <div class="field-tag">
-        <b>Créditos</b>
-        {{=form.custom.widget.creditos}}
+        <b>Créditos *</b>
+        {{=transcription_form.custom.widget.creditos}}
       </div>
-      {{if form.errors:}}
-        {{if 'creditos' in form.errors:}}
+      {{if transcription_form.errors:}}
+        {{if 'creditos' in transcription_form.errors:}}
           <div class="error">
-            {{=form.errors['creditos']}}
+            {{=transcription_form.errors['creditos']}}
           </div>
         {{pass}}
       {{pass}}
+
+      <br>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="transcription-tag ">
+            <b id="objetivos-simples">Ver Objetivos Simples <i id="check-objetivos-simples" class="fa fa-check-square-o"></i></b>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="transcription-tag">
+            <b  id="objetivos-especificos">Ver Objetivos Generales/Especificos <i id="check-objetivos-especificos" class="fa fa-square-o"></i></b>
+          </div>
+        </div>
+      </div>
 
       <div class="field-tag-wide">
-        <b>Objetivos Generales</b>
-        {{=form.custom.widget.objetivos_generales}}
+        <b><span id="nombre-objetivos-tag"></span></b>
+        {{=transcription_form.custom.widget.objetivos_generales}}
       </div>
 
-      <div class="field-tag-wide">
-        <b>Objetivos Específicos</b>
-        {{=form.custom.widget.objetivos_especificos}}
+      <div id="objetivos-especificos-wrapper">
+        <div class="field-tag-wide">
+          <b>Objetivos Específicos</b>
+          {{=transcription_form.custom.widget.objetivos_especificos}}
+        </div>
       </div>
 
       <div class="field-tag-wide">
         <b>Contenidos Sinopticós</b>
-        {{=form.custom.widget.sinopticos}}
+        {{=transcription_form.custom.widget.sinopticos}}
       </div>
 
       <div class="field-tag-wide">
         <b>Requisitos</b>
-        {{=form.custom.widget.requisitos}}
+        {{=transcription_form.custom.widget.requisitos}}
       </div>
 
       <div class="field-tag-wide">
         <b>Estrategias Metodológicas</b>
-        {{=form.custom.widget.estrategias_met}}
+        {{=transcription_form.custom.widget.estrategias_met}}
       </div>
 
       <div class="field-tag-wide">
         <b>Estrategias de Evaluación</b>
-        {{=form.custom.widget.estrategias_eval}}
+        {{=transcription_form.custom.widget.estrategias_eval}}
       </div>
 
       <div class="field-tag-wide">
         <b>Justificación</b>
-        {{=form.custom.widget.justificacion}}
+        {{=transcription_form.custom.widget.justificacion}}
       </div>
 
       <div class="field-tag-wide">
         <b>Fuentes de Información Recomendadas</b>
-        {{=form.custom.widget.ftes_info_recomendadas}}
+        {{=transcription_form.custom.widget.ftes_info_recomendadas}}
       </div>
 
       <div class="field-tag-wide">
         <b>Observaciones</b>
-        {{=form.custom.widget.observaciones}}
+        {{=transcription_form.custom.widget.observaciones}}
       </div>
 
       <div class="transcription-tag">
         <b>Campos Adicionales</b>
       </div>
 
-      <div id="campo_1_container">
-        <div id="campo_1_container" class="field-tag">
-          <b>Nombre del Campo</b>
-          {{=form.custom.widget.campo_1}}
-          <datalist id="suggestions_1"></datalist>
-        </div>
+      {{if len(campos_adicionales) > 0:}}
+        {{ for campo in campos_adicionales:}}
         <div class="field-tag-wide">
-          {{=form.custom.widget.campo_1_cont}}
+          <b>{{=campo['nombre']}}</b>
+          <textarea rows="4" cols="50" readonly disabled='True'>{{=campo['contenido']}}</textarea>
         </div>
-      </div>
-
-      <div id="campo_2_container">
-        <div class="field-tag">
-          <b>Nombre del Campo</b>
-          {{=form.custom.widget.campo_2}}
-          <datalist id="suggestions_2"></datalist>
-        </div>
-        <div class="field-tag-wide">
-          {{=form.custom.widget.campo_2_cont}}
-        </div>
-      </div>
-
-      <div id="campo_3_container">
-        <div class="field-tag">
-          <b>Nombre del Campo</b>
-          {{=form.custom.widget.campo_3}}
-          <datalist id="suggestions_3"></datalist>
-        </div>
-        <div class="field-tag-wide">
-          {{=form.custom.widget.campo_3_cont}}
-        </div>
-      </div>
+        {{pass}}
+      {{else:}}
+        <p>Este programa no tiene campos adicionales definidos.</p>
+      {{pass}}
     </div>
   </div>
 </div>
 
 <div class="row">
   <div class="transcription-buttons">
-    {{=form.custom.end}}
-    <a href="{{=URL(c='transcriptions', f='following')}}">
-      <button class="btn btn-primary">
-        <i class="fa fa-arrow-left" aria-hidden="true"></i> Regresar
+    {{=transcription_form.custom.end}}
+      <button class="btn btn-danger" onclick="goBack()">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>  Regresar
       </button>
-    </a>
   </div>
 </div>
-
 
 <script type="text/javascript" charset="utf8" src="{{=URL('static','datepicker/js/bootstrap-datepicker.min.js')}}"></script>
 <script type="text/javascript" charset="utf8" src="{{=URL('static','datepicker/js/bootstrap-datepicker.es.min.js')}}"></script>
 
-<!-- script para el manejo de los campos adicionales -->
+<!-- Editar/Eliminar Campos Adicionales-->
 <script>
-  var first_empty = 0;
-  if ($('#TRANSCRIPCION_campo_3').val() == '') {
-    $('#campo_3_container').css( "display", "none" );
-    first_empty = 3;
-  }
-  if ($('#TRANSCRIPCION_campo_2').val() == '') {
-    $('#campo_2_container').css( "display", "none" );
-    first_empty = 2;
-  }
-  if ($('#TRANSCRIPCION_campo_1').val() == '') {
-    $('#campo_1_container').css( "display", "none" );
-    first_empty = 1;
+  function goBack() {
+      window.history.back();
   }
 
   // desactivar todos los campos
@@ -311,12 +292,6 @@
   $('#TRANSCRIPCION_justificacion').prop('disabled', true);
   $('#TRANSCRIPCION_ftes_info_recomendadas').prop('disabled', true);
   $('#TRANSCRIPCION_observaciones').prop('disabled', true);
-  $('#TRANSCRIPCION_campo_1').prop('disabled', true);
-  $('#TRANSCRIPCION_campo_2').prop('disabled', true);
-  $('#TRANSCRIPCION_campo_3').prop('disabled', true);
-  $('#TRANSCRIPCION_campo_1_cont').prop('disabled', true);
-  $('#TRANSCRIPCION_campo_2_cont').prop('disabled', true);
-  $('#TRANSCRIPCION_campo_3_cont').prop('disabled', true);
 
 </script>
 

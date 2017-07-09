@@ -361,7 +361,8 @@ def edit():
                 new_field_form = new_field_form,
                 edit_field_form = edit_field_form)
 
-@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user')
+@auth.requires(auth.is_logged_in()
+               and (auth.has_permission('manage_transcriptors', 'auth_user') or auth.has_permission('create_transcription'))
                and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def view():
 
@@ -381,7 +382,7 @@ def view():
 
     pdfurl = URL('static','transcriptions/originalpdf/' + pdfurl)
 
-    form = SQLFORM(db.TRANSCRIPCION,
+    transcription_form = SQLFORM(db.TRANSCRIPCION,
                    record   = id,
                    writable = False,
                    fields = ['codigo', 'denominacion', 'fecha_elaboracion',
@@ -390,14 +391,19 @@ def view():
                              'periodo_hasta', 'anio_hasta',
                              'sinopticos','ftes_info_recomendadas','requisitos',
                              'estrategias_met','estrategias_eval','justificacion',
-                             'observaciones','objetivos_generales','objetivos_especificos',
-                             'campo_1', 'campo_1_cont',
-                             'campo_2', 'campo_2_cont',
-                             'campo_3', 'campo_3_cont'],
+                             'observaciones','objetivos_generales','objetivos_especificos'],
                    submit_button=T('Guardar')
                    )
 
-    return dict(text=text, pdfurl=pdfurl, code=code, id = id, form = form)
+    # obtenemos los campos adicionales, si existen
+    campos_adicionales = db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.transcripcion == transcription).select()
+
+    return dict(text=text,
+                pdfurl=pdfurl,
+                code=code,
+                id = id,
+                transcription_form = transcription_form,
+                campos_adicionales = campos_adicionales)
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user')
                and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
@@ -518,44 +524,6 @@ def approval_view():
                 transcription_form = transcription_form,
                 new_field_form = new_field_form,
                 edit_field_form = edit_field_form)
-
-@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription')
-               and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
-def transcriptor_view():
-
-    id =  request.vars['id']
-    if not isinstance(id, str):
-        id = id[0]
-
-    transcription = db(db.TRANSCRIPCION.id == id).select()
-    if transcription:
-        transcription = transcription.first()
-    else:
-        redirect(URL(c='default', f='not_authorized'))
-
-    pdfurl = transcription.original_pdf
-    code   = transcription.codigo
-    text   = transcription.texto
-
-    pdfurl = URL('static','transcriptions/originalpdf/' + pdfurl)
-
-    form = SQLFORM(db.TRANSCRIPCION,
-                   record   = id,
-                   writable = False,
-                   fields = ['codigo', 'denominacion', 'fecha_elaboracion',
-                             'periodo', 'horas_teoria', 'horas_practica',
-                             'horas_laboratorio' , 'creditos', 'anio',
-                             'periodo_hasta', 'anio_hasta',
-                             'sinopticos','ftes_info_recomendadas','requisitos',
-                             'estrategias_met','estrategias_eval','justificacion',
-                             'observaciones','objetivos_generales','objetivos_especificos',
-                             'campo_1', 'campo_1_cont',
-                             'campo_2', 'campo_2_cont',
-                             'campo_3', 'campo_3_cont'],
-                   submit_button=T('Guardar')
-                   )
-
-    return dict(text=text, pdfurl=pdfurl, code=code, id = id, form = form)
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def aditional_field_selector():
