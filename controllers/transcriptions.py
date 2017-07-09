@@ -502,7 +502,7 @@ def approval_view():
                 session.flash = 'Campo %s ya existe.'%(nombre_campo)
 
 
-        redirect(URL(c='transcriptions',f='edit',vars={'id' : id}), client_side = True)
+        redirect(URL(c='transcriptions',f='approval_view',vars={'id' : id}), client_side = True)
 
     elif new_field_form.errors:
         response.flash = 'No se pudo agregar un nuevo campo.'
@@ -512,7 +512,7 @@ def approval_view():
         id_campo = edit_field_form.vars.id_campo
         db.CAMPOS_ADICIONALES_TRANSCRIPCION[id_campo] = dict (contenido = edit_field_form.vars.contenido)
         session.flash = 'Campo adicional actualizado.'
-        redirect(URL(c='transcriptions',f='edit',vars={'id' : id}), client_side = True)
+        redirect(URL(c='transcriptions',f='approval_view',vars={'id' : id}), client_side = True)
     elif edit_field_form.errors:
         response.flash = 'No se pudo agregar un nuevo campo.'
 
@@ -679,6 +679,23 @@ def extract_text_from_image(path):
 
     return trancription
 
+def check_required_fields(trasid):
+    transcripcion = db(db.TRANSCRIPCION.id == trasid).select().first()
+
+    campos_obligatorios = [ 'codigo', 'denominacion',
+                            'fecha_elaboracion', 'periodo',
+                            'anio', 'horas_teoria',
+                            'horas_practica', 'horas_laboratorio',
+                            'creditos']
+
+    check = True
+
+    for campo in campos_obligatorios:
+        if not(transcripcion[campo]):
+            check = False
+
+    return check
+
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def delete_transcription():
 
@@ -694,9 +711,13 @@ def delete_transcription():
 def send_transcription():
 
     transid = request.args(0)
-    db.TRANSCRIPCION[transid] = dict(estado = 'propuesta')
 
-    session.flash = "Transcripción enviada exitosamente a revisión."
+    if check_required_fields(transid):
+        db.TRANSCRIPCION[transid] = dict(estado = 'propuesta')
+        session.flash = "Transcripción enviada exitosamente a revisión."
+    else:
+        session.flash = "Faltan campos obligatorios para esta Transcripción. Complételos antes de enviarla a revisión."
+
     redirect(URL(c='transcriptions',f='list'))
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))

@@ -414,10 +414,13 @@ $('#modalEliminarCampo').on('show.bs.modal', function(e){
 
 <script>
 
-  // desactivamos la comprobacion de dejar pagina si el boton es guardar
-  document.querySelector('input[type="submit"]').addEventListener("click", function(){
-      window.btn_clicked = true;      //set btn_clicked to true
-  });
+  var buttons = document.getElementsByClassName("btn-primary");
+
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener('click', function(){
+        window.btn_clicked = true;      //set btn_clicked to true
+    });
+  }
 
   // desactivamos la comprobacion de dejar pagina si el boton es de eliminar campo
   document.querySelector('#eliminar-campo-button').addEventListener("click", function(){
