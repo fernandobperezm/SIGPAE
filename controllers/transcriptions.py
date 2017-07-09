@@ -10,6 +10,10 @@ import pyocr.builders
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def transcriptors():
+    """
+      Vista para un usuario que tiene el rol de transcriptor.
+    """
+
     message = "Transcriptores"
 
     group_id = auth.id_group(role="TRANSCRIPTOR")
@@ -29,7 +33,8 @@ def transcriptors():
                                      'name' : transcriptor.first_name + ' ' + transcriptor.last_name,
                                      'email': transcriptor.email})
 
-    # formulario para nuevos transcriptores
+    # formulario para nuevos transcriptores 
+    # se buscan por correo institucional, y se comprueba por medio de una expresion regular
     form = SQLFORM.factory(Field('correo', type="string",
                                   requires = IS_MATCH(r'\b([a-zA-Z0-9-]+@usb\.ve)\b',
                                   error_message = 'Correo no corresponde a un Correo Institucional.')),
@@ -49,18 +54,19 @@ def transcriptors():
                              int(auth.id_group(role="COORDINACION")),
                              int(auth.id_group(role="DEPARTAMENTO"))]
 
+            # Revisamos que el usuario no tenga rol de decanato, Dpto, o Coord. para transcribir.
             for i in roles:
                 if i['group_id'] in no_permitidos:
                     puede_transcribir = False
                     session.flash = 'Usuarios con rol de DECANATO, COORDINACION o DEPARTAMENTO no pueden transcribir programas.'
 
-            # luego, revisamos si ya se encuentra transcribiendo para alguno supervisor
+            # luego, revisamos si ya se encuentra transcribiendo para algun supervisor
             existente = db(db.REGISTRO_TRANSCRIPTORES.transcriptor == usuario.username).select()
             if existente:
                 puede_transcribir = False
                 session.flash = 'El Usuario ya es Transcriptor de otro DECANATO, COORDINACION o DEPARTAMENTO.'
 
-            # finalmente, si puede transcribir
+            # finalmente, puede transcribir y se agrega a la lista de usuarios transcriptores
             if puede_transcribir:
                 auth.add_membership(group_id, usuario.id)
 
@@ -79,6 +85,10 @@ def transcriptors():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def deletetranscriptor():
+    """
+      Funcion encargada de la eliminacion de transcriptores.
+    """
+
     idusuario = request.args(0)
     idrole    = request.args(1)
 
@@ -107,9 +117,12 @@ def deletetranscriptor():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def following():
+  """
+    Vista para listar las transcripciones a evaluar por un supervisor en proceso.
+  """
     message = "Seguimiento de Transcripciones"
 
-    # obtenemos los transcriptores asociados
+    # obtenemos los transcriptores asociadas al supervisor
     all_transcriptors_for_user = db(db.REGISTRO_TRANSCRIPTORES.supervisor == auth.user.username)._select(db.REGISTRO_TRANSCRIPTORES.transcriptor)
 
     # Obtenemos las transcripciones
@@ -162,9 +175,15 @@ def following():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def add():
+    """
+      Función para empezar una nueva transcripción.
+      En la vista se selecciona un archivo .pdf o imagen de un .pdf de una transcripcion
+      para poder iniciar el proceso.
+    """
 
     mensaje = 'Nueva Transcripción'
 
+    # Se selecciona en el formulario el tipo de archivo a cargar. 
     form = SQLFORM.factory(
                 Field('file', 'upload', label = 'Archivo PDF',
                                         uploadfolder=os.path.join(request.folder,'static/transcriptions/originalpdf/'),
@@ -190,6 +209,12 @@ def add():
     return dict(message = mensaje, form = form)
 
 def check_valid_aditional_field_name(name):
+
+    """
+      Función para chequear que el campo adicional no contenga los mismos
+      nombres que los campos obligatorios.
+
+    """
     campos_definidos= [
           "Codigo", "Código",
           "Denominacion", "Denominación",
@@ -221,6 +246,10 @@ def check_valid_aditional_field_name(name):
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def delete_aditional_field():
+  """
+    Borra el campo adicional agregado.
+  """
+
     transid  = request.args(0)
     id_campo = request.args(1)
     db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.id == id_campo).delete()
@@ -231,6 +260,9 @@ def delete_aditional_field():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def edit():
+    """
+      Función para editar la planilla de transcripción.
+    """
 
     id =  request.vars['id']
     if not isinstance(id, str):
@@ -242,6 +274,7 @@ def edit():
     code   = transcription.codigo
     text   = transcription.texto
 
+    # Extrae el texto según el tipo de archivo cargado para transcribir
     if 'file_type' in request.vars:
         if request.vars['file_type'] == "Texto":
 
@@ -250,6 +283,8 @@ def edit():
             text = extract_text_from_image(os.path.join(request.folder,'static/transcriptions/originalpdf',request.vars['file']))
 
         db.TRANSCRIPCION[id] = dict(texto = text)
+
+    # Se extrae en código y departamento del texto para llenar automáticamente en la forma.
     if 'extract_type' in request.vars:
         if request.vars['extract_type'] == "Código y Departamento":
             code = match_codigo_asig(text)
@@ -262,6 +297,7 @@ def edit():
 
     pdfurl = URL('static','transcriptions/originalpdf/' + pdfurl)
 
+    # Campos por defecto en la forma de transcripción.
     transcription_form = SQLFORM(db.TRANSCRIPCION,
                    record = id,
                    fields = ['codigo', 'denominacion', 'fecha_elaboracion',
@@ -277,7 +313,7 @@ def edit():
     # obtenemos los campos adicionales, si existen
     campos_adicionales = db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.transcripcion == transcription).select()
 
-    # formulario nuevo campo adicional
+    # formulario para el nuevo campo adicional
     new_field_form = SQLFORM.factory(
             Field('nombre', type="string",
                    requires = IS_EMPTY_OR(
@@ -290,7 +326,7 @@ def edit():
             submit_button=T('Agregar Campo')
             )
 
-    # formulario para editar campos
+    # formulario para editar campos adicionales
     edit_field_form = SQLFORM.factory(
             Field('id_campo', type='string'),
             Field('contenido', type='text'),
@@ -365,6 +401,9 @@ def edit():
                and (auth.has_permission('manage_transcriptors', 'auth_user') or auth.has_permission('create_transcription'))
                and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def view():
+    """
+      Vista para ver la transcripción realizada ya enviada a aprobación.
+    """
 
     id =  request.vars['id']
     if not isinstance(id, str):
@@ -408,6 +447,10 @@ def view():
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user')
                and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def approval_view():
+    """
+      Vista para los supervisores de transcripción, en esta pueden modificar las transcripciones 
+      a ser aprobadas o rechazadas.
+    """
 
     id =  request.vars['id']
     if not isinstance(id, str):
@@ -425,6 +468,8 @@ def approval_view():
 
     pdfurl = URL('static','transcriptions/originalpdf/' + pdfurl)
 
+    # Se obtienen los campos por defecto
+
     transcription_form = SQLFORM(db.TRANSCRIPCION,
                    record   = id,
                    writable = False,
@@ -441,7 +486,7 @@ def approval_view():
     # obtenemos los campos adicionales, si existen
     campos_adicionales = db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.transcripcion == transcription).select()
 
-    # formulario nuevo campo adicional
+    # formulario del nuevo campo adicional
     new_field_form = SQLFORM.factory(
             Field('nombre', type="string",
                    requires = IS_EMPTY_OR(
@@ -454,7 +499,7 @@ def approval_view():
             submit_button=T('Agregar Campo')
             )
 
-    # formulario para editar campos
+    # formulario para editar campos adicionales
     edit_field_form = SQLFORM.factory(
             Field('id_campo', type='string'),
             Field('contenido', type='text'),
@@ -547,6 +592,10 @@ def aditional_field_selector():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def list():
+    """
+      Lista las transcripciones pendientes.
+    """
+
     message = "Transcripciones"
 
     # Obtenemos las transcripciones
@@ -567,6 +616,10 @@ def list():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def list_sent():
+    """
+        Lista las transcripciones enviadas por el usuario que esperan aprobacion
+        del supervisor.
+    """
     message = "Transcripciones en Revisión"
 
     # Obtenemos las transcripciones
@@ -588,6 +641,11 @@ def list_sent():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def list_pending():
+  """
+    Lista las transcripciones pendientes por aprobar desde el punto de vista 
+    del supervisor.
+  """
+
     message = "Transcripciones por Revisión"
 
     # obtenemos los transcriptores asociados
@@ -613,6 +671,10 @@ def list_pending():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def list_approved():
+  """
+    List las transcripciones aprbadas por el supervisor.
+  """
+
     message = "Transcripciones Aprobadas"
 
     # obtenemos los transcriptores asociados
@@ -635,6 +697,10 @@ def list_approved():
     return dict(message=message, transcripciones = lista_transcripciones)
 
 def match_codigo_asig(text):
+    """
+      Del texto extraido se busca y se asocia el codigo de la asignatura
+      a traves de una expresion regular.
+    """
     expresion = '([A-Z]{2,3} *(-|\s|[^a-z|^A-Z|^0-9]|) *[0-9]{3,4})'
     patron = re.compile(expresion)
     matcher = patron.search(text)
@@ -645,6 +711,10 @@ def match_codigo_asig(text):
         return None
 
 def extract_text(path):
+    """
+      Se extraen el texto del programa en pdf para comparar al momento de 
+      realizar la transcripción.
+    """
     os.system("pdftotext -layout " + path + " extraccion.txt")
     file = open("extraccion.txt", "r")
     text = file.read()
@@ -653,6 +723,10 @@ def extract_text(path):
     return text
 
 def extract_text_from_image(path):
+    """
+      Función para extraer el texto de la imagen para comparar
+      al momento de hacer la transcripción.
+    """
     tool = pyocr.get_available_tools()[0]
     lang = tool.get_available_languages()[2]
 
@@ -680,6 +754,10 @@ def extract_text_from_image(path):
     return trancription
 
 def check_required_fields(trasid):
+    """
+      Se chequea que los campos obligatorios estén llenos en el formulario.
+    """
+
     transcripcion = db(db.TRANSCRIPCION.id == trasid).select().first()
 
     campos_obligatorios = [ 'codigo', 'denominacion',
@@ -698,6 +776,9 @@ def check_required_fields(trasid):
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def delete_transcription():
+    """
+      Permite a un supervisor eliminar una transcripción
+    """
 
     transid = request.args(0)
     transcripcion = db(db.TRANSCRIPCION.id == transid).select().first()
@@ -709,6 +790,9 @@ def delete_transcription():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def send_transcription():
+    """
+      Permite al usuario enviar una transcripcion al supervisor.
+    """
 
     transid = request.args(0)
 
@@ -722,6 +806,9 @@ def send_transcription():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def approve_transcription():
+    """
+      Permite al supervisor aprobar una transcripción.
+    """
 
     transid = request.args(0)
     db.TRANSCRIPCION[transid] = dict(estado = 'aprobada', transcriptor = auth.user.username)
@@ -740,6 +827,9 @@ def reject_transcription():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def delete_transcription_as_supervizer():
+    """
+    Permite al supervisor rechazar trsncripcionespendientes,
+    """
 
     transid = request.args(0)
     transcripcion = db(db.TRANSCRIPCION.id == transid).select().first()

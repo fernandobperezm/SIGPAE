@@ -1,6 +1,10 @@
 import re
 
 def get_roles():
+    """
+        Obtiene una lista de los roles creados en la base de datos.
+    """
+
     roles      = db(db.auth_group).select()
     roles_list = []
     for role in roles:
@@ -11,7 +15,10 @@ def get_roles():
 # Decorador solo para acceder a la vista si se ha iniciado sesion
 @auth.requires(auth.is_logged_in() and auth.has_permission('update_profile', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def profile():
-    # aqui va la logica para ver/actualizar el perfil
+    """
+      La función perfil permite editar la información recopilada del CAS asociada
+      al usuario en sesión.
+    """
 
     mensaje = 'Bienvenido ' + auth.user.first_name + ' ' + auth.user.last_name
 
@@ -35,16 +42,17 @@ def profile():
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def filter():
     '''
-
+      Vista previa a la consulta de usuarios, de manera de poder elegir si se quiere
+      buscar por roles, sin mostrarlos todos, o si se quiere buscar por usuario.
     '''
     message = "Gestión de Usuarios"
 
-    # recolectamos la lista de todos los roles
+    # Recolectamos la lista de todos los roles
 
     roles_list = ['TODOS']
     roles_list = roles_list + get_roles()
 
-    # formulario para buscar usuarios por rol
+    # Formulario para buscar usuarios por rol
     formulario_rol = SQLFORM.factory(Field('rol', type="string",
                                   requires = IS_IN_SET(roles_list,
                                   error_message = 'Seleccione un Rol de Usuario.',
@@ -52,13 +60,15 @@ def filter():
                            labels={'rol':'Rol'},
                            col3  ={'rol':'Seleccione un Rol para listar los usuarios.'})
 
-    # formulario para buscar usuarios por cedula
+    # Formulario para buscar usuarios por cedula
     formulario_ci = SQLFORM.factory(Field('cedula', type="string",
                                   requires = IS_MATCH(r'\b([0-9]){6,10}\b',
                                   error_message = 'Formato de cédula no válido.')),
                            labels={'cedula':'Cédula'},
                            col3  ={'cedula':'Ingrese una cédula en forma numérica sin puntos, por ejemplo: 12345678.'})
 
+    # Si la búsqueda fue procesada correctamente se desplegará la lista de usuarios con el rol
+    # en la búsqueda, o el usuario que coincida con la cédula buscada.
     if formulario_rol.process(formname="formulario_filtro_rol").accepted:
         redirect(URL(c='users', f='manage',args = [formulario_rol.vars.rol]))
     elif formulario_rol.errors:
@@ -74,8 +84,12 @@ def filter():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def manage():
+    """
+      Muestra la vista de usuarios según lo procesado en el filtro de búsqueda
 
-    # param puede ser un rol o una cédula
+    """
+
+    # param: puede ser un rol o una cédula
     param =  request.args(0)
 
     # verificamos que llegue un elemento correcto mediante la url
@@ -89,7 +103,7 @@ def manage():
     # Expresion regular para comprobar las cedulas
     pattern = re.compile(r'\b([0-9]){6,10}\b',)
 
-    # match con la cedula
+    # asociación del usuario con la cédula
     if pattern.match(param):
         usuarios = db(db.auth_user.ci == param).select(db.auth_user.id,
                                                        db.auth_user.ci,
@@ -98,7 +112,7 @@ def manage():
                                                        db.auth_user.last_name,
                                                        db.auth_user.email)
 
-    # match con los roles
+    # asociación con los roles
     elif param == "TODOS":
 
         usuarios = db(db.auth_user).select(db.auth_user.id,
@@ -146,6 +160,11 @@ def manage():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def edit():
+    """
+      Funcion para editar usuarios, sus roles asignados o por asignar, y datos personales.
+    """
+
+
     idusuario = request.args(0)
     message   = "Editar usuario"
 
@@ -160,12 +179,13 @@ def edit():
 
     primary_role = []
 
-    # encontramos el rol primario, para deshabilitar su cambio en la vista.
+    # encontramos el rol primario, para deshabilitar que se pueda cambiar en la vista.
     if len(roles_list) == 1:
         primary_role = roles_list[0]
         roles_list = []
 
     else:
+    # se listan los roles adicionales asigandos al usuario, en su defecto un campo vacio.
         min_id = roles_list[0]['mid']
         for i in range(1, len(roles_list)):
             if min_id > roles_list[i]['mid']:
@@ -213,6 +233,7 @@ def edit():
         agregar  = True
 
         # si el rol es el de transcriptor, verificamos que pueda ser asignado
+        # hay ciertos roles que no pueden ser transcriptores (Dpto./Coord./Decanato)
         idrole_transcriptor = auth.id_group(role="TRANSCRIPTOR")
         if int(new_rol) == int(idrole_transcriptor):
             roles      = db(db.auth_membership.user_id == idusuario).select(db.auth_membership.group_id)
@@ -234,12 +255,13 @@ def edit():
     elif formulario_nuevo_rol.errors:
         response.flash = 'Por favor seleccione un nuevo rol.'
 
+    # cambiando roles
     if formulario_cambiar_rol.process(formname="formulario_cambiar_rol").accepted:
         auth.del_membership(request.vars.old_rol, idusuario)
         auth.add_membership(request.vars.new_rol, idusuario)
 
-        # si el rol era el de transcriptor, lo eliminamos como transcriptor
-        # para todos sus supervisores.
+        # si el rol era el de transcriptor, se elimina al usuario como transcriptor
+        # de su supervisor correspondiente
         idrole_transcriptor = auth.id_group(role="TRANSCRIPTOR")
         if int(request.vars.old_rol) == int(idrole_transcriptor):
             usuario = db(db.auth_user.id == idusuario).select().first()
@@ -261,13 +283,16 @@ def edit():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def deleterole():
+  """
+    Eliminación de roles de un usuario
+  """
     idusuario = request.args(0)
     idrole    = request.args(1)
 
     auth.del_membership(idrole, idusuario)
 
     # si el rol era el de transcriptor, lo eliminamos como transcriptor
-    # para todos sus supervisores.
+    # para su supervisor correspondiente.
     idrole_transcriptor = auth.id_group(role="TRANSCRIPTOR")
     if int(idrole) == int(idrole_transcriptor):
         usuario = db(db.auth_user.id == idusuario).select().first()
