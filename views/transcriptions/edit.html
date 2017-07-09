@@ -23,40 +23,40 @@
       <b>Campos</b>
     </div>
     <div id="colapse-campos" class="text-extract h-scroll">
-      {{=form.custom.begin}}
+      {{=transcription_form.custom.begin}}
 
       <div class="field-tag">
         <b>Código </b>
-        {{=form.custom.widget.codigo}}
+        {{=transcription_form.custom.widget.codigo}}
       </div>
-        {{if form.errors:}}
-          {{if 'codigo' in form.errors:}}
+        {{if transcription_form.errors:}}
+          {{if 'codigo' in transcription_form.errors:}}
             <div class="error">
-              {{=form.errors['codigo']}}
+              {{=transcription_form.errors['codigo']}}
             </div>
           {{pass}}
         {{pass}}
 
       <div class="field-tag">
         <b>Denominación</b>
-        {{=form.custom.widget.denominacion}}
+        {{=transcription_form.custom.widget.denominacion}}
       </div>
-      {{if form.errors:}}
-        {{if 'denominacion' in form.errors:}}
+      {{if transcription_form.errors:}}
+        {{if 'denominacion' in transcription_form.errors:}}
           <div class="error">
-            {{=form.errors['denominacion']}}
+            {{=transcription_form.errors['denominacion']}}
           </div>
         {{pass}}
       {{pass}}
 
       <div class="field-tag">
         <b>Fecha de Elaboración </b>
-        {{=form.custom.widget.fecha_elaboracion}}
+        {{=transcription_form.custom.widget.fecha_elaboracion}}
       </div>
-      {{if form.errors:}}
-        {{if 'fecha_elaboracion' in form.errors:}}
+      {{if transcription_form.errors:}}
+        {{if 'fecha_elaboracion' in transcription_form.errors:}}
           <div class="error">
-            {{=form.errors['fecha_elaboracion']}}
+            {{=transcription_form.errors['fecha_elaboracion']}}
           </div>
         {{pass}}
       {{pass}}
@@ -72,24 +72,24 @@
           </div>
           <div class="field-tag">
             <b>Periodo</b>
-            {{=form.custom.widget.periodo}}
+            {{=transcription_form.custom.widget.periodo}}
           </div>
-          {{if form.errors:}}
-            {{if 'periodo' in form.errors:}}
+          {{if transcription_form.errors:}}
+            {{if 'periodo' in transcription_form.errors:}}
               <div class="error">
-                {{=form.errors['periodo']}}
+                {{=transcription_form.errors['periodo']}}
               </div>
             {{pass}}
           {{pass}}
 
           <div class="field-tag">
             <b>Año </b>
-            {{=form.custom.widget.anio}}
+            {{=transcription_form.custom.widget.anio}}
           </div>
-          {{if form.errors:}}
-            {{if 'anio' in form.errors:}}
+          {{if transcription_form.errors:}}
+            {{if 'anio' in transcription_form.errors:}}
               <div class="error">
-                {{=form.errors['anio']}}
+                {{=transcription_form.errors['anio']}}
               </div>
             {{pass}}
           {{pass}}
@@ -101,24 +101,24 @@
 
           <div class="field-tag">
             <b>Periodo</b>
-            {{=form.custom.widget.periodo_hasta}}
+            {{=transcription_form.custom.widget.periodo_hasta}}
           </div>
-          {{if form.errors:}}
-            {{if 'periodo_hasta' in form.errors:}}
+          {{if transcription_form.errors:}}
+            {{if 'periodo_hasta' in transcription_form.errors:}}
               <div class="error">
-                {{=form.errors['periodo_hasta']}}
+                {{=transcription_form.errors['periodo_hasta']}}
               </div>
             {{pass}}
           {{pass}}
 
           <div class="field-tag">
             <b>Año </b>
-            {{=form.custom.widget.anio_hasta}}
+            {{=transcription_form.custom.widget.anio_hasta}}
           </div>
-          {{if form.errors:}}
-            {{if 'anio_hasta' in form.errors:}}
+          {{if transcription_form.errors:}}
+            {{if 'anio_hasta' in transcription_form.errors:}}
               <div class="error">
-                {{=form.errors['anio_hasta']}}
+                {{=transcription_form.errors['anio_hasta']}}
               </div>
             {{pass}}
           {{pass}}
@@ -127,142 +127,163 @@
 
       <div class="field-tag">
         <b>Horas de Teoría</b>
-        {{=form.custom.widget.horas_teoria}}
+        {{=transcription_form.custom.widget.horas_teoria}}
       </div>
-      {{if form.errors:}}
-        {{if 'horas_teoria' in form.errors:}}
+      {{if transcription_form.errors:}}
+        {{if 'horas_teoria' in transcription_form.errors:}}
           <div class="error">
-            {{=form.errors['horas_teoria']}}
+            {{=transcription_form.errors['horas_teoria']}}
           </div>
         {{pass}}
       {{pass}}
 
       <div class="field-tag">
         <b>Horas de Práctica</b>
-        {{=form.custom.widget.horas_practica}}
+        {{=transcription_form.custom.widget.horas_practica}}
       </div>
-      {{if form.errors:}}
-        {{if 'horas_practica' in form.errors:}}
+      {{if transcription_form.errors:}}
+        {{if 'horas_practica' in transcription_form.errors:}}
           <div class="error">
-            {{=form.errors['horas_practica']}}
+            {{=transcription_form.errors['horas_practica']}}
           </div>
         {{pass}}
       {{pass}}
 
       <div class="field-tag">
         <b>Horas de Laboratorio</b>
-        {{=form.custom.widget.horas_laboratorio}}
+        {{=transcription_form.custom.widget.horas_laboratorio}}
       </div>
-      {{if form.errors:}}
-        {{if 'horas_laboratorio' in form.errors:}}
+      {{if transcription_form.errors:}}
+        {{if 'horas_laboratorio' in transcription_form.errors:}}
           <div class="error">
-            {{=form.errors['horas_laboratorio']}}
+            {{=transcription_form.errors['horas_laboratorio']}}
           </div>
         {{pass}}
       {{pass}}
 
       <div class="field-tag">
         <b>Créditos</b>
-        {{=form.custom.widget.creditos}}
+        {{=transcription_form.custom.widget.creditos}}
       </div>
-      {{if form.errors:}}
-        {{if 'creditos' in form.errors:}}
+      {{if transcription_form.errors:}}
+        {{if 'creditos' in transcription_form.errors:}}
           <div class="error">
-            {{=form.errors['creditos']}}
+            {{=transcription_form.errors['creditos']}}
           </div>
         {{pass}}
       {{pass}}
 
-      <div class="field-tag-wide">
-        <b>Objetivos Generales</b>
-        {{=form.custom.widget.objetivos_generales}}
+      <br>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="transcription-tag ">
+            <b id="objetivos-simples">Ver Objetivos Simples <i id="check-objetivos-simples" class="fa fa-check-square-o"></i></b>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="transcription-tag">
+            <b  id="objetivos-especificos">Ver Objetivos Generales/Especificos <i id="check-objetivos-especificos" class="fa fa-square-o"></i></b>
+          </div>
+        </div>
       </div>
 
       <div class="field-tag-wide">
-        <b>Objetivos Específicos</b>
-        {{=form.custom.widget.objetivos_especificos}}
+        <b><span id="nombre-objetivos-tag"></span></b>
+        {{=transcription_form.custom.widget.objetivos_generales}}
+      </div>
+
+      <div id="objetivos-especificos-wrapper">
+        <div class="field-tag-wide">
+          <b>Objetivos Específicos</b>
+          {{=transcription_form.custom.widget.objetivos_especificos}}
+        </div>
       </div>
 
       <div class="field-tag-wide">
         <b>Contenidos Sinopticós</b>
-        {{=form.custom.widget.sinopticos}}
+        {{=transcription_form.custom.widget.sinopticos}}
       </div>
 
       <div class="field-tag-wide">
         <b>Requisitos</b>
-        {{=form.custom.widget.requisitos}}
+        {{=transcription_form.custom.widget.requisitos}}
       </div>
 
       <div class="field-tag-wide">
         <b>Estrategias Metodológicas</b>
-        {{=form.custom.widget.estrategias_met}}
+        {{=transcription_form.custom.widget.estrategias_met}}
       </div>
 
       <div class="field-tag-wide">
         <b>Estrategias de Evaluación</b>
-        {{=form.custom.widget.estrategias_eval}}
+        {{=transcription_form.custom.widget.estrategias_eval}}
       </div>
 
       <div class="field-tag-wide">
         <b>Justificación</b>
-        {{=form.custom.widget.justificacion}}
+        {{=transcription_form.custom.widget.justificacion}}
       </div>
 
       <div class="field-tag-wide">
         <b>Fuentes de Información Recomendadas</b>
-        {{=form.custom.widget.ftes_info_recomendadas}}
+        {{=transcription_form.custom.widget.ftes_info_recomendadas}}
       </div>
 
       <div class="field-tag-wide">
         <b>Observaciones</b>
-        {{=form.custom.widget.observaciones}}
+        {{=transcription_form.custom.widget.observaciones}}
       </div>
 
       <div class="transcription-tag">
         <b>Campos Adicionales</b>
       </div>
 
-      <div id="campo_1_container">
-        <div id="campo_1_container" class="field-tag">
-          <b>Nombre del Campo</b>
-          {{=form.custom.widget.campo_1}}
-          <datalist id="suggestions_1"></datalist>
-        </div>
+      {{if len(campos_adicionales) > 0:}}
+        {{ for campo in campos_adicionales:}}
         <div class="field-tag-wide">
-          {{=form.custom.widget.campo_1_cont}}
+          <b>{{=campo['nombre']}}
+            <div>
+              <a data-toggle="modal"
+                 data-target="#modalEditarCampo"
+                 data-id = "{{=campo['id']}}"
+                 data-nombre = "{{=campo['nombre']}}"
+                 data-contenido = "{{=campo['contenido']}}">
+                 <i class="fa fa-pencil-square-o blue" aria-hidden="true"></i>
+              </a>
+              <a data-toggle="modal"
+                 data-target="#modalEliminarCampo"
+                 data-nombre = "{{=campo['nombre']}}"
+                 data-link-eliminar = "{{=URL(c='transcriptions',f='delete_aditional_field',args=[id, campo['id']])}}">
+                 <i class="fa fa-times red" aria-hidden="true"></i>
+              </a>
+            </div>
+          </b>
+          <textarea rows="4" cols="50" readonly>{{=campo['contenido']}}</textarea>
         </div>
-      </div>
-
-      <div id="campo_2_container">
-        <div class="field-tag">
-          <b>Nombre del Campo</b>
-          {{=form.custom.widget.campo_2}}
-          <datalist id="suggestions_2"></datalist>
-        </div>
-        <div class="field-tag-wide">
-          {{=form.custom.widget.campo_2_cont}}
-        </div>
-      </div>
-
-      <div id="campo_3_container">
-        <div class="field-tag">
-          <b>Nombre del Campo</b>
-          {{=form.custom.widget.campo_3}}
-          <datalist id="suggestions_3"></datalist>
-        </div>
-        <div class="field-tag-wide">
-          {{=form.custom.widget.campo_3_cont}}
-        </div>
-      </div>
+        {{pass}}
+      {{else:}}
+        <p>Este programa no tiene campos adicionales definidos.</p>
+      {{pass}}
 
       <center>
-        <button id="butonAgregarCampo" type="button" class="btn btn-primary" onclick="mostrarCampo()" >
-          <i class="fa fa-plus" aria-hidden="true"></i> Agregar Campo
-        </button>
-        <p> Los campos adicionales le permiten llenar información que no coincida
-            con los campos predeterminados.<br>
-            Los campos adicionales vacíos serán ignorados.
-        </p>
+        <a data-toggle="modal"
+           data-target="#modalAgregarCampo" >
+          <button id="butonAgregarCampo" type="button" class="btn btn-primary" >
+            <i class="fa fa-plus" aria-hidden="true"></i> Agregar Campo
+          </button>
+        </a>
+        <div class='block-info' >
+          <p>
+            Los campos adicionales le permiten llenar información que no coincida
+            con los campos predeterminados.
+          </p>
+        </div>
+        <div class='block-danger' >
+          <p>
+            Por favor guarde su trabajo antes de agregar Campos Adicionales, su progreso
+            podria perderse.
+          </p>
+        </div>
       </center>
     </div>
   </div>
@@ -270,11 +291,91 @@
 
 <div class="row">
   <div class="transcription-buttons">
-    {{=form.custom.submit}}
-    {{=form.custom.end}}
+    {{=transcription_form.custom.submit}}
+    {{=transcription_form.custom.end}}
     <a href="{{=URL(c='transcriptions', f='list')}}">
-      <button class="btn btn-danger">Cancelar</button>
+      <button class="btn btn-danger">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>  Regresar
+      </button>
     </a>
+  </div>
+</div>
+
+
+<!-- Modal Agregar Campo Adicional-->
+<div class="container">
+  <div class="modal fade" id="modalAgregarCampo" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <center> <h4 class="modal-title">Agregar Campo Adicional</h4> </center>
+        </div>
+        <div class="modal-body">
+          <center>
+            <p>Seleccione de la lista desplegable un campo adicional.</p>
+            <p>En caso que no encuentre el campo que este buscando, introduzca el nombre del campo adicional.</p>
+          </center>
+            <br>
+            {{=new_field_form}}
+            <center>
+              <div class='block-danger' >
+                <p>
+                  Por favor guarde su trabajo antes de agregar Campos Adicionales, su progreso
+                  podria perderse.
+                </p>
+              </div>
+            </center>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Campo Adicional-->
+<div class="container">
+  <div class="modal fade" id="modalEditarCampo" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <center> <h4 class="modal-title">Editar Campo Adicional</h4> </center>
+        </div>
+        <div class="modal-body">
+          <center>
+            <b><span id="nombre-campo"><span></b>
+          </center>
+            <br>
+            {{=edit_field_form}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Eliminar Campo Adicional-->
+<div class="container">
+  <div class="modal fade" id="modalEliminarCampo" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <center> <h4 class="modal-title">Eliminar Campo Adicional</h4> </center>
+        </div>
+        <div class="modal-body">
+          <center>
+            <p>¿Está seguro que desea eliminar el campo <b><span id="nombre-campo-eliminar"><span></b> ?</p>
+          </center>
+            <br>
+            <center>
+                <a id="botoneliminarcampo" style="text-decoration: none;">
+                  <button id="eliminar-campo-button" type="button" class="btn btn-danger">Eliminar</button>
+                </a>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"> Cerrar </button>
+            </center>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -282,111 +383,47 @@
 <script type="text/javascript" charset="utf8" src="{{=URL('static','datepicker/js/bootstrap-datepicker.min.js')}}"></script>
 <script type="text/javascript" charset="utf8" src="{{=URL('static','datepicker/js/bootstrap-datepicker.es.min.js')}}"></script>
 
-<!-- script para el manejo de los campos adicionales -->
+<!-- Editar/Eliminar Campos Adicionales-->
 <script>
-  $('#TRANSCRIPCION_campo_1').attr('list', 'suggestions_1');
-  $('#TRANSCRIPCION_campo_1').attr('placeholder', 'Escriba para buscar o agregar...');
-  $('#TRANSCRIPCION_campo_1').attr('autocomplete', 'off');
-  $('#TRANSCRIPCION_campo_1').css( "text-transform", "capitalize" );
-  jQuery("#TRANSCRIPCION_campo_1").keyup(function(){
-        ajax('{{=URL("transcriptions", "aditional_field_selector")}}', ['campo_1'], 'suggestions_1')});
+// Pasamos los argumentos para editar el campo adicional
+$('#modalEditarCampo').on('show.bs.modal', function(e){
 
-  $('#TRANSCRIPCION_campo_2').attr('list', 'suggestions_2');
-  $('#TRANSCRIPCION_campo_2').attr('placeholder', 'Escriba para buscar o agregar...');
-  $('#TRANSCRIPCION_campo_2').attr('autocomplete', 'off');
-  $('#TRANSCRIPCION_campo_2').css( "text-transform", "capitalize" );
-  jQuery("#TRANSCRIPCION_campo_2").keyup(function(){
-    ajax('{{=URL("transcriptions", "aditional_field_selector")}}', ['campo_2'], 'suggestions_2')});
+    var id = $(e.relatedTarget).data('id');
+    var nombre = $(e.relatedTarget).data('nombre');
+    var contenido = $(e.relatedTarget).data('contenido');
 
-  $('#TRANSCRIPCION_campo_3').attr('list', 'suggestions_3');
-  $('#TRANSCRIPCION_campo_3').attr('placeholder', 'Escriba para buscar o agregar...');
-  $('#TRANSCRIPCION_campo_3').attr('autocomplete', 'off');
-  $('#TRANSCRIPCION_campo_3').css( "text-transform", "capitalize" );
-  jQuery("#TRANSCRIPCION_campo_3").keyup(function(){
-    ajax('{{=URL("transcriptions", "aditional_field_selector")}}', ['campo_3'], 'suggestions_3')});
+    // colocamos el nombre del campo
+    $("#nombre-campo").text(nombre);
+    $("#no_table_contenido").text(contenido);
+    $(e.currentTarget).find('input[name="id_campo"]').val(id);
+    $("#no_table_id_campo__row").css("display","none");
+});
 
-  var first_empty = 0;
-  if ($('#TRANSCRIPCION_campo_3').val() == '') {
-    $('#campo_3_container').css( "display", "none" );
-    first_empty = 3;
-  }
-  if ($('#TRANSCRIPCION_campo_2').val() == '') {
-    $('#campo_2_container').css( "display", "none" );
-    first_empty = 2;
-  }
-  if ($('#TRANSCRIPCION_campo_1').val() == '') {
-    $('#campo_1_container').css( "display", "none" );
-    first_empty = 1;
-  }
+// Pasamos los argumentos para eliminar la transcripcion.
+$('#modalEliminarCampo').on('show.bs.modal', function(e){
 
-  // mostrar el proximo campo a ser llenado
-  function mostrarCampo() {
-    if (first_empty == 3) {
-      $('#campo_3_container').css( "display", "inherit" );
-      first_empty = -1;
-    };
-    if (first_empty == 2) {
-      $('#campo_2_container').css( "display", "inherit" );
-      first_empty = 3;
-    };
-    if (first_empty == 1) {
-      $('#campo_1_container').css( "display", "inherit" );
-      first_empty = 2;
-    };
+    var linkEliminar = $(e.relatedTarget).data('link-eliminar');
+    $("#botoneliminarcampo").attr("href", linkEliminar);
 
-    if (first_empty == -1) {
-      $('#butonAgregarCampo').css( "display", "none" );
-    }
-  }
+    var nombre = $(e.relatedTarget).data('nombre');
 
-  // Lista de campos predefinidos para evitar que se agreguen nuevamente
-  // en los campos adicionales
-  var campos_definidos = [
-      "Codigo", "Código",
-      "Denominacion", "Denominación",
-      "Fecha Elaboracion", "Fecha Elaboración",
-      "Periodo", "Año",
-      "Periodo De Vigencia",
-      "Horas De Teoria", "Horas De Teoría",
-      "Horas De Practica", "Horas De Práctica",
-      "Horas De Laboratorio",
-      "Creditos", "Créditos",
-      "Objetivos Generales",
-      "Objetivos Específicos", "Objetivos Especificos",
-      "Contenidos Sinópticos", "Contenidos Sinopticos",
-      "Requisitos",
-      "Estrategias Metodológicas", "Estrategias Metodologicas",
-      "Estrategias de Evaluación", "Estrategias de Evaluacion",
-      "Justificación", "Justificacion",
-      "Fuentes de Información Recomendadas", "Fuentes de Informacion Recomendadas",
-      "Observaciones",
-      "Campos Adicionales",
-  ];
+    $("#nombre-campo-eliminar").text(nombre);
+});
 
-  $('#TRANSCRIPCION_campo_1').change(function() {
-    var value = $('#TRANSCRIPCION_campo_1').val();
-    if (campos_definidos.indexOf(value) >= 0){
-      alert('ERROR: Ya existe un campo llamado ' + value + '.');
-    }
-  });
-  $('#TRANSCRIPCION_campo_2').change(function() {
-    var value = $('#TRANSCRIPCION_campo_2').val();
-    if (campos_definidos.indexOf(value) >= 0){
-      alert('ERROR: Ya existe un campo llamado ' + value + '.');
-    }
-  });
-  $('#TRANSCRIPCION_campo_3').change(function() {
-    var value = $('#TRANSCRIPCION_campo_3').val();
-    if (campos_definidos.indexOf(value) >= 0){
-      alert('ERROR: Ya existe un campo llamado ' + value + '.');
-    }
-  });
 </script>
 
 <script>
-  document.querySelector('.btn-primary').addEventListener("click", function(){
+
+  // desactivamos la comprobacion de dejar pagina si el boton es guardar
+  document.querySelector('input[type="submit"]').addEventListener("click", function(){
       window.btn_clicked = true;      //set btn_clicked to true
   });
+
+  // desactivamos la comprobacion de dejar pagina si el boton es de eliminar campo
+  document.querySelector('#eliminar-campo-button').addEventListener("click", function(){
+      window.btn_clicked = true;      //set btn_clicked to true
+  });
+
 
   window.onbeforeunload = function(){
       if(!window.btn_clicked){
@@ -409,6 +446,92 @@
       $( "#eye" ).addClass("fa-eye");
     }
   });
+
+  // cambiar de objetivos generales a objetivos espeficios y viceversa
+  $("#objetivos-simples").click(function(){
+    if($( "#check-objetivos-especificos" ).hasClass( "fa-square-o")){
+      $( "#check-objetivos-especificos" ).removeClass("fa-square-o");
+      $( "#check-objetivos-especificos" ).addClass("fa-check-square-o");
+    } else {
+      $( "#check-objetivos-especificos" ).removeClass("fa-check-square-o");
+      $( "#check-objetivos-especificos" ).addClass("fa-square-o");
+    }
+    if($( "#check-objetivos-simples" ).hasClass( "fa-square-o")){
+      $( "#check-objetivos-simples" ).removeClass("fa-square-o");
+      $( "#check-objetivos-simples" ).addClass("fa-check-square-o");
+      // cerramos el editor de objetivos especificos
+      $("#objetivos-especificos-wrapper").css("display","none");
+      $("#nombre-objetivos-tag").text('Objetivos');
+      unite();
+    } else {
+      $( "#check-objetivos-simples" ).removeClass("fa-check-square-o");
+      $( "#check-objetivos-simples" ).addClass("fa-square-o");
+      // abrimos el editor de objetivos especificos
+      $("#objetivos-especificos-wrapper").css("display","block");
+      $("#nombre-objetivos-tag").text('Objetivos Generales');
+    }
+  });
+
+  $("#objetivos-especificos").click(function(){
+    if($( "#check-objetivos-simples" ).hasClass( "fa-square-o")){
+      $( "#check-objetivos-simples" ).removeClass("fa-square-o");
+      $( "#check-objetivos-simples" ).addClass("fa-check-square-o");
+
+    } else {
+      $( "#check-objetivos-simples" ).removeClass("fa-check-square-o");
+      $( "#check-objetivos-simples" ).addClass("fa-square-o");
+    }
+    if($( "#check-objetivos-especificos" ).hasClass( "fa-square-o")){
+      $( "#check-objetivos-especificos" ).removeClass("fa-square-o");
+      $( "#check-objetivos-especificos" ).addClass("fa-check-square-o");
+
+      // abrimos el editor de objetivos especificos
+      $("#objetivos-especificos-wrapper").css("display","block");
+      $("#nombre-objetivos-tag").text('Objetivos Generales');
+
+    } else {
+      $( "#check-objetivos-especificos" ).removeClass("fa-check-square-o");
+      $( "#check-objetivos-especificos" ).addClass("fa-square-o");
+
+      // cerramos el editor de objetivos especificos
+      $("#objetivos-especificos-wrapper").css("display","none");
+      $("#nombre-objetivos-tag").text('Objetivos');
+      unite();
+    }
+  });
+
+   var text = $('#TRANSCRIPCION_objetivos_especificos').val();
+   if (text != ''){
+     console.log(text);
+     $("#nombre-objetivos-tag").text('Objetivos Generales');
+    //  manejo del indicador del ojo
+     $( "#check-objetivos-simples" ).removeClass("fa-check-square-o");
+     $( "#check-objetivos-simples" ).addClass("fa-square-o");
+     $( "#check-objetivos-especificos" ).removeClass("fa-square-o");
+     $( "#check-objetivos-especificos" ).addClass("fa-check-square-o");
+   } else {
+     $("#nombre-objetivos-tag").text('Objetivos');
+     //  manejo del indicador del ojo
+     $( "#check-objetivos-simples" ).removeClass("fa-square-o");
+     $( "#check-objetivos-simples" ).addClass("fa-check-square-o");
+     $( "#check-objetivos-especificos" ).removeClass("fa-check-square-o");
+     $( "#check-objetivos-especificos" ).addClass("fa-square-o");;
+
+     $("#objetivos-especificos-wrapper").css("display","none");
+   }
+
+
+   //  concatena los objetivos especificos a los generales cuando se ocultan los especificos
+   function unite(){
+       var text1 = $('#TRANSCRIPCION_objetivos_generales').val();
+       var text2 = $('#TRANSCRIPCION_objetivos_especificos').val();
+
+       $('#TRANSCRIPCION_objetivos_generales').val(text1 + '\n' + text2);
+       $('#TRANSCRIPCION_objetivos_especificos').val('');
+    }
+
+
+
 </script>
 
 <script type="text/javascript">

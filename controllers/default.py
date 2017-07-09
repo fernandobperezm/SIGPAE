@@ -151,7 +151,7 @@ def registrar(usuario, auth):
                                  phone = phone,
     							 password = db.auth_user.password.validate(clave)[0])
 
-        #Agregando roles por defecto
+        # Agregando roles por defecto.
         if tipo == 'Pregrado':
             auth.add_membership(auth.id_group(role="ESTUDIANTE"), auth_user_id)
         if tipo == 'Docente':

@@ -281,13 +281,6 @@ db.define_table('TRANSCRIPCION',
     # indican el estado de la transcripcion
     Field('estado', type="string", default = 'pendiente'),
 
-    # campos adicionales
-    Field('campo_1', type='string'),
-    Field('campo_1_cont', type='text'),
-    Field('campo_2', type='string'),
-    Field('campo_2_cont', type='text'),
-    Field('campo_3', type='string'),
-    Field('campo_3_cont', type='text'),
     )
 
 # -------------------------------------------------------------------------
@@ -302,8 +295,14 @@ db.define_table('REGISTRO_TRANSCRIPTORES',
 # -------------------------------------------------------------------------
 # Definicion de la tabla para el Registro de Transcriptores
 # -------------------------------------------------------------------------
-db.define_table('CAMPOS_ADICIONALES_TRANSCRIPCION',
+db.define_table('NOMBRES_CAMPOS_ADICIONALES_TRANSCRIPCION',
     Field('nombre',    type="string", notnull = True)
+    )
+
+db.define_table('CAMPOS_ADICIONALES_TRANSCRIPCION',
+    Field('transcripcion', db.TRANSCRIPCION),
+    Field('nombre', type="string", notnull = True),
+    Field('contenido', type="text", default = ''),
     )
 
 # -------------------------------------------------------------------------

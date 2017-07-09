@@ -188,6 +188,46 @@ def add():
 
     return dict(message = mensaje, form = form)
 
+def check_valid_aditional_field_name(name):
+    campos_definidos= [
+          "Codigo", "Código",
+          "Denominacion", "Denominación",
+          "Fecha Elaboracion", "Fecha Elaboración",
+          "Periodo", "Año",
+          "Periodo De Vigencia",
+          "Horas De Teoria", "Horas De Teoría",
+          "Horas De Practica", "Horas De Práctica",
+          "Horas De Laboratorio",
+          "Creditos", "Créditos",
+          "Objetivos Generales",
+          "Objetivos Específicos", "Objetivos Especificos",
+          "Contenidos Sinópticos", "Contenidos Sinopticos",
+          "Requisitos",
+          "Estrategias Metodológicas", "Estrategias Metodologicas",
+          "Estrategias de Evaluación", "Estrategias de Evaluacion",
+          "Justificación", "Justificacion",
+          "Fuentes de Información Recomendadas", "Fuentes de Informacion Recomendadas",
+          "Observaciones",
+          "Campos Adicionales"]
+
+    # revisa si no existe otro campo adicional definido con el mismo nombre
+    nombre = db(db.NOMBRES_CAMPOS_ADICIONALES_TRANSCRIPCION.nombre == name).select()
+
+    if nombre:
+        return False
+
+    return not(name in campos_definidos)
+
+@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def delete_aditional_field():
+    transid  = request.args(0)
+    id_campo = request.args(1)
+    db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.id == id_campo).delete()
+
+    session.flash = "Campo Adicional eliminado exitosamente."
+    redirect(URL(c='transcriptions',f='edit', vars=dict(id=transid)))
+
+
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def edit():
 
@@ -216,7 +256,7 @@ def edit():
 
     pdfurl = URL('static','transcriptions/originalpdf/' + pdfurl)
 
-    form = SQLFORM(db.TRANSCRIPCION,
+    transcription_form = SQLFORM(db.TRANSCRIPCION,
                    record = id,
                    fields = ['codigo', 'denominacion', 'fecha_elaboracion',
                              'periodo', 'horas_teoria', 'horas_practica',
@@ -231,31 +271,92 @@ def edit():
                    submit_button=T('Guardar')
                    )
 
-    form.append(INPUT(_type='button', _value='Cancel', _onclick='window.location=\'%s\';;return false' % URL(c='transcriptions', f='list')))
+    # obtenemos los campos adicionales, si existen
+    campos_adicionales = db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.transcripcion == transcription).select()
 
-    if form.accepts(request, session, hideerror=True, formname = "transcription_form"):
+    # formulario nuevo campo adicional
+    new_field_form = SQLFORM.factory(
+            Field('nombre', type="string",
+                   requires = IS_EMPTY_OR(
+                                IS_IN_DB(db, db.NOMBRES_CAMPOS_ADICIONALES_TRANSCRIPCION.nombre, zero='Seleccione...'))),
+            Field('otro_nombre', type='string'),
+            labels = {
+                'nombre' : 'Campos Adicionales',
+                'otro_nombre' : 'Otro Campo'
+            },
+            submit_button=T('Agregar Campo')
+            )
+
+    # formulario para editar campos
+    edit_field_form = SQLFORM.factory(
+            Field('id_campo', type='string'),
+            Field('contenido', type='text'),
+            labels = {
+                'contenido' : 'Contenido'},
+            submit_button=T('Guardar')
+            )
+
+    # Procesamiento del formulario de la transcripcion
+    if transcription_form.accepts(request, session, hideerror=True, keepvalues = True, formname = "transcription_form"):
         session.flash = 'Transcripción guardada satisfactoriamente.'
-
-        if form.vars.campo_1 != '':
-            exists = db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.nombre == form.vars.campo_1).select()
-            if len(exists) == 0:
-                db.CAMPOS_ADICIONALES_TRANSCRIPCION.insert(nombre=form.vars.campo_1.capitalize())
-        if form.vars.campo_2 != '':
-            exists = db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.nombre == form.vars.campo_2).select()
-            if len(exists) == 0:
-                db.CAMPOS_ADICIONALES_TRANSCRIPCION.insert(nombre=form.vars.campo_2.capitalize())
-        if form.vars.campo_3 != '':
-            exists = db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.nombre == form.vars.campo_3).select()
-            if len(exists) == 0:
-                db.CAMPOS_ADICIONALES_TRANSCRIPCION.insert(nombre=form.vars.campo_3.capitalize())
-
-        redirect(URL(c='transcriptions', f='list'))
-
-    elif form.errors:
-        print(form.errors)
+    elif transcription_form.errors:
         response.flash = 'Hay errores en el formulario'
 
-    return dict(text=text, pdfurl=pdfurl, code=code, id = id, form = form)
+    # procesamiento del formulario para una nuevo campo adicional
+    if new_field_form.process(formname = "new_field_form").accepted:
+        nombre_campo = ''
+
+        if new_field_form.vars.nombre:
+            nombre_campo = new_field_form.vars.nombre.capitalize()
+
+            campo_existe = campos_adicionales = db((db.CAMPOS_ADICIONALES_TRANSCRIPCION.transcripcion == transcription) &
+                                                   (db.CAMPOS_ADICIONALES_TRANSCRIPCION.nombre == nombre_campo)).select()
+            if campo_existe:
+                session.flash = 'Campo %s ya fue agregado previamente.'%(nombre_campo)
+            else:
+                db.CAMPOS_ADICIONALES_TRANSCRIPCION.insert(
+                        transcripcion = transcription,
+                        nombre = nombre_campo
+                    )
+                session.flash = 'Nuevo campo %s agregado.'%(nombre_campo)
+        elif new_field_form.vars.otro_nombre:
+            nombre_campo = new_field_form.vars.otro_nombre.capitalize()
+
+            # se verifica si es un campo adicional no antes definido
+            if check_valid_aditional_field_name(nombre_campo):
+                # en caso afirmativo, lo registramos y lo asociamos a la transcripcion
+                field_id = db.NOMBRES_CAMPOS_ADICIONALES_TRANSCRIPCION.insert(nombre=nombre_campo)
+                db.CAMPOS_ADICIONALES_TRANSCRIPCION.insert(
+                        transcripcion = transcription,
+                        nombre = field_id['nombre']
+                    )
+                session.flash = 'Nuevo campo %s agregado.'%(nombre_campo)
+            else:
+                session.flash = 'Campo %s ya existe.'%(nombre_campo)
+
+
+        redirect(URL(c='transcriptions',f='edit',vars={'id' : id}), client_side = True)
+
+    elif new_field_form.errors:
+        response.flash = 'No se pudo agregar un nuevo campo.'
+
+    # procesamiento para editar campos adicionales
+    if edit_field_form.process(formname = "edit_field_form").accepted:
+        id_campo = edit_field_form.vars.id_campo
+        db.CAMPOS_ADICIONALES_TRANSCRIPCION[id_campo] = dict (contenido = edit_field_form.vars.contenido)
+        session.flash = 'Campo adicional actualizado.'
+        redirect(URL(c='transcriptions',f='edit',vars={'id' : id}), client_side = True)
+    elif edit_field_form.errors:
+        response.flash = 'No se pudo agregar un nuevo campo.'
+
+    return dict(text=text,
+                pdfurl=pdfurl,
+                code=code,
+                id = id,
+                campos_adicionales = campos_adicionales,
+                transcription_form = transcription_form,
+                new_field_form = new_field_form,
+                edit_field_form = edit_field_form)
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user')
                and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
@@ -330,6 +431,11 @@ def approval_view():
                              'campo_3', 'campo_3_cont'],
                    submit_button=T('Guardar')
                    )
+
+    if form.accepts(request, session, hideerror=True, formname = "transcription_form"):
+        session.flash = 'Transcripción guardada satisfactoriamente.'
+    elif form.errors:
+        response.flash = 'error'
 
     return dict(text=text, pdfurl=pdfurl, code=code, id = id, form = form)
 
