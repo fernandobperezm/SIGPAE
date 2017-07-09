@@ -4,6 +4,7 @@ import io
 import re
 from wand.image import Image
 from PIL import Image as Pi
+from webservice_queries import *
 import pyocr
 import pyocr.builders
 
@@ -254,6 +255,11 @@ def edit():
             code = match_codigo_asig(text)
             db.TRANSCRIPCION[id] = dict(codigo = code)
 
+            # hacemos la busqueda de la asignatura, si es posible
+            details = subject_details(code)
+            if details:
+                db.TRANSCRIPCION[id] = dict(denominacion = details['nombre'])
+
     pdfurl = URL('static','transcriptions/originalpdf/' + pdfurl)
 
     transcription_form = SQLFORM(db.TRANSCRIPCION,
@@ -264,10 +270,7 @@ def edit():
                              'periodo_hasta', 'anio_hasta',
                              'sinopticos','ftes_info_recomendadas','requisitos',
                              'estrategias_met','estrategias_eval','justificacion',
-                             'observaciones','objetivos_generales','objetivos_especificos',
-                             'campo_1', 'campo_1_cont',
-                             'campo_2', 'campo_2_cont',
-                             'campo_3', 'campo_3_cont'],
+                             'observaciones','objetivos_generales','objetivos_especificos'],
                    submit_button=T('Guardar')
                    )
 
@@ -416,7 +419,7 @@ def approval_view():
 
     pdfurl = URL('static','transcriptions/originalpdf/' + pdfurl)
 
-    form = SQLFORM(db.TRANSCRIPCION,
+    transcription_form = SQLFORM(db.TRANSCRIPCION,
                    record   = id,
                    writable = False,
                    fields = ['codigo', 'denominacion', 'fecha_elaboracion',
@@ -425,19 +428,96 @@ def approval_view():
                              'periodo_hasta', 'anio_hasta',
                              'sinopticos','ftes_info_recomendadas','requisitos',
                              'estrategias_met','estrategias_eval','justificacion',
-                             'observaciones','objetivos_generales','objetivos_especificos',
-                             'campo_1', 'campo_1_cont',
-                             'campo_2', 'campo_2_cont',
-                             'campo_3', 'campo_3_cont'],
+                             'observaciones','objetivos_generales','objetivos_especificos'],
                    submit_button=T('Guardar')
                    )
 
-    if form.accepts(request, session, hideerror=True, formname = "transcription_form"):
-        session.flash = 'Transcripción guardada satisfactoriamente.'
-    elif form.errors:
-        response.flash = 'error'
+    # obtenemos los campos adicionales, si existen
+    campos_adicionales = db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.transcripcion == transcription).select()
 
-    return dict(text=text, pdfurl=pdfurl, code=code, id = id, form = form)
+    # formulario nuevo campo adicional
+    new_field_form = SQLFORM.factory(
+            Field('nombre', type="string",
+                   requires = IS_EMPTY_OR(
+                                IS_IN_DB(db, db.NOMBRES_CAMPOS_ADICIONALES_TRANSCRIPCION.nombre, zero='Seleccione...'))),
+            Field('otro_nombre', type='string'),
+            labels = {
+                'nombre' : 'Campos Adicionales',
+                'otro_nombre' : 'Otro Campo'
+            },
+            submit_button=T('Agregar Campo')
+            )
+
+    # formulario para editar campos
+    edit_field_form = SQLFORM.factory(
+            Field('id_campo', type='string'),
+            Field('contenido', type='text'),
+            labels = {
+                'contenido' : 'Contenido'},
+            submit_button=T('Guardar')
+            )
+
+    # Procesamiento del formulario de la transcripcion
+    if transcription_form.accepts(request, session, hideerror=True, keepvalues = True, formname = "transcription_form"):
+        session.flash = 'Transcripción guardada satisfactoriamente.'
+    elif transcription_form.errors:
+        response.flash = 'Hay errores en el formulario'
+
+    # procesamiento del formulario para una nuevo campo adicional
+    if new_field_form.process(formname = "new_field_form").accepted:
+        nombre_campo = ''
+
+        if new_field_form.vars.nombre:
+            nombre_campo = new_field_form.vars.nombre.capitalize()
+
+            campo_existe = campos_adicionales = db((db.CAMPOS_ADICIONALES_TRANSCRIPCION.transcripcion == transcription) &
+                                                   (db.CAMPOS_ADICIONALES_TRANSCRIPCION.nombre == nombre_campo)).select()
+            if campo_existe:
+                session.flash = 'Campo %s ya fue agregado previamente.'%(nombre_campo)
+            else:
+                db.CAMPOS_ADICIONALES_TRANSCRIPCION.insert(
+                        transcripcion = transcription,
+                        nombre = nombre_campo
+                    )
+                session.flash = 'Nuevo campo %s agregado.'%(nombre_campo)
+        elif new_field_form.vars.otro_nombre:
+            nombre_campo = new_field_form.vars.otro_nombre.capitalize()
+
+            # se verifica si es un campo adicional no antes definido
+            if check_valid_aditional_field_name(nombre_campo):
+                # en caso afirmativo, lo registramos y lo asociamos a la transcripcion
+                field_id = db.NOMBRES_CAMPOS_ADICIONALES_TRANSCRIPCION.insert(nombre=nombre_campo)
+                db.CAMPOS_ADICIONALES_TRANSCRIPCION.insert(
+                        transcripcion = transcription,
+                        nombre = field_id['nombre']
+                    )
+                session.flash = 'Nuevo campo %s agregado.'%(nombre_campo)
+            else:
+                session.flash = 'Campo %s ya existe.'%(nombre_campo)
+
+
+        redirect(URL(c='transcriptions',f='edit',vars={'id' : id}), client_side = True)
+
+    elif new_field_form.errors:
+        response.flash = 'No se pudo agregar un nuevo campo.'
+
+    # procesamiento para editar campos adicionales
+    if edit_field_form.process(formname = "edit_field_form").accepted:
+        id_campo = edit_field_form.vars.id_campo
+        db.CAMPOS_ADICIONALES_TRANSCRIPCION[id_campo] = dict (contenido = edit_field_form.vars.contenido)
+        session.flash = 'Campo adicional actualizado.'
+        redirect(URL(c='transcriptions',f='edit',vars={'id' : id}), client_side = True)
+    elif edit_field_form.errors:
+        response.flash = 'No se pudo agregar un nuevo campo.'
+
+    return dict(text=text,
+                pdfurl=pdfurl,
+                code=code,
+                id = id,
+                campos_adicionales = campos_adicionales,
+                transcription_form = transcription_form,
+                new_field_form = new_field_form,
+                edit_field_form = edit_field_form)
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription')
                and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
