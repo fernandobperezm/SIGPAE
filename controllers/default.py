@@ -57,9 +57,12 @@ def user():
     return dict(form=auth())
 
 def login_cas():
+    """
+        Establece el loggeo de los usuarios a traves del sistema CAS. Si el usuario
+        no existe en la base de datos, se registra.
+    """
 
     if not request.vars.getfirst('ticket'):
-        print 'pass!'
         pass
     try:
         import urllib2, ssl
@@ -75,7 +78,6 @@ def login_cas():
         the_page = response.read()
 
     except Exception, e:
-        print e
         redirect(URL('error'))
 
     if the_page[0:2] == "no":
@@ -85,8 +87,6 @@ def login_cas():
         # session.casticket = request.vars.getfirst('ticket')
         data  = the_page.split()
         usbid = data[1]
-
-        print "usbid ", usbid
 
         usuario = get_ldap_data(usbid) #Se leen los datos del CAS
 
@@ -160,8 +160,7 @@ def registrar(usuario, auth):
     	return auth_user_id
 
     except Exception as e:
-    	print 'ERROR: ',
-    	print e
+        pass
 
     return dict( message = usuario)
 
