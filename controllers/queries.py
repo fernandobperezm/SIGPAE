@@ -4,6 +4,11 @@ import re
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def departments():
+    """
+        Consulta a través de web services de los departamentos. 
+    """
+
+
     message = "Departamentos"
 
     try:
@@ -17,6 +22,9 @@ def departments():
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def subjects():
+    """
+        Consulta a través de web services de las asignaturas. 
+    """
     message = "Asignaturas"
 
     try:
@@ -30,6 +38,11 @@ def subjects():
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def subjectdetail():
+    """
+        Detalla caracteristicas de la asignatura, numero de creditos, horas asignadas
+        y fecha de creación. 
+    """
+
     cod =  request.args(0)
     if not isinstance(cod, str):
         redirect(URL(c='default', f='not_authorized'))
@@ -49,6 +62,10 @@ def subjectdetail():
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def careers():
+    """
+        Consulta a través de web services de carreras. 
+    """
+
     message = "Carreras"
 
     try:
@@ -62,9 +79,15 @@ def careers():
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def students():
+    """
+        Consulta a través de web services de los estudiantes.
+        La búsqueda es realizada por número de cédula o por carnet. 
+    """
+
     message = "Estudiantes"
 
-    # formulario para buscar Estudiantes
+    # formulario para buscar Estudiantes por cédula o carnet, validando a través de una expresión regular
+    # si la cédula o carnet son válidos.
     form = SQLFORM.factory(Field('param', type="string",
                                   requires = IS_MATCH(r'\b([0-9]){2}-([0-9]){5}\b|\b([0-9]{6,10})\b',
                                   error_message = 'Formato de carnet o cédula no válido.')),
@@ -80,13 +103,16 @@ def students():
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def studentdetail():
+    """
+        Consulta relacionada con las asignaturas aproubadas por un estudiante.
+    """
     identificador =  request.args(0)
     if not isinstance(identificador, str):
         redirect(URL(c='default', f='not_authorized'))
 
     message =  "Datos del Estudiante"
 
-    # en caso de haber pasado un carnet, verificamos
+    # en caso de haber pasado un carnet, verificamos que sea válido
     pattern_carnet = re.compile(r'\b([0-9]){2}-([0-9]){5}\b')
 
     if pattern_carnet.match(identificador):
@@ -133,6 +159,10 @@ def studentdetail():
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def departmentsubjects():
+    """
+        Consulta a través de web services de las asignaturas por departamento. 
+    """
+    
     cod =  request.args(0)
     if not isinstance(cod, str):
         redirect(URL(c='default', f='not_authorized'))
@@ -150,6 +180,10 @@ def departmentsubjects():
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def careersubjects():
+    """
+        Consulta a través de web services de las asignaturas por carrera. 
+    """
+
     cod =  request.args(0)
     if not isinstance(cod, str):
         redirect(URL(c='default', f='not_authorized'))

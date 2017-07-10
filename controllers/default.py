@@ -126,10 +126,18 @@ def login_cas():
     return None
 
 def logout():
+    """
+        Redirecciona al usuario al finalizar sesión en el sistema.
+    """
+
     url = 'http://secure.dst.usb.ve/logout'
     auth.logout(next = url)
 
 def registrar(usuario, auth):
+    """
+        Una vez el usuario inicia sesión, extrae la información asociada a su id,
+        provista por el CAS, para llenar los campos de perfil del usuario.
+    """
 
     nombre = usuario['first_name']
     apellido = usuario['last_name']
