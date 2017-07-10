@@ -11,6 +11,7 @@
  <table id="list-transcriptions" class="table table-striped">
    <thead>
      <tr>
+       <th>Bitácora</th>
        <th>ID</th>
        <th>Código</th>
        <th>Última Modificación</th>
@@ -20,6 +21,7 @@
    <tbody>
      {{for trans in transcripciones:}}
        <tr>
+         <td><a href="{{=URL(c='transcriptions',f='journal',args=[trans['id']])}}"><i class="fa fa-book" aria-hidden="true"></i></a></td>
          <td>{{=trans['id']}}</td>
          <td>{{=trans['codigo']}}</td>
          <td>{{=trans['fecha_modificacion']}}</td>
@@ -60,6 +62,7 @@
                 }
             },
              "columns": [
+                { "orderable": false },
                 null,
                 null,
                 null,

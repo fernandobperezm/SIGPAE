@@ -9,6 +9,7 @@
  <table id="list-transcriptions" class="table table-striped">
    <thead>
      <tr>
+       <th>Bitácora</th>
        <th>ID</th>
        <th>Código</th>
        <th>Fecha Elaboración</th>
@@ -21,11 +22,12 @@
    <tbody>
      {{for trans in transcripciones:}}
        <tr>
+         <td><a href="{{=URL(c='transcriptions',f='journal',args=[trans['id']])}}"><i class="fa fa-book" aria-hidden="true"></i></a></td>
          <td>{{=trans['id']}}</td>
          <td>{{=trans['codigo']}}</td>
          <td>{{=trans['fecha_elaboracion']}}</td>
          <td>{{=trans['fecha_modificacion']}}</td>
-         <td><a href="{{=URL(c='transcriptions',f='edit',vars=dict(id=trans['id']))}}"<i class="fa fa-pencil-square-o blue" aria-hidden="true"></i></td>
+         <td><a href="{{=URL(c='transcriptions',f='edit',vars=dict(id=trans['id']))}}"><i class="fa fa-pencil-square-o blue" aria-hidden="true"></i></a></td>
          <td>
            <a data-toggle="modal"
               data-target="#modalEliminar"
@@ -166,6 +168,7 @@
                 }
             },
              "columns": [
+               { "orderable": false },
                 null,
                 null,
                 null,

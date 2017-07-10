@@ -72,7 +72,7 @@ plugins = PluginManager()
 # -------------------------------------------------------------------------
 mail = Mail()
 mail.settings.server = 'smtp.gmail.com:587'
-mail.settings.sender = 'noreply@sigpae.com'
+mail.settings.sender = 'noreplysigpaeusb@sigpae.com'
 mail.settings.login  = 'noreplysigpaeusb@gmail.com:LXHyCmFD9rQPCqC'
 mail.settings.tls    = True
 
@@ -280,7 +280,7 @@ db.define_table('REGISTRO_TRANSCRIPTORES',
     )
 
 # -------------------------------------------------------------------------
-# Definicion de la tabla para el Registro de Transcriptores
+# Definicion de la tabla para los Campos Adicionales de los Transcriptores
 # -------------------------------------------------------------------------
 db.define_table('NOMBRES_CAMPOS_ADICIONALES_TRANSCRIPCION',
     Field('nombre',    type="string", notnull = True)
@@ -295,7 +295,14 @@ db.define_table('CAMPOS_ADICIONALES_TRANSCRIPCION',
 # -------------------------------------------------------------------------
 # Definicion de la tabla para la Bitacora de las Transcripciones
 # -------------------------------------------------------------------------
-
+db.define_table('BITACORA_TRANSCRIPCION',
+    Field('transcripcion', db.TRANSCRIPCION),
+    Field('fecha', type="string", default = datetime.datetime.today().strftime("%d/%m/%Y %H:%M:%S")),
+    Field('usuario', type="string"),
+    Field('rol_usuario',  type="string"),
+    Field('accion', type="string"),
+    Field('descripcion', type="string"),
+    )
 
 # -------------------------------------------------------------------------
 # after defining tables, uncomment below to enable auditing

@@ -3,31 +3,27 @@
 
 {{if 'message' in globals():}}
 <h2> {{=message}}</h2>
-<p> Esta es una lista de todas las Transcripciones que estan pendientes por revisión.<br>
-</p>
 {{pass}}
 
 <div class="table-responsive">
- <table id="list-transcriptions" class="table table-striped">
+ <table id="list-registers" class="table table-striped">
    <thead>
      <tr>
-       <th>Bitácora</th>
-       <th>ID</th>
-       <th>Código</th>
-       <th>Responsable</th>
-       <th>Última Modificación</th>
-       <th>Revisar</th>
+       <th>Fecha</th>
+       <th>Usuario</th>
+       <th>Rol</th>
+       <th>Acción</th>
+       <th>Descripción</th>
      </tr>
    </thead>
    <tbody>
-     {{for trans in transcripciones:}}
+     {{for reg in registros:}}
        <tr>
-         <td><a href="{{=URL(c='transcriptions',f='journal',args=[trans['id']])}}"><i class="fa fa-book" aria-hidden="true"></i></a></td>
-         <td>{{=trans['id']}}</td>
-         <td>{{=trans['codigo']}}</td>
-         <td>{{=trans['transcriptor']}}</td>
-         <td>{{=trans['fecha_modificacion']}}</td>
-         <td><a href="{{=URL(c='transcriptions',f='approval_view',vars=dict(id=trans['id']))}}"<i class="fa fa-eye blue" aria-hidden="true"></i></td>
+         <td>{{=reg['fecha']}}</td>
+         <td>{{=reg['usuario']}}</td>
+         <td>{{=reg['rol_usuario']}}</td>
+         <td>{{=reg['accion']}}</td>
+         <td>{{=reg['descripcion']}}</td>
        </tr>
       {{pass}}
    </tbody>
@@ -36,20 +32,21 @@
 </div>
 
 <script type="text/javascript">
+
   // initializing datatable
   $(document).ready( function () {
     var opciones = {
           responsive: true,
             "language": {
                 search:         "Buscar: ",
-                searchPlaceholder: "ID, Código, Fecha...",
+                searchPlaceholder: "Acción, Fecha, Usuario...",
                 lengthMenu:     "Mostrar _MENU_ entradas.",
                 info:           "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
                 infoEmpty:      "",
                 infoFiltered:   "",
                 infoPostFix:    "",
                 loadingRecords: "Cargando datos...",
-                zeroRecords:    "No se encontraron Transcripciones que correspondan a la búsqueda.",
+                zeroRecords:    "No se encontraron registros que correspondan a la búsqueda.",
                 emptyTable:     "No hay información disponible.",
                 processing:     "Procesando...",
                 paginate: {
@@ -64,15 +61,15 @@
                 }
             },
              "columns": [
-                { "orderable": false },
                 null,
                 null,
                 null,
                 null,
                 { "orderable": false }
-            ]
+            ],
+            "order" : [[ 0, "desc" ]],
         };
-      $('#list-transcriptions').DataTable(opciones);
+      $('#list-registers').DataTable(opciones);
   } );
 
 </script>
