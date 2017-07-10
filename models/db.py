@@ -60,34 +60,21 @@ response.generic_patterns = ['*'] if request.is_local else []
 response.formstyle = myconf.get('forms.formstyle')  # or 'bootstrap3_stacked' or 'bootstrap2' or other
 response.form_label_separator = myconf.get('forms.separator') or ''
 
-# -------------------------------------------------------------------------
-# (optional) optimize handling of static files
-# -------------------------------------------------------------------------
-# response.optimize_css = 'concat,minify,inline'
-# response.optimize_js = 'concat,minify,inline'
+from gluon.tools import Auth, Service, PluginManager, Mail
 
-# -------------------------------------------------------------------------
-# (optional) static assets folder versioning
-# -------------------------------------------------------------------------
-# response.static_version = '0.0.0'
-
-# -------------------------------------------------------------------------
-# Here is sample code if you need for
-# - email capabilities
-# - authentication (registration, login, logout, ... )
-# - authorization (role based authorization)
-# - services (xml, csv, json, xmlrpc, jsonrpc, amf, rss)
-# - old style crud actions
-# (more options discussed in gluon/tools.py)
-# -------------------------------------------------------------------------
-
-from gluon.tools import Auth, Service, PluginManager
-
-# host names must be a list of allowed host names (glob syntax allowed)
 auth = Auth(db)
 
 service = Service()
 plugins = PluginManager()
+
+# -------------------------------------------------------------------------
+# configure email
+# -------------------------------------------------------------------------
+mail = Mail()
+mail.settings.server = 'smtp.gmail.com:587'
+mail.settings.sender = 'noreply@sigpae.com'
+mail.settings.login  = 'noreplysigpaeusb@gmail.com:LXHyCmFD9rQPCqC'
+mail.settings.tls    = True
 
 # -------------------------------------------------------------------------
 # create all tables needed by auth if not custom tables

@@ -438,17 +438,21 @@
         </div>
         <div class="modal-body">
             <center> <p>¿Está seguro que quiere rechazar esta Transcripción?</p>
-                     <br>
                      <p>El Transcriptor encarcado tendrá la oportunidad de editarla nuevamente
-                        y reenviarla a Revisión.</p>
+                        y reenviarla a Revisión. Puede agregar un comentario indicando la razón del rechazo.
+                      </p>
             </center>
+            {{=reject_transcription_form.custom.begin}}
+            <p><b>Comentario </b></p>
+            {{=reject_transcription_form.custom.widget.comentario}}
             <br>
             <center>
-                <a id="botonrechazar" style="text-decoration: none;">
-                  <button class="btn btn-danger">
+                <a>
+                  <button id="botonrechazar" class="btn btn-danger">
                     <i class="fa fa-times" aria-hidden="true"></i> Rechazar
                   </button>
                 </a>
+                {{=reject_transcription_form.custom.end}}
                 <button type="button" class="btn btn-primary" data-dismiss="modal"> Cerrar </button>
             </center>
           </div>

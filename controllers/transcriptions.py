@@ -1,10 +1,11 @@
+from wand.image         import Image
+from PIL                import Image as Pi
+from webservice_queries import *
+from notifications      import *
 import os
 import sys
 import io
 import re
-from wand.image import Image
-from PIL import Image as Pi
-from webservice_queries import *
 import pyocr
 import pyocr.builders
 
@@ -142,12 +143,17 @@ def following():
                                                   error_message = 'Seleccione un Transcriptor.',
                                                   zero = "Seleccione...")),
                                            Field('transcription_id', type='string'),
-                                                  labels={'transcriptor':'Nuevo Transcriptor'})
+                                           Field('comentario', type='text'),
+                                                  labels={'transcriptor':'Nuevo Transcriptor',
+                                                          'comentario': 'Comentario'})
 
     if formulario_reasignar.process(formname="formulario_reasignar").accepted:
 
         transcription_id = formulario_reasignar.vars.transcription_id
         transcriptor = formulario_reasignar.vars.transcriptor
+
+        comentario = formulario_reasignar.vars.comentario
+        print(comentario)
 
         # buscamos la transcripcion a reasignar y la actualizamos
         db.TRANSCRIPCION[transcription_id] = dict(transcriptor = transcriptor)
@@ -460,8 +466,14 @@ def approval_view():
             Field('contenido', type='text'),
             labels = {
                 'contenido' : 'Contenido'},
-            submit_button=T('Guardar')
-            )
+            submit_button=T('Guardar'))
+
+    # formulario para rechazar la transcripcion
+    reject_transcription_form = SQLFORM.factory(
+                                    Field('comentario', type='text'),
+                                    labels = {
+                                        'comentario' : 'Comentario'},
+                                    submit_button=T('Rechazar'))
 
     # Procesamiento del formulario de la transcripcion
     if transcription_form.accepts(request, session, hideerror=True, keepvalues = True, formname = "transcription_form"):
@@ -516,6 +528,24 @@ def approval_view():
     elif edit_field_form.errors:
         response.flash = 'No se pudo agregar un nuevo campo.'
 
+    # procesamiento para rechazar una transcripcion
+    if reject_transcription_form.process(formname = "reject_transcription_form").accepted:
+
+        db.TRANSCRIPCION[id] = dict(estado = 'pendiente')
+        session.flash = "Transcripción rechazada exitosamente."
+        # comentarios
+        comentario = reject_transcription_form.vars.comentario
+        print(comentario)
+
+        # obtenemos el usuario para enviar la notificaciones
+        usuario = db(db.auth_user.username == transcription.transcriptor).select().first()
+        enviar_correo_rechazo_transcripcion(mail, usuario, transcription.codigo + ' ' + transcription.denominacion, comentario)
+
+        redirect(URL(c='transcriptions',f='list_pending'))
+
+    elif reject_transcription_form.errors:
+        response.flash = 'No se pudo agregar rechazar la Transcripción.'
+
     return dict(text=text,
                 pdfurl=pdfurl,
                 code=code,
@@ -523,27 +553,8 @@ def approval_view():
                 campos_adicionales = campos_adicionales,
                 transcription_form = transcription_form,
                 new_field_form = new_field_form,
-                edit_field_form = edit_field_form)
-
-@auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
-def aditional_field_selector():
-
-    string = ''
-    if len(request.vars) == 0:
-        return ''
-    else:
-        if request.vars.campo_1:
-            string = request.vars.campo_1
-        if request.vars.campo_2:
-            string = request.vars.campo_2
-        if request.vars.campo_3:
-            string = request.vars.campo_3
-
-    pattern = '%' + string.capitalize() + '%'
-    selected = [row.nombre for row in db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.nombre.like(pattern)).select()]
-
-    return_string = ''.join([OPTION(k).xml() for k in selected])
-    return return_string
+                edit_field_form = edit_field_form,
+                reject_transcription_form = reject_transcription_form)
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def list():
@@ -727,15 +738,6 @@ def approve_transcription():
     db.TRANSCRIPCION[transid] = dict(estado = 'aprobada', transcriptor = auth.user.username)
 
     session.flash = "Transcripción aprobada exitosamente."
-    redirect(URL(c='transcriptions',f='list_pending'))
-
-@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
-def reject_transcription():
-
-    transid = request.args(0)
-    db.TRANSCRIPCION[transid] = dict(estado = 'pendiente')
-
-    session.flash = "Transcripción rechazada exitosamente."
     redirect(URL(c='transcriptions',f='list_pending'))
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
