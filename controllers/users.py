@@ -283,9 +283,9 @@ def edit():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def deleterole():
-  """
-    Eliminación de roles de un usuario
-  """
+    """
+        Eliminación de roles de un usuario
+    """
     idusuario = request.args(0)
     idrole    = request.args(1)
 

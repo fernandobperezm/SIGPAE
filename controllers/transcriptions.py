@@ -34,7 +34,7 @@ def transcriptors():
                                      'name' : transcriptor.first_name + ' ' + transcriptor.last_name,
                                      'email': transcriptor.email})
 
-    # formulario para nuevos transcriptores 
+    # formulario para nuevos transcriptores
     # se buscan por correo institucional, y se comprueba por medio de una expresion regular
     form = SQLFORM.factory(Field('correo', type="string",
                                   requires = IS_MATCH(r'\b([a-zA-Z0-9-]+@usb\.ve)\b',
@@ -118,9 +118,9 @@ def deletetranscriptor():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def following():
-  """
-    Vista para listar las transcripciones a evaluar por un supervisor en proceso.
-  """
+    """
+        Vista para listar las transcripciones a evaluar por un supervisor en proceso.
+    """
     message = "Seguimiento de Transcripciones"
 
     # obtenemos los transcriptores asociadas al supervisor
@@ -189,7 +189,7 @@ def add():
 
     mensaje = 'Nueva Transcripción'
 
-    # Se selecciona en el formulario el tipo de archivo a cargar. 
+    # Se selecciona en el formulario el tipo de archivo a cargar.
     form = SQLFORM.factory(
                 Field('file', 'upload', label = 'Archivo PDF',
                                         uploadfolder=os.path.join(request.folder,'static/transcriptions/originalpdf/'),
@@ -252,9 +252,9 @@ def check_valid_aditional_field_name(name):
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def delete_aditional_field():
-  """
-    Borra el campo adicional agregado.
-  """
+    """
+        Borra el campo adicional agregado.
+    """
 
     transid  = request.args(0)
     id_campo = request.args(1)
@@ -454,7 +454,7 @@ def view():
                and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def approval_view():
     """
-      Vista para los supervisores de transcripción, en esta pueden modificar las transcripciones 
+      Vista para los supervisores de transcripción, en esta pueden modificar las transcripciones
       a ser aprobadas o rechazadas.
     """
 
@@ -652,10 +652,10 @@ def list_sent():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def list_pending():
-  """
-    Lista las transcripciones pendientes por aprobar desde el punto de vista 
-    del supervisor.
-  """
+    """
+        Lista las transcripciones pendientes por aprobar desde el punto de vista
+        del supervisor.
+    """
 
     message = "Transcripciones por Revisión"
 
@@ -682,9 +682,9 @@ def list_pending():
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def list_approved():
-  """
-    List las transcripciones aprbadas por el supervisor.
-  """
+    """
+        List las transcripciones aprbadas por el supervisor.
+    """
 
     message = "Transcripciones Aprobadas"
 
@@ -723,7 +723,7 @@ def match_codigo_asig(text):
 
 def extract_text(path):
     """
-      Se extraen el texto del programa en pdf para comparar al momento de 
+      Se extraen el texto del programa en pdf para comparar al momento de
       realizar la transcripción.
     """
     os.system("pdftotext -layout " + path + " extraccion.txt")
