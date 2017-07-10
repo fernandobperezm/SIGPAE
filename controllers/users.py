@@ -1,3 +1,4 @@
+from logs import *
 import re
 
 def get_roles():
@@ -34,6 +35,10 @@ def profile():
 
     if form.process().accepted:
         response.flash = 'Datos actualizados correctamente.'
+
+        # registro en el log
+        regiter_in_log(db, auth, 'PERFIL', 'Actualización del perfil.')
+
     elif form.errors:
         response.flash = 'Existen errores en el formulario.'
 
@@ -164,9 +169,10 @@ def edit():
       Funcion para editar usuarios, sus roles asignados o por asignar, y datos personales.
     """
 
+    message   = "Editar usuario"
 
     idusuario = request.args(0)
-    message   = "Editar usuario"
+    usuario   = db(db.auth_user.id == idusuario).select().first()
 
     db.auth_user.username.writable = False
     db.auth_user.email.writable = False
@@ -224,6 +230,9 @@ def edit():
 
     if formulario_datos.process(formname="formulario_datos").accepted:
         response.flash = 'Datos actualizados correctamente.'
+        # registro en el log
+        regiter_in_log(db, auth, 'PERFIL', 'Actualización del perfil para el Usuario %s.'%(usuario['username']))
+
     elif formulario_datos.errors:
         response.flash = 'Existen errores en el formulario.'
 
@@ -247,8 +256,12 @@ def edit():
                     session.flash = 'Usuarios con rol de DECANATO, COORDINACION o DEPARTAMENTO no pueden transcribir programas.'
 
         if agregar:
-            auth.add_membership(request.vars.new_rol, idusuario)
+            auth.add_membership(new_rol, idusuario)
             session.flash = 'Nuevo rol agregado.'
+
+            # registro en el log
+            new_role_name = db(db.auth_group.id==new_rol).select().first()['role']
+            regiter_in_log(db, auth, 'ROL', 'Agregado rol %s para el Usuario %s.'%(new_role_name, usuario['username']))
 
         redirect(URL(c='users',f='edit',args=[idusuario]))
 
@@ -268,6 +281,12 @@ def edit():
             registro = db(db.REGISTRO_TRANSCRIPTORES.transcriptor == usuario.username).delete()
 
         response.flash = 'Rol cambiado.'
+
+        # registro en el log
+        old_role_name = db(db.auth_group.id==request.vars.old_rol).select().first()['role']
+        new_role_name = db(db.auth_group.id==request.vars.new_rol).select().first()['role']
+        regiter_in_log(db, auth, 'ROL', 'Cambiado rol %s a %s para el Usuario %s.'%(old_role_name, new_role_name, usuario['username']))
+
         redirect(URL(c='users',f='edit',args=[idusuario]))
     elif formulario_cambiar_rol.errors:
         response.flash = 'Por favor seleccione un nuevo rol.'
@@ -291,11 +310,17 @@ def deleterole():
 
     auth.del_membership(idrole, idusuario)
 
+    usuario = db(db.auth_user.id == idusuario).select().first()
+    role_name = db(db.auth_group.id==idrole).select().first()['role']
+
     # si el rol era el de transcriptor, lo eliminamos como transcriptor
     # para su supervisor correspondiente.
     idrole_transcriptor = auth.id_group(role="TRANSCRIPTOR")
     if int(idrole) == int(idrole_transcriptor):
-        usuario = db(db.auth_user.id == idusuario).select().first()
+
         registro = db(db.REGISTRO_TRANSCRIPTORES.transcriptor == usuario.username).delete()
+
+    # registro en el log
+    regiter_in_log(db, auth, 'ROL', 'Eliminado rol %s para el Usuario %s.'%(role_name, usuario['username']))
 
     redirect(URL(c='users',f='edit',args=[idusuario]))

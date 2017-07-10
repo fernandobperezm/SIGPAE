@@ -2,6 +2,7 @@ from wand.image         import Image
 from PIL                import Image as Pi
 from webservice_queries import *
 from notifications      import *
+from logs               import *
 import os
 import sys
 import io
@@ -73,6 +74,10 @@ def transcriptors():
 
                 new_id = db.REGISTRO_TRANSCRIPTORES.insert(transcriptor = usuario.username,
                                                            supervisor   = auth.user.username)
+
+                # registro en el log
+                regiter_in_log(db, auth, 'ROL', 'Asignado rol TRANSCRIPTOR para el Usuario %s.'%(usuario.username))
+
                 session.flash = 'Usuario agregado como Transcriptor.'
 
         else:
@@ -104,10 +109,13 @@ def deletetranscriptor():
     for transcripcion in transcripciones:
       db.TRANSCRIPCION[transcripcion['id']] = dict(transcriptor = auth.user.username)
       # Registro en la bitacora de transcripcion
-      regiter_in_journal(transcripcion['id'], 'REASIGNACIÓN', 'Transcripción reasignada automáticamente por eliminación de Transcriptor.')
+      regiter_in_journal(db, auth, transcripcion['id'], 'REASIGNACIÓN', 'Transcripción reasignada automáticamente por eliminación de Transcriptor.')
 
     # quitamos el permiso de transcripcion para el usuario
     auth.del_membership(idrole, idusuario)
+
+    # registro en el log
+    regiter_in_log(db, auth, 'ROL', 'Eliminado rol TRANSCRIPTOR para el Usuario %s.'%(usuario.username))
 
     session.flash = 'Usuario eliminado como Transcriptor.'
     redirect(URL(c='transcriptions',f='transcriptors'))
@@ -168,9 +176,9 @@ def following():
 
         # Registro en la bitacora de transcripcion
         if comentario:
-            regiter_in_journal(transcription_id, 'REASIGNACIÓN', 'Transcripción reasignada a Usuario %s con comentario: %s'%(transcriptor, comentario))
+            regiter_in_journal(db, auth, transcription_id, 'REASIGNACIÓN', 'Transcripción reasignada a Usuario %s con comentario: %s'%(transcriptor, comentario))
         else:
-            regiter_in_journal(transcription_id, 'REASIGNACIÓN', 'Transcripción reasignada a Usuario %s.'%(transcriptor))
+            regiter_in_journal(db, auth, transcription_id, 'REASIGNACIÓN', 'Transcripción reasignada a Usuario %s.'%(transcriptor))
 
         session.flash = "Reasignación exitosa."
         redirect(URL(c='transcriptions', f='following'))
@@ -214,7 +222,7 @@ def add():
         id = db.TRANSCRIPCION.insert(original_pdf = form.vars.file, transcriptor = auth.user.username)['id']
 
         #Registro en la bitacora de la transcripcion
-        regiter_in_journal(id, 'CREACIÓN', 'Transcripción creada.')
+        regiter_in_journal(db, auth, id, 'CREACIÓN', 'Transcripción creada.')
         redirect(URL('edit', vars = dict(id = id, file = form.vars.file, file_type = form.vars.file_type, extract_type = form.vars.extract_type)))
 
     return dict(message = mensaje, form = form)
@@ -351,7 +359,7 @@ def edit():
         session.flash = 'Transcripción guardada satisfactoriamente.'
 
         #Registro en la bitacora de la transcripcion
-        regiter_in_journal(id, 'MODIFICACIÓN', 'Transcripción modificada.')
+        regiter_in_journal(db, auth, id, 'MODIFICACIÓN', 'Transcripción modificada.')
 
     elif transcription_form.errors:
         response.flash = 'Hay errores en el formulario'
@@ -533,7 +541,7 @@ def approval_view():
     if transcription_form.accepts(request, session, hideerror=True, keepvalues = True, formname = "transcription_form"):
         session.flash = 'Transcripción guardada satisfactoriamente.'
         #Registro en la bitacora de la transcripcion
-        regiter_in_journal(id, 'MODIFICACIÓN', 'Transcripción modificada.')
+        regiter_in_journal(db, auth, id, 'MODIFICACIÓN', 'Transcripción modificada.')
 
     elif transcription_form.errors:
         response.flash = 'Hay errores en el formulario'
@@ -599,9 +607,9 @@ def approval_view():
 
         #Registro en la bitacora de la transcripcion
         if comentario:
-            regiter_in_journal(id, 'RECHAZO', 'Transcripción rechazada con comentario: %s.'%(comentario))
+            regiter_in_journal(db, auth, id, 'RECHAZO', 'Transcripción rechazada con comentario: %s.'%(comentario))
         else:
-            regiter_in_journal(id, 'RECHAZO', 'Transcripción rechazada.')
+            regiter_in_journal(db, auth, id, 'RECHAZO', 'Transcripción rechazada.')
 
         redirect(URL(c='transcriptions',f='list_pending'))
 
@@ -841,7 +849,7 @@ def send_transcription():
         session.flash = "Transcripción enviada exitosamente a revisión."
 
         # Registro en la bitacora de transcripcion
-        regiter_in_journal(transid, 'ENVIO', 'Transcripción enviada a revisión.')
+        regiter_in_journal(db, auth, transid, 'ENVIO', 'Transcripción enviada a revisión.')
 
     else:
         session.flash = "Faltan campos obligatorios para esta Transcripción. Complételos antes de enviarla a revisión."
@@ -858,7 +866,7 @@ def approve_transcription():
     db.TRANSCRIPCION[transid] = dict(estado = 'aprobada', transcriptor = auth.user.username)
 
     # Registro en la bitacora de transcripcion
-    regiter_in_journal(transid, 'APROBACIÓN', 'Transcripción aprobada.')
+    regiter_in_journal(db, auth, transid, 'APROBACIÓN', 'Transcripción aprobada.')
 
     session.flash = "Transcripción aprobada exitosamente."
     redirect(URL(c='transcriptions',f='list_pending'))
@@ -876,28 +884,3 @@ def delete_transcription_as_supervizer():
 
     session.flash = "Transcripción eliminada exitosamente."
     redirect(URL(c='transcriptions',f='following'))
-
-def regiter_in_journal(id, accion, descripcion):
-    '''
-        Registra un evento en la bitacora de la transcripcion.
-    '''
-
-    # Obtenemos el rol del usuario
-
-    rol  = ''
-    if auth.has_membership(auth.id_group(role="TRANSCRIPTOR")):
-        rol = 'TRANSCRIPTOR'
-    elif auth.has_membership(auth.id_group(role="DECANATO")):
-        rol = 'DECANATO'
-    elif auth.has_membership(auth.id_group(role="DEPARTAMENTO")):
-        rol = 'DEPARTAMENTO'
-    elif auth.has_membership(auth.id_group(role="COORDINACION")):
-        rol = 'COORDINACION'
-
-    db.BITACORA_TRANSCRIPCION.insert(
-        transcripcion = id,
-        usuario = auth.user.username,
-        rol_usuario = rol,
-        accion = accion,
-        descripcion = descripcion
-    )

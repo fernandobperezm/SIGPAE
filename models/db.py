@@ -305,6 +305,16 @@ db.define_table('BITACORA_TRANSCRIPCION',
     )
 
 # -------------------------------------------------------------------------
+# Definicion de la tabla para el Log del Sistema
+# -------------------------------------------------------------------------
+db.define_table('LOG_SIGPAE',
+    Field('fecha', type="string", default = datetime.datetime.today().strftime("%d/%m/%Y %H:%M:%S")),
+    Field('usuario', type="string"),
+    Field('rol_usuario',  type="string"),
+    Field('accion', type="string"),
+    Field('descripcion', type="string"),
+    )
+# -------------------------------------------------------------------------
 # after defining tables, uncomment below to enable auditing
 # -------------------------------------------------------------------------
 auth.enable_record_versioning(db)

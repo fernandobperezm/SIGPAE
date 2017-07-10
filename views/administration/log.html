@@ -1,7 +1,75 @@
 {{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
 {{extend 'layout.html'}}
 
-
 {{if 'message' in globals():}}
-  <h2>{{=message}}</h2>
+<h2> {{=message}}</h2>
 {{pass}}
+
+<div class="table-responsive">
+ <table id="list-registers" class="table table-striped">
+   <thead>
+     <tr>
+       <th>Fecha</th>
+       <th>Usuario</th>
+       <th>Rol</th>
+       <th>Acción</th>
+       <th>Descripción</th>
+     </tr>
+   </thead>
+   <tbody>
+     {{for reg in registros:}}
+       <tr>
+         <td>{{=reg['fecha']}}</td>
+         <td>{{=reg['usuario']}}</td>
+         <td>{{=reg['rol_usuario']}}</td>
+         <td>{{=reg['accion']}}</td>
+         <td>{{=reg['descripcion']}}</td>
+       </tr>
+      {{pass}}
+   </tbody>
+ </table>
+ </div>
+</div>
+
+<script type="text/javascript">
+
+  // initializing datatable
+  $(document).ready( function () {
+    var opciones = {
+          responsive: true,
+            "language": {
+                search:         "Buscar: ",
+                searchPlaceholder: "Acción, Fecha, Usuario...",
+                lengthMenu:     "Mostrar _MENU_ entradas.",
+                info:           "Mostrando _START_ a _END_ de _TOTAL_ entradas.",
+                infoEmpty:      "",
+                infoFiltered:   "",
+                infoPostFix:    "",
+                loadingRecords: "Cargando datos...",
+                zeroRecords:    "No se encontraron registros que correspondan a la búsqueda.",
+                emptyTable:     "No hay información disponible.",
+                processing:     "Procesando...",
+                paginate: {
+                    first:      "Primero",
+                    previous:   "Anterior",
+                    next:       "Siguiente",
+                    last:       "Último"
+                },
+                aria: {
+                    sortAscending:  ": Se ordenan las columnas por orden creciente.",
+                    sortDescending: ": Se ordenan las columnas por orden decreciente."
+                }
+            },
+             "columns": [
+                null,
+                null,
+                null,
+                null,
+                { "orderable": false }
+            ],
+            "order" : [[ 0, "desc" ]],
+        };
+      $('#list-registers').DataTable(opciones);
+  } );
+
+</script>

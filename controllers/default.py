@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from usbutils import get_ldap_data, random_key
+from logs     import *
 
 def reroute():
     """
@@ -107,6 +108,9 @@ def login_cas():
 
             # inicio de sesion y redireccion
             auth.login_bare(usbid, clave)
+
+            # registro en el log
+            regiter_in_log(db, auth, 'REGISTRO', 'Registro como nuevo usuario.')
 
             redirect(URL(c='default',f='index'))
 
