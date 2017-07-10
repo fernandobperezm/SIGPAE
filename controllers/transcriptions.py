@@ -202,13 +202,13 @@ def add():
                                                          error_message='Seleccione un tipo de archivo.'),
                                               default='Texto'),
                 Field('extract_type', 'select' , label = 'Extraer',
-                                                 requires = IS_IN_SET(['Solo Texto', 'Código y Departamento'],
+                                                 requires = IS_IN_SET(['Solo Texto', 'Código y Denominación'],
                                                             zero='Seleccione una opción...',
                                                             error_message='Seleccione el tipo de extracción.'),
                                                  default='Solo Texto'),
                 formstyle = 'bootstrap3_stacked',
                 col3 = {'file_type':'Seleccione "Texto" si el programa a transcribir proviene de un pdf de texto. Si es un programa escaneado, seleccione "Imagen".',
-                        'extract_type': 'Si desea detectar automáticamente el Código y  Departamento seleccione "Código y Departamento", sino seleccione "Solo Texto".' })
+                        'extract_type': 'Si desea detectar automáticamente el Código y el nombre de la asignatura seleccione "Código y Denominación", sino seleccione "Solo Texto".' })
 
     if form.process().accepted:
         id = db.TRANSCRIPCION.insert(original_pdf = form.vars.file, transcriptor = auth.user.username)['id']
@@ -297,7 +297,7 @@ def edit():
 
     # Se extrae en código y departamento del texto para llenar automáticamente en la forma.
     if 'extract_type' in request.vars:
-        if request.vars['extract_type'] == "Código y Departamento":
+        if request.vars['extract_type'] == "Código y Denominación":
             code = match_codigo_asig(text)
             db.TRANSCRIPCION[id] = dict(codigo = code)
 
