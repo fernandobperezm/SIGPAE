@@ -9,6 +9,7 @@ import io
 import re
 import pyocr
 import pyocr.builders
+import StringIO
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def transcriptors():
@@ -884,3 +885,29 @@ def delete_transcription_as_supervizer():
 
     session.flash = "Transcripción eliminada exitosamente."
     redirect(URL(c='transcriptions',f='following'))
+
+@auth.requires(auth.is_logged_in()
+               and (auth.has_permission('manage_transcriptors', 'auth_user') or auth.has_permission('create_transcription'))
+               and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def download_journal():
+
+    journal_id = request.args[0]
+    print('JOURNAL', journal_id)
+    if not(journal_id):
+        redirect(URL(c='default',f='not_authorized'))
+        # query = "SELECT * FROM BITACORA_TRANSCRIPCION WHERE transcripcion = '" + str(journal_id) + "';"
+
+    #Excecute query
+    rows = db(db.BITACORA_TRANSCRIPCION.transcripcion == journal_id).select(db.BITACORA_TRANSCRIPCION.transcripcion,
+                                                                            db.BITACORA_TRANSCRIPCION.fecha,
+                                                                            db.BITACORA_TRANSCRIPCION.usuario,
+                                                                            db.BITACORA_TRANSCRIPCION.rol_usuario,
+                                                                            db.BITACORA_TRANSCRIPCION.accion,
+                                                                            db.BITACORA_TRANSCRIPCION.descripcion)
+    #convert query to csv
+    tempfile = StringIO.StringIO()
+    rows.export_to_csv_file(tempfile)
+    response.headers['Content-Type'] = 'text/csv'
+    attachment = 'attachment; filename="BITACORA_TRANSCRIPCION_%s.csv"'%(journal_id)
+    response.headers['Content-Disposition'] = attachment
+    return tempfile.getvalue()
