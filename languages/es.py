@@ -339,6 +339,7 @@
 'Saved file hash:': 'Hash del archivo guardado:',
 'Search': 'Buscar',
 'Seleccione el tipo de extracción.': 'Seleccione el tipo de extracción.',
+'Seleccione un archivo en formato PDF.': 'Seleccione un archivo en formato PDF.',
 'Seleccione un archivo.': 'Seleccione un archivo.',
 'Seleccione un número de creditos.': 'Seleccione un número de creditos.',
 'Seleccione un número de horas.': 'Seleccione un número de horas.',

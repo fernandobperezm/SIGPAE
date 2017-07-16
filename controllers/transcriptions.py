@@ -204,7 +204,8 @@ def add():
     form = SQLFORM.factory(
                 Field('file', 'upload', label = 'Archivo PDF',
                                         uploadfolder=os.path.join(request.folder,'static/transcriptions/originalpdf/'),
-                                        requires = IS_NOT_EMPTY(error_message='Seleccione un archivo.')),
+                                        requires = [IS_NOT_EMPTY(error_message='Seleccione un archivo.'),
+                                                    IS_UPLOAD_FILENAME(extension='pdf', error_message='Seleccione un archivo en formato PDF.')]),
                 Field('file_type', 'select' , label = 'Tipo de Archivo',
                                               requires = IS_IN_SET(['Texto', 'Imagen'],
                                                          zero='Seleccione una opción...',
