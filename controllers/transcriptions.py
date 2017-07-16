@@ -168,18 +168,27 @@ def following():
     if formulario_reasignar.process(formname="formulario_reasignar").accepted:
 
         transcription_id = formulario_reasignar.vars.transcription_id
-        transcriptor = formulario_reasignar.vars.transcriptor
+        transcriptor     = formulario_reasignar.vars.transcriptor
 
         comentario = formulario_reasignar.vars.comentario
 
         # buscamos la transcripcion a reasignar y la actualizamos
         db.TRANSCRIPCION[transcription_id] = dict(transcriptor = transcriptor)
 
+        # encontramos el usuario transcriptor
+        nuevo_transcriptor = db(db.auth_user.username == transcriptor).select().first()
+
+        #encontramos la transcripcion
+
+        transcription = db(db.TRANSCRIPCION.id == transcription_id).select().first()
+
         # Registro en la bitacora de transcripcion
         if comentario:
             regiter_in_journal(db, auth, transcription_id, 'REASIGNACIÓN', 'Transcripción reasignada a Usuario %s con comentario: %s'%(transcriptor, comentario))
         else:
             regiter_in_journal(db, auth, transcription_id, 'REASIGNACIÓN', 'Transcripción reasignada a Usuario %s.'%(transcriptor))
+
+        enviar_correo_reasignacion_transcripcion(mail, nuevo_transcriptor, str(transcription.codigo) + ' ' + str(transcription.denominacion), comentario)
 
         session.flash = "Reasignación exitosa."
         redirect(URL(c='transcriptions', f='following'))

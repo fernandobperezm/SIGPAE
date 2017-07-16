@@ -7,13 +7,16 @@ settings.title = 'SIGPAE'
 settings.subtitle = 'Sistema de Gestión de Programas Analíticos de Estudio'
 settings.author   = 'Leonardo Martínez, Jonnathan Ng, Nicolás Mañan.'
 settings.author_email = ''
-settings.keywords = ''
-settings.description = ''
+settings.keywords     = ''
+settings.description  = ''
 settings.layout_theme = ''
 settings.database_uri = 'postgres://sigpae:123123@localhost/newsigpae'
 settings.login_method = 'local'
+settings.email_server = 'smtp.gmail.com:587'
+settings.email_sender = 'noreplysigpaeusb@gmail.com'
+settings.email_login  = 'noreplysigpaeusb@gmail.com:LXHyCmFD9rQPCqC'
 settings.login_config = ''
-settings.plugins = []
+settings.plugins      = []
 
 # CONFIGURACION DE URLS
 # DESCOMENTAR LA URL DEPENDIENDO DE SI SE ESTA TRABAJANDO LOCALMENTE O ES

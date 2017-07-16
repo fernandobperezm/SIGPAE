@@ -70,10 +70,11 @@ plugins = PluginManager()
 # -------------------------------------------------------------------------
 # configure email
 # -------------------------------------------------------------------------
-mail = Mail()
-mail.settings.server = 'smtp.gmail.com:587'
-mail.settings.sender = 'noreplysigpaeusb@sigpae.com'
-mail.settings.login  = 'noreplysigpaeusb@gmail.com:LXHyCmFD9rQPCqC'
+mail =  Mail()
+
+mail.settings.server = settings.email_server
+mail.settings.sender = settings.email_sender
+mail.settings.login = settings.email_login
 mail.settings.tls    = True
 
 # -------------------------------------------------------------------------
@@ -89,16 +90,6 @@ auth.settings.extra_fields['auth_user']= [
 ]
 
 auth.define_tables(username=True, signature=False)
-
-# -------------------------------------------------------------------------
-# configure email
-# -------------------------------------------------------------------------
-mail = auth.settings.mailer
-mail.settings.server = 'logging' if request.is_local else myconf.get('smtp.server')
-mail.settings.sender = myconf.get('smtp.sender')
-mail.settings.login = myconf.get('smtp.login')
-mail.settings.tls = myconf.get('smtp.tls') or False
-mail.settings.ssl = myconf.get('smtp.ssl') or False
 
 # -------------------------------------------------------------------------
 # configure auth policy
