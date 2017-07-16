@@ -5,6 +5,15 @@
 <h2> {{=message}}</h2>
 {{pass}}
 
+<div class="row">
+  <a data-toggle="modal"
+     data-target="#modalAgregar">
+    <button type="button" class="btn btn-primary bottom-right-buttom">
+      <i class="fa fa-plus" aria-hidden="true"></i> Agregar Transcriptor
+    </button>
+  </a>
+</div>
+
 <div class="table-responsive">
  <table id='manange-users-table' class="table table-striped">
    <thead>
@@ -33,13 +42,6 @@
    </tbody>
  </table>
 </div>
-
-<a data-toggle="modal"
-   data-target="#modalAgregar">
-  <button type="button" class="btn btn-primary bottom-right-buttom">
-    <i class="fa fa-plus" aria-hidden="true"></i> Agregar Transcriptor
-  </button>
-</a>
 
 <!-- Modal Eliminar-->
 <div class="container">

@@ -5,6 +5,14 @@
 <h2> {{=message}}</h2>
 {{pass}}
 
+<div class="row">
+  <a href="{{=URL(c='transcriptions', f='download_journal', args=[transid])}}">
+    <button type="button" class="btn btn-primary bottom-right-buttom">
+      <i class="fa fa-download" aria-hidden="true"></i> Descargar Bitácora
+    </button>
+  </a>
+</div>
+
 <div class="table-responsive">
  <table id="list-registers" class="table table-striped">
    <thead>
@@ -30,11 +38,6 @@
  </table>
 </div>
 
-<a href="{{=URL(c='transcriptions', f='download_journal', args=[transid])}}">
-  <button type="button" class="btn btn-primary bottom-right-buttom">
-    <i class="fa fa-download" aria-hidden="true"></i> Descargar Bitácora
-  </button>
-</a>
 
 <script type="text/javascript">
 

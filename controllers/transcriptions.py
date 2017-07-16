@@ -893,10 +893,8 @@ def delete_transcription_as_supervizer():
 def download_journal():
 
     journal_id = request.args[0]
-    print('JOURNAL', journal_id)
     if not(journal_id):
         redirect(URL(c='default',f='not_authorized'))
-        # query = "SELECT * FROM BITACORA_TRANSCRIPCION WHERE transcripcion = '" + str(journal_id) + "';"
 
     #Excecute query
     rows = db(db.BITACORA_TRANSCRIPCION.transcripcion == journal_id).select(db.BITACORA_TRANSCRIPCION.transcripcion,

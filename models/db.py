@@ -308,7 +308,7 @@ db.define_table('BITACORA_TRANSCRIPCION',
 # Definicion de la tabla para el Log del Sistema
 # -------------------------------------------------------------------------
 db.define_table('LOG_SIGPAE',
-    Field('fecha', type="string", default = datetime.datetime.today().strftime("%d/%m/%Y %H:%M:%S")),
+    Field('fecha', type="datetime", default = datetime.datetime.now(None)),
     Field('usuario', type="string"),
     Field('rol_usuario',  type="string"),
     Field('accion', type="string"),
