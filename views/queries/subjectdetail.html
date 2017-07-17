@@ -12,13 +12,37 @@
   {{if subject == []:}}
     <h2> Asignatura no encontrada. </h2>
   {{else:}}
-    <p><b>Nombre:</b> {{=subject['nombre']}}.</p>
-    <p><b>Código:</b> {{=subject['cod_asignatura']}}.</p>
-    <p><b>Créditos:</b> {{=subject['creditos']}}.</p>
-    <p><b>Vigente Desde:</b> {{=subject['vig_desde']}}.</p>
-    <p><b>Vigente Hasta:</b> {{=subject['vig_hasta']}}.</p>
-    <p><b>Horas de Teoría:</b> {{=subject['h_teoria']}}.</p>
-    <p><b>Horas de Práctica:</b> {{=subject['h_practica']}}.</p>
-    <p><b>Horas de Laboratorio:</b> {{=subject['h_laboratorio']}}.</p>
+  <div class='row'>
+    <div class='col-md-6 col-sm-12'>
+      <p><b>Nombre:</b> {{=subject['nombre']}}.</p>
+      <p><b>Código:</b> {{=subject['cod_asignatura']}}.</p>
+      <p><b>Créditos:</b> {{=subject['creditos']}}.</p>
+      <p><b>Vigente Desde:</b> {{=subject['vig_desde']}}.</p>
+      <p><b>Vigente Hasta:</b> {{=subject['vig_hasta']}}.</p>
+      <p><b>Horas de Teoría:</b> {{=subject['h_teoria']}}.</p>
+      <p><b>Horas de Práctica:</b> {{=subject['h_practica']}}.</p>
+      <p><b>Horas de Laboratorio:</b> {{=subject['h_laboratorio']}}.</p>
+    </div>
+    <div class='col-md-6 col-sm-12'>
+      <div class="panel panel-info help-content">
+        <div class="panel-heading">Programas Disponibles</div>
+        <div class="panel-body">
+          {{if programas:}}
+            <ul>
+              {{for programa in programas:}}
+                <li>
+                  <a href="{{=URL(c='programs', f='view', vars=dict(id=programa['id']))}}">
+                    <b>Desde:</b> {{=programa['periodo']}} {{=programa['anio']}} <b>Hasta:</b> {{ if programa['periodo_hasta']:}} {{=programa['periodo_hasta']}} {{=programa['anio_hasta']}} {{else:}}  --- {{pass}}
+                  </a>
+                </li>
+              {{pass}}
+             </ul>
+          {{else:}}
+            <p>No existen programas registrados para esta asignatura.</p>
+          {{pass}}
+        </div>
+      </div>
+    </div>
+  </div>
   {{pass}}
 {{pass}}

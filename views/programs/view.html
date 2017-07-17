@@ -1,0 +1,95 @@
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+{{if 'message' in globals():}}
+  <h2> {{=message}}</h2>
+{{pass}}
+
+<div class='row'>
+  <div class='col-md-6 col-sm-12'>
+    <p><b>Código:</b> {{=programa['codigo']}}.</p>
+    <p><b>Denominación:</b> {{=programa['denominacion']}}.</p>
+    <p><b>Fecha de Elaboración:</b> {{=programa['fecha_elaboracion']}}.</p>
+    <p><b>Créditos:</b> {{=programa['creditos']}}.</p>
+    <p><b>Vigente Desde:</b> {{=programa['periodo']}} {{=programa['anio']}}.</p>
+    <p><b>Vigente Hasta:</b> {{ if programa['periodo_hasta']:}} {{=programa['periodo_hasta']}} {{=programa['anio_hasta']}} {{else:}}  --- {{pass}}.</p>
+    <p><b>Horas de Teoría:</b> {{=programa['horas_teoria']}}.</p>
+    <p><b>Horas de Práctica:</b> {{=programa['horas_practica']}}.</p>
+    <p><b>Horas de Laboratorio:</b> {{=programa['horas_laboratorio']}}.</p>
+  </div>
+  <div class='col-md-6 col-sm-12'>
+    <div class="panel panel-info help-content">
+      <div class="panel-heading">Descargas</div>
+      <div class="panel-body">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class='row'>
+
+  <!-- objetivos generales o especificos -->
+  {{if programa['objetivos_especificos']:}}
+    <h3><b>Objetivos Generales:</b></h3>
+    <p>{{=programa['objetivos_generales']}}.</p>
+    <h3><b>Objetivos Especificos:</b></h3>
+    <p>{{=programa['objetivos_especificos']}}.</p>
+  {{else:}}
+    {{if programa['objetivos_generales']:}}
+      <h3><b>Objetivos:</b></h3>
+      <p>{{=programa['objetivos_generales']}}</p>
+    {{pass}}
+  {{pass}}
+
+  <!-- contenidos sinopticos -->
+  {{if programa['sinopticos']:}}
+    <h3><b>Contenidos Sinópticos:</b></h3>
+    <p>{{=programa['sinopticos']}}</p>
+  {{pass}}
+
+  <!-- requisitos -->
+  {{if programa['requisitos']:}}
+    <h3><b>Requisitos:</b></h3>
+    <p>{{=programa['requisitos']}}</p>
+  {{pass}}
+
+  <!-- estrategias metodologicas -->
+  {{if programa['estrategias_met']:}}
+    <h3><b>Estrategias Metodológicas:</b></h3>
+    <p>{{=programa['estrategias_met']}}</p>
+  {{pass}}
+
+  <!-- estrategias evaluativas -->
+  {{if programa['estrategias_eval']:}}
+    <h3><b>Estrategias de Evaluación:</b></h3>
+    <p>{{=programa['estrategias_eval']}}</p>
+  {{pass}}
+
+  <!-- justificacion -->
+  {{if programa['justificacion']:}}
+    <h3><b>Justificación:</b></h3>
+    <p>{{=programa['justificacion']}}</p>
+  {{pass}}
+
+  <!-- fuentes de informacion -->
+  {{if programa['ftes_info_recomendadas']:}}
+    <h3><b>Fuentes de Información Recomendadas:</b></h3>
+    <p>{{=programa['ftes_info_recomendadas']}}</p>
+  {{pass}}
+
+  <!-- observaciones -->
+  {{if programa['observaciones']:}}
+    <h3><b>Observaciones:</b></h3>
+    <p>{{=programa['observaciones']}}</p>
+  {{pass}}
+
+  <!-- campos adicionales -->
+  {{if campos_adicionales:}}
+    {{for campo in campos_adicionales:}}
+      <h3><b>{{=campo['nombre']}}:</b></h3>
+      <p>{{=campo['contenido']}}.</p>
+    {{pass}}
+  {{pass}}
+
+</div>

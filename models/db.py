@@ -266,28 +266,92 @@ db.define_table('TRANSCRIPCION',
 # -------------------------------------------------------------------------
 
 db.define_table('REGISTRO_TRANSCRIPTORES',
-    Field('transcriptor', type="string", notnull = True),
-    Field('supervisor', type="string", notnull = True)
-    )
+Field('transcriptor', type="string", notnull = True),
+Field('supervisor', type="string", notnull = True)
+)
 
 # -------------------------------------------------------------------------
 # Definicion de la tabla para los Campos Adicionales de los Transcriptores
 # -------------------------------------------------------------------------
 db.define_table('NOMBRES_CAMPOS_ADICIONALES_TRANSCRIPCION',
-    Field('nombre',    type="string", notnull = True)
-    )
+Field('nombre',    type="string", notnull = True)
+)
 
 db.define_table('CAMPOS_ADICIONALES_TRANSCRIPCION',
-    Field('transcripcion', db.TRANSCRIPCION),
-    Field('nombre', type="string", notnull = True),
-    Field('contenido', type="text", default = ''),
-    )
+Field('transcripcion', db.TRANSCRIPCION),
+Field('nombre', type="string", notnull = True),
+Field('contenido', type="text", default = ''),
+)
 
 # -------------------------------------------------------------------------
 # Definicion de la tabla para la Bitacora de las Transcripciones
 # -------------------------------------------------------------------------
 db.define_table('BITACORA_TRANSCRIPCION',
-    Field('transcripcion', db.TRANSCRIPCION),
+Field('transcripcion', db.TRANSCRIPCION),
+Field('fecha', type="string", default = datetime.datetime.today().strftime("%d/%m/%Y %H:%M:%S")),
+Field('usuario', type="string"),
+Field('rol_usuario',  type="string"),
+Field('accion', type="string"),
+Field('descripcion', type="string"),
+)
+
+# -------------------------------------------------------------------------
+# Definicion de la tabla de Programas
+# -------------------------------------------------------------------------
+
+db.define_table('PROGRAMA',
+    Field('original_pdf', type='string', notnull = True, required = True),
+    Field('codigo',type='string', length = 8, requires = IS_MATCH('([A-Z]{2,2}[0-9]{4,4})|([A-Z]{3,3}[0-9]{3,3})',
+                                                                 error_message = 'Codigo de asignatura no válido.')),
+    Field('denominacion', type = 'string',length = 100, requires = IS_NOT_EMPTY(error_message='Debe introducir una denominación.')),
+    Field('fecha_elaboracion', type = 'date', requires = IS_DATE_IN_RANGE(format=T('%d/%m/%Y'),
+                                                                          minimum=datetime.date(1967,1,1),
+                                                                          maximum=datetime.date.today(),
+                                                                          error_message='Debe seleccionar una fecha en formato DD/MM/AAAA no mayor a la fecha actual.')),
+    Field('periodo', type ='string', length = 9, requires =  IS_IN_SET(PERIODOS, zero='Seleccione', error_message = 'Seleccione un periodo.')),
+    Field('anio', type = 'integer',  length = 4,  requires = [IS_INT_IN_RANGE(1967, 1e100,
+                                                                            error_message='El año debe ser un numero positivo de la forma YYYY a partir de 1967.'),
+                                                              IS_LENGTH(4,  error_message ='El año debe ser de la forma YYYY.')]),
+    Field('periodo_hasta', type ='string',required = False,  length = 9, requires = IS_EMPTY_OR( IS_IN_SET(PERIODOS, zero='Seleccione', error_message = 'Seleccione un periodo.'))),
+    Field('anio_hasta', type = 'integer', required = False,  length = 4,  requires = [IS_EMPTY_OR(IS_INT_IN_RANGE(1967, 1e100,
+                                                                            error_message='El año debe ser un numero positivo de la forma YYYY a partir de 1967.')),
+                                                              IS_LENGTH(4,  error_message ='El año debe ser de la forma YYYY.')]),
+    Field('horas_teoria', type ='integer', requires =  IS_IN_SET(HORAS, zero='Seleccione', error_message = 'Seleccione un número de horas.')),
+    Field('horas_practica', type ='integer', requires =  IS_IN_SET(HORAS, zero='Seleccione', error_message = 'Seleccione un número de horas.')),
+    Field('horas_laboratorio', type ='integer', requires =  IS_IN_SET(HORAS, zero='Seleccione', error_message = 'Seleccione un número de horas.')),
+    Field('creditos', type ='integer', requires =  IS_IN_SET(CREDITOS, zero='Seleccione', error_message = 'Seleccione un número de creditos.')),
+    Field('sinopticos', type="text"),
+    Field('ftes_info_recomendadas', type="text"),
+    Field('requisitos', type="text"),
+    Field('estrategias_met', type="text"),
+    Field('estrategias_eval', type="text"),
+    Field('justificacion', type="text"),
+    Field('observaciones', type="text"),
+    Field('objetivos_generales', type="text"),
+    Field('objetivos_especificos', type="text"),
+    Field('fecha_modificacion', type="date", notnull = True, default = datetime.date.today()),
+
+    # indican el estado del programa
+    Field('estado', type="string", default = 'pendiente'),
+
+    )
+
+# -------------------------------------------------------------------------
+# Definicion de la tabla para los Campos Adicionales para los Programas
+# -------------------------------------------------------------------------
+
+db.define_table('CAMPOS_ADICIONALES_PROGRAMA',
+    Field('programa', db.PROGRAMA),
+    Field('nombre', type="string", notnull = True),
+    Field('contenido', type="text", default = ''),
+    )
+
+
+# -------------------------------------------------------------------------
+# Definicion de la tabla para la Bitacora de los Programas
+# -------------------------------------------------------------------------
+db.define_table('BITACORA_PROGRAMA',
+    Field('programa', db.PROGRAMA),
     Field('fecha', type="string", default = datetime.datetime.today().strftime("%d/%m/%Y %H:%M:%S")),
     Field('usuario', type="string"),
     Field('rol_usuario',  type="string"),

@@ -139,7 +139,7 @@ def deletetranscriptor():
     for transcripcion in transcripciones:
       db.TRANSCRIPCION[transcripcion['id']] = dict(transcriptor = auth.user.username)
       # Registro en la bitacora de transcripcion
-      regiter_in_journal(db, auth, transcripcion['id'], 'REASIGNACIÓN', 'Transcripción reasignada automáticamente por eliminación de Transcriptor.')
+      regiter_in_transcriptions_journal(db, auth, transcripcion['id'], 'REASIGNACIÓN', 'Transcripción reasignada automáticamente por eliminación de Transcriptor.')
 
     # quitamos el permiso de transcripcion para el usuario
     auth.del_membership(idrole, idusuario)
@@ -213,9 +213,9 @@ def following():
 
         # Registro en la bitacora de transcripcion
         if comentario:
-            regiter_in_journal(db, auth, transcription_id, 'REASIGNACIÓN', 'Transcripción reasignada a Usuario %s con comentario: %s'%(transcriptor, comentario))
+            regiter_in_transcriptions_journal(db, auth, transcription_id, 'REASIGNACIÓN', 'Transcripción reasignada a Usuario %s con comentario: %s'%(transcriptor, comentario))
         else:
-            regiter_in_journal(db, auth, transcription_id, 'REASIGNACIÓN', 'Transcripción reasignada a Usuario %s.'%(transcriptor))
+            regiter_in_transcriptions_journal(db, auth, transcription_id, 'REASIGNACIÓN', 'Transcripción reasignada a Usuario %s.'%(transcriptor))
 
         enviar_correo_reasignacion_transcripcion(mail, nuevo_transcriptor, str(transcription.codigo) + ' ' + str(transcription.denominacion), comentario)
 
@@ -262,7 +262,7 @@ def add():
         id = db.TRANSCRIPCION.insert(original_pdf = form.vars.file, transcriptor = auth.user.username)['id']
 
         #Registro en la bitacora de la transcripcion
-        regiter_in_journal(db, auth, id, 'CREACIÓN', 'Transcripción creada.')
+        regiter_in_transcriptions_journal(db, auth, id, 'CREACIÓN', 'Transcripción creada.')
         redirect(URL('edit', vars = dict(id = id, file = form.vars.file, file_type = form.vars.file_type, extract_type = form.vars.extract_type)))
 
     return dict(message = mensaje, form = form)
@@ -399,7 +399,7 @@ def edit():
         session.flash = 'Transcripción guardada satisfactoriamente.'
 
         #Registro en la bitacora de la transcripcion
-        regiter_in_journal(db, auth, id, 'MODIFICACIÓN', 'Transcripción modificada.')
+        regiter_in_transcriptions_journal(db, auth, id, 'MODIFICACIÓN', 'Transcripción modificada.')
 
     elif transcription_form.errors:
         response.flash = 'Hay errores en el formulario'
@@ -581,7 +581,7 @@ def approval_view():
     if transcription_form.accepts(request, session, hideerror=True, keepvalues = True, formname = "transcription_form"):
         session.flash = 'Transcripción guardada satisfactoriamente.'
         #Registro en la bitacora de la transcripcion
-        regiter_in_journal(db, auth, id, 'MODIFICACIÓN', 'Transcripción modificada.')
+        regiter_in_transcriptions_journal(db, auth, id, 'MODIFICACIÓN', 'Transcripción modificada.')
 
     elif transcription_form.errors:
         response.flash = 'Hay errores en el formulario'
@@ -647,9 +647,9 @@ def approval_view():
 
         #Registro en la bitacora de la transcripcion
         if comentario:
-            regiter_in_journal(db, auth, id, 'RECHAZO', 'Transcripción rechazada con comentario: %s.'%(comentario))
+            regiter_in_transcriptions_journal(db, auth, id, 'RECHAZO', 'Transcripción rechazada con comentario: %s.'%(comentario))
         else:
-            regiter_in_journal(db, auth, id, 'RECHAZO', 'Transcripción rechazada.')
+            regiter_in_transcriptions_journal(db, auth, id, 'RECHAZO', 'Transcripción rechazada.')
 
         redirect(URL(c='transcriptions',f='list_pending'))
 
@@ -862,6 +862,56 @@ def check_required_fields(trasid):
 
     return check
 
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+def convert_to_program(transid):
+    """
+        Dada una Transcripcion aprobada, trasnscribe los datos a la tabla PROGRAMA, para que
+        pueda ser consultado publicamente desde el Sistema SIGPAE.
+    """
+
+    transcripcion = db(db.TRANSCRIPCION.id == transid).select().first()
+
+    new_id = db.PROGRAMA.insert(
+        original_pdf = transcripcion.original_pdf,
+        codigo = transcripcion.codigo,
+        denominacion = transcripcion.denominacion,
+        fecha_elaboracion = transcripcion.fecha_elaboracion,
+        periodo = transcripcion.periodo,
+        anio = transcripcion.anio,
+        periodo_hasta = transcripcion.periodo_hasta,
+        anio_hasta = transcripcion.anio_hasta,
+        horas_teoria = transcripcion.horas_teoria,
+        horas_practica = transcripcion.horas_practica,
+        horas_laboratorio = transcripcion.horas_laboratorio,
+        creditos = transcripcion.creditos,
+        sinopticos = transcripcion.sinopticos,
+        ftes_info_recomendadas = transcripcion.ftes_info_recomendadas,
+        requisitos = transcripcion.requisitos,
+        estrategias_met = transcripcion.estrategias_met,
+        estrategias_eval = transcripcion.estrategias_eval,
+        justificacion = transcripcion.justificacion,
+        observaciones = transcripcion.observaciones,
+        objetivos_generales = transcripcion.objetivos_generales,
+        objetivos_especificos = transcripcion.objetivos_especificos,
+        fecha_modificacion = transcripcion.fecha_modificacion,
+        estado = 'aprobado'
+    )
+
+    # agregamos los campos adicionales asociados a la transcripcion, al nuevo programa.
+
+    # obtenemos los campos adicionales, si existen
+    campos_adicionales = db(db.CAMPOS_ADICIONALES_TRANSCRIPCION.transcripcion == transcripcion).select()
+
+    for campo in campos_adicionales:
+        db.CAMPOS_ADICIONALES_PROGRAMA.insert(
+            programa  = new_id,
+            nombre    = campo.nombre,
+            contenido = campo.contenido
+        )
+
+    # Creamos una nueva entrada den la bitacora del programa
+    regiter_in_programs_journal(db, auth, new_id, 'CREACIÓN', 'Creación del Programa a partir de una Transcripción Aprobada.')
+
 @auth.requires(auth.is_logged_in() and auth.has_permission('create_transcription') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def delete_transcription():
     """
@@ -889,7 +939,7 @@ def send_transcription():
         session.flash = "Transcripción enviada exitosamente a revisión."
 
         # Registro en la bitacora de transcripcion
-        regiter_in_journal(db, auth, transid, 'ENVIO', 'Transcripción enviada a revisión.')
+        regiter_in_transcriptions_journal(db, auth, transid, 'ENVIO', 'Transcripción enviada a revisión.')
 
     else:
         session.flash = "Faltan campos obligatorios para esta Transcripción. Complételos antes de enviarla a revisión."
@@ -906,7 +956,9 @@ def approve_transcription():
     db.TRANSCRIPCION[transid] = dict(estado = 'aprobada', transcriptor = auth.user.username)
 
     # Registro en la bitacora de transcripcion
-    regiter_in_journal(db, auth, transid, 'APROBACIÓN', 'Transcripción aprobada.')
+    regiter_in_transcriptions_journal(db, auth, transid, 'APROBACIÓN', 'Transcripción aprobada.')
+
+    convert_to_program(transid)
 
     session.flash = "Transcripción aprobada exitosamente."
     redirect(URL(c='transcriptions',f='list_pending'))

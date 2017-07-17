@@ -5,7 +5,7 @@ import re
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def departments():
     """
-        Consulta a través de web services de los departamentos. 
+        Consulta a través de web services de los departamentos.
     """
 
 
@@ -23,7 +23,7 @@ def departments():
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def subjects():
     """
-        Consulta a través de web services de las asignaturas. 
+        Consulta a través de web services de las asignaturas.
     """
     message = "Asignaturas"
 
@@ -40,7 +40,7 @@ def subjects():
 def subjectdetail():
     """
         Detalla caracteristicas de la asignatura, numero de creditos, horas asignadas
-        y fecha de creación. 
+        y fecha de creación.
     """
 
     cod =  request.args(0)
@@ -58,12 +58,22 @@ def subjectdetail():
         response.flash = 'Error de conexión con el Web Service.'
         return dict(message=message, error = e.reason, subject = [])
 
-    return dict(message=message, subject = subject)
+    programas = []
+    # obtenemos los programas disponibles
+    if subject:
+        codigo = subject['cod_asignatura']
+        programas = db(db.PROGRAMA.codigo == codigo).select(db.PROGRAMA.id,
+                                                            db.PROGRAMA.periodo,
+                                                            db.PROGRAMA.anio,
+                                                            db.PROGRAMA.periodo_hasta,
+                                                            db.PROGRAMA.anio_hasta)
+
+    return dict(message=message, subject = subject, programas =programas)
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def careers():
     """
-        Consulta a través de web services de carreras. 
+        Consulta a través de web services de carreras.
     """
 
     message = "Carreras"
@@ -81,7 +91,7 @@ def careers():
 def students():
     """
         Consulta a través de web services de los estudiantes.
-        La búsqueda es realizada por número de cédula o por carnet. 
+        La búsqueda es realizada por número de cédula o por carnet.
     """
 
     message = "Estudiantes"
@@ -160,9 +170,9 @@ def studentdetail():
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def departmentsubjects():
     """
-        Consulta a través de web services de las asignaturas por departamento. 
+        Consulta a través de web services de las asignaturas por departamento.
     """
-    
+
     cod =  request.args(0)
     if not isinstance(cod, str):
         redirect(URL(c='default', f='not_authorized'))
@@ -181,7 +191,7 @@ def departmentsubjects():
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def careersubjects():
     """
-        Consulta a través de web services de las asignaturas por carrera. 
+        Consulta a través de web services de las asignaturas por carrera.
     """
 
     cod =  request.args(0)

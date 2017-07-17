@@ -24,7 +24,7 @@ def regiter_in_log(db, auth, accion, descripcion):
         descripcion = descripcion
     )
 
-def regiter_in_journal(db, auth, id, accion, descripcion):
+def regiter_in_transcriptions_journal(db, auth, id, accion, descripcion):
     '''
         Registra un evento en la bitacora de la transcripcion.
     '''
@@ -43,6 +43,31 @@ def regiter_in_journal(db, auth, id, accion, descripcion):
 
     db.BITACORA_TRANSCRIPCION.insert(
         transcripcion = id,
+        usuario = auth.user.username,
+        rol_usuario = rol,
+        accion = accion,
+        descripcion = descripcion
+    )
+
+def regiter_in_programs_journal(db, auth, id, accion, descripcion):
+    '''
+        Registra un evento en la bitacora de los programas.
+    '''
+
+    # Obtenemos el rol del usuario
+
+    rol  = ''
+    if auth.has_membership(auth.id_group(role="TRANSCRIPTOR")):
+        rol = 'TRANSCRIPTOR'
+    elif auth.has_membership(auth.id_group(role="DECANATO")):
+        rol = 'DECANATO'
+    elif auth.has_membership(auth.id_group(role="DEPARTAMENTO")):
+        rol = 'DEPARTAMENTO'
+    elif auth.has_membership(auth.id_group(role="COORDINACION")):
+        rol = 'COORDINACION'
+
+    db.BITACORA_PROGRAMA.insert(
+        programa = id,
         usuario = auth.user.username,
         rol_usuario = rol,
         accion = accion,
