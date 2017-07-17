@@ -67,12 +67,13 @@ def enviar_correo_reasignacion_transcripcion(mail, usuario, transcripcion, comen
 
 def enviar_correo_contacto(mail, usuario, asunto, mensaje):
 		email  = usuario['email']
-		asunto = '[SIRADEx] ' + asunto
+		asunto = '[SIGPAE] ' + asunto
 
 		# Mensaje del Correo
 		mensaje  = '''<h1>Estimado/a %(nombres)s:</h1>
-									<p>%(mensaje)s
-									</p>''' % {'nombres': usuario['nombres'], 'mensaje' : mensaje}
+						  <p>Se le ha sido enviado el siguiente mensaje desde el sistema <b>SIGPAE:</b></p>
+						  <p>%(mensaje)s
+						  </p>''' % {'nombres': usuario['first_name'], 'mensaje' : mensaje}
 
 		body   =  get_plantilla_html(mensaje)
 

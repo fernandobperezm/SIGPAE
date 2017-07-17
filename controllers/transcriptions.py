@@ -43,6 +43,13 @@ def transcriptors():
                                   error_message = 'Correo no corresponde a un Correo Institucional.')),
                            labels={'correo':'Correo'})
 
+    ## Formulario para colocar el mensaje.
+    formulario_contactar = SQLFORM.factory(
+                                Field('asunto', type="string", requires=[IS_LENGTH(50)]),
+                                Field('mensaje', type="text", requires=[IS_NOT_EMPTY(error_message='El mensaje no puede estar vacío')]),
+                                Field('userid', type="userid"),
+                                submit_button = 'Enviar')
+
     if form.process(formname="formulario_agregar_transcriptor").accepted:
         email = form.vars.correo
         usuario = db(db.auth_user.email == email).select().first()
@@ -88,7 +95,29 @@ def transcriptors():
     elif form.errors:
         response.flash = 'No se pudo agregar al usuario.'
 
-    return dict(message = message, transcriptores = lista_transcriptores, group_id = group_id, form=form)
+    if formulario_contactar.process(formname="formulario_contactar").accepted:
+        userid = request.vars.userid
+        asunto = request.vars.asunto
+        mensaje = request.vars.mensaje
+
+        ## Obtenemos el usuario al que deseamos contactar.
+        usuario = db(db.auth_user.id == userid).select().first()
+
+        enviar_correo_contacto(mail, usuario, asunto, mensaje)
+
+        regiter_in_log(db, auth, 'CONTACTO', 'Envio de mensaje de contacto al Usuario %s.'%(usuario.username))
+
+        session.flash = 'Correo enviado satisfactoriamente'
+        redirect(URL(c='transcriptions', f='transcriptors'))
+
+    if formulario_contactar.errors:
+        response.flash = "No se pudo enviar el correo al Usuario."
+
+    return dict(message = message,
+                transcriptores = lista_transcriptores,
+                group_id = group_id,
+                form=form,
+                formulario_contactar = formulario_contactar)
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_transcriptors', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def deletetranscriptor():

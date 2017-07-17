@@ -21,6 +21,7 @@
        <th>USBID</th>
        <th>Nombre</th>
        <th>Email</th>
+       <th>Contactar</th>
        <th>Eliminar</th>
      </tr>
    </thead>
@@ -30,6 +31,13 @@
          <td>{{=transcriptor['username']}}</td>
          <td>{{=transcriptor['name']}}</td>
          <td>{{=transcriptor['email']}}</td>
+         <td>
+            <a data-toggle="modal"
+               data-target="#modalContactarUsuario"
+               data-id="{{=transcriptor['id']}}">
+               <i class="fa fa-envelope blue" aria-hidden="true"></i>
+            </a>
+         </td>
          <td>
            <a data-toggle="modal"
               data-target="#modalEliminar"
@@ -91,6 +99,25 @@
     </div>
 </div>
 
+<!-- Modal Contactar-->
+<div id="modalContactarUsuario" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <center><h4 class="modal-title">Contactar Transcriptor</h4><center>
+      </div>
+      <div class="modal-body">
+          <center>
+              <p>  {{=formulario_contactar}}</p>
+          </center>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 
   // Pasamos los argumentos para eliminar el rol del usuario.
@@ -99,6 +126,13 @@
       var linkEliminar = $(e.relatedTarget).data('link-eliminar');
       $("#botoneliminar").attr("href", linkEliminar);
 
+  });
+
+  // Pasamos los argumentos para contactar el usuario
+  $('#modalContactarUsuario').on('show.bs.modal', function(e){
+      var id = $(e.relatedTarget).data('id');
+      $(e.currentTarget).find('input[name="userid"]').val(id);
+      $("#no_table_userid__row").hide();
   });
 
   // initializing datatable
@@ -132,6 +166,7 @@
                 null,
                 null,
                 null,
+                { "orderable": false },
                 { "orderable": false }
             ]
         };
