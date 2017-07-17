@@ -1,6 +1,9 @@
 import urllib2
 import json
 import re
+import cStringIO
+from pdf_generator import generatePDF
+
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def list():
@@ -39,3 +42,18 @@ def view():
     campos_adicionales = db(db.CAMPOS_ADICIONALES_PROGRAMA.programa == programa).select()
 
     return dict(message=message, programa=programa, campos_adicionales=campos_adicionales)
+
+
+def generate():
+    cod = request.args(0)
+    if not cod:
+        redirect(URL(c='default', f='not_authorized'))
+
+    buffer = cStringIO.StringIO()
+    generatePDF(buffer, request)
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    header = {'Content-Type':'application/pdf'}
+    response.headers.update(header)
+    return pdf
