@@ -20,23 +20,27 @@ def setWaterMark(canvas, doc):
     canvas.drawCentredString(11*cm, 20*cm, "Documento sin validez")
     canvas.restoreState()
 
-def generatePDF(buffer, request):
-
-    var = {
-        "departamento": "Computación y Tecnología de la Información",
-        "division": "División de Ciencias Físicas y Matemáticas",
-        "cod" : "CI2125",
-        "nombre": "Computación I",
-        "vigencia": "Ene-Mar 2011",
-        "creditos": "3",
-        "h_teoria" : "4",
-        "h_practica" : "2",
-        "h_laboratorio" : "1",
-        "obj_general": "Descripcion de objetivo",
-        "obj_especificos":"1) Objetivo 1\n2) Objetivo 2\n 3) Objetivo 3",
-        "sinopticos": "Contenidos sinopticos",
-        "observaciones": "Observaciones"
-    }
+def generatePDF(buffer, request,
+                cod,
+                nombre,
+                depto,
+                division,
+                anio_vig,
+                periodo_vig,
+                h_teoria,
+                h_practica,
+                h_laboratorio,
+                creditos,
+                sinopticos,
+                fuentes,
+                requisitos,
+                estrategias_met,
+                estrategias_eval,
+                justificacion,
+                obj_general,
+                obj_especificos,
+                observaciones,
+                extras=None):
 
     extras = {}
     extras = {
@@ -44,12 +48,11 @@ def generatePDF(buffer, request):
         "Software": "Windows 10 Original"
     }
 
-    title = "Programa analítico %s.pdf" % var["cod"]
+    title = "Programa analítico %s.pdf" % cod
     doc = SimpleDocTemplate(buffer, title=title, pagesize=letter,
                             rightMargin=3*cm,leftMargin=4*cm,
                             topMargin=3*cm, bottomMargin=3*cm)
 
-    var["departamento"] = "Computación y Tecnología de la Información"
     Story = []
     styles=getSampleStyleSheet()
     styles.add(ParagraphStyle(name='Top',
@@ -63,15 +66,14 @@ def generatePDF(buffer, request):
                               fontSize=12,
                               borderWidth=0.5,
                               borderColor='#000000',
-                              borderPadding = (4, 6, 5, 6),
+                              borderPadding=(4, 6, 5, 6),
                               spaceAfter=18,
-                              spaceShrinkage=3,
-                              leading=15))
+                              leading=14))
 
     # Header
     filepath = os.path.join(request.folder, 'static', 'images/home/usblogo.png')
     im = Image(filepath, width=100, height=66)
-    text = "<b>UNIVERSIDAD SIMÓN BOLÍVAR</b><br/><b>Vicerrectorado Académico</b><br/>%s" % var["division"]
+    text = "<b>UNIVERSIDAD SIMÓN BOLÍVAR</b><br/><b>Vicerrectorado Académico</b><br/>%s" % division
     text = Paragraph(text, styles["Top"])
     data = [[im, text, '','','','','','','']]
     t = Table(data)
@@ -83,52 +85,59 @@ def generatePDF(buffer, request):
     Story.append(t)
 
     #Departamento
-    text = "<b>Departamento: </b>" + var["departamento"]
+    text = "<b>Departamento: </b>" + depto
     Story.append(Paragraph(text, styles["Programa"]))
 
     #Nombre Asignatura
-    text = "<b>Asignatura: </b>%s - %s" % (var["cod"], var["nombre"])
+    text = "<b>Asignatura: </b>%s - %s" % (cod, nombre)
     Story.append(Paragraph(text, styles["Programa"]))
 
     # Unidades credito
-    text = "<b>N° unidades de crédito:</b> %s<br/>" % var["creditos"]
-    text +="<b>N° de horas semanales:</b>  Teoría %s, Práctica %s, Laboratorio %s" % (var["h_teoria"],var["h_practica"],var["h_laboratorio"])
+    text = "<b>N° unidades de crédito:</b> %s<br/>" % creditos
+    text +="<b>N° de horas semanales:</b>  Teoría %s, Práctica %s, Laboratorio %s" % (h_teoria,h_practica,h_laboratorio)
     Story.append(Paragraph(text, styles["Programa"]))
+
+    #Requisitos
+    if(requisitos):
+        text = "<b>Requisitos: </b>" + replaceBreak(requisitos)
+        Story.append(Paragraph(text, styles["Programa"]))
 
     #Entrada Vigencia
-    text = "<b>Fecha de entrada en vigencia: </b>" + var["vigencia"]
-    Story.append(Paragraph(text, styles["Programa"]))
+    if(periodo_vig and anio_vig):
+        text = "<b>Fecha de entrada en vigencia: </b> %s %s" % (periodo_vig,anio_vig)
+        Story.append(Paragraph(text, styles["Programa"]))
 
     #Objetivos
-    if(var.get("obj_general")):
-        text = "<b>Objetivo General:</b><br/>" + replaceBreak(var["obj_general"])
+    if(obj_general):
+        text = "<b>Objetivo General:</b><br/>" + replaceBreak(obj_general)
         Story.append(Paragraph(text, styles["Programa"]))
 
-    if(var.get("obj_especificos")):
-        text = "<b>Objetivos Específicos:</b><br/>" + replaceBreak(var["obj_especificos"])
+    if(obj_especificos):
+        text = "<b>Objetivos Específicos:</b><br/>" + replaceBreak(obj_especificos)
         Story.append(Paragraph(text, styles["Programa"]))
 
-    if(var.get("objetivos")):
-        text = "<b>Objetivos:</b><br/>" + replaceBreak(var["objetivos"])
+    #Justificacion
+    if(justificacion):
+        text = "<b>Justificacion:</b><br/>" + replaceBreak(justificacion)
         Story.append(Paragraph(text, styles["Programa"]))
 
     #Contenidos sinopticos
-    if(var.get("sinopticos")):
-        text = "<b>Contenidos sinópticos:</b><br/>" + replaceBreak(var["sinopticos"])
+    if(sinopticos):
+        text = "<b>Contenidos sinópticos:</b><br/>" + replaceBreak(sinopticos)
         Story.append(Paragraph(text, styles["Programa"]))
 
     #Estrategias
-    if(var.get("e_metodologicas")):
-        text = "<b>Estrategias metodológicas:</b><br/>" + replaceBreak(var["e_metodologicas"])
+    if(estrategias_met):
+        text = "<b>Estrategias metodológicas:</b><br/>" + replaceBreak(estrategias_met)
         Story.append(Paragraph(text, styles["Programa"]))
 
-    if(var.get("e_evaluacion")):
-        text = "<b>Estrategias de evaluación:</b><br/>" + replaceBreak(var["e_evaluacion"])
+    if(estrategias_eval):
+        text = "<b>Estrategias de evaluación:</b><br/>" + replaceBreak(estrategias_eval)
         Story.append(Paragraph(text, styles["Programa"]))
 
     #Fuentes
-    if(var.get("fuentes")):
-        text = "<b>Fuentes recomendadas de información:</b><br/>" + replaceBreak(var["fuentes"])
+    if(fuentes):
+        text = "<b>Fuentes recomendadas de información:</b><br/>" + replaceBreak(fuentes)
         Story.append(Paragraph(text, styles["Programa"]))
 
     #Extras
@@ -137,9 +146,8 @@ def generatePDF(buffer, request):
         Story.append(Paragraph(text, styles["Programa"]))
 
     #Observaciones
-    if(var.get("observaciones")):
-        text = "<b>Observaciones:</b><br/>" + replaceBreak(var["observaciones"])
+    if(observaciones):
+        text = "<b>Observaciones:</b><br/>" + replaceBreak(observaciones)
         Story.append(Paragraph(text, styles["Programa"]))
 
-    ## Documento sin validez
     doc.build(Story, onFirstPage=setWaterMark, onLaterPages=setWaterMark)

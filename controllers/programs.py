@@ -49,10 +49,35 @@ def generate():
     if not cod:
         redirect(URL(c='default', f='not_authorized'))
 
+    programa = db(db.PROGRAMA.id == cod).select().first()
+    print programa.anio
+
     buffer = cStringIO.StringIO()
-    generatePDF(buffer, request)
+    generatePDF(buffer=buffer,
+                request=request,
+                cod=programa.codigo,
+                division="Falta obtener esto",
+                depto="Falta obtener esto",
+                nombre=programa.denominacion,
+                anio_vig=programa.anio,
+                periodo_vig=programa.periodo,
+                h_teoria=programa.horas_teoria,
+                h_practica=programa.horas_practica,
+                h_laboratorio=programa.horas_laboratorio,
+                creditos=programa.creditos,
+                sinopticos=programa.sinopticos,
+                fuentes=programa.ftes_info_recomendadas,
+                requisitos=programa.requisitos,
+                estrategias_met=programa.estrategias_met,
+                estrategias_eval=programa.estrategias_eval,
+                justificacion=programa.justificacion,
+                obj_general=programa.objetivos_generales,
+                obj_especificos=programa.objetivos_especificos,
+                observaciones=programa.observaciones
+    )
     pdf = buffer.getvalue()
     buffer.close()
+    print(programa.objetivos_especificos)
 
     header = {'Content-Type':'application/pdf'}
     response.headers.update(header)
