@@ -1,4 +1,5 @@
-from logs import *
+from notifications  import *
+from logs           import *
 import re
 
 def get_roles():
@@ -160,7 +161,35 @@ def manage():
                                'email': usuario.email,
                                'roles': nombresroles})
 
-    return dict(message=message, usuarios = lista_usuarios)
+
+    ## Formulario para colocar el mensaje de contacto
+    formulario_contactar = SQLFORM.factory(
+                                Field('asunto', type="string", requires=[IS_LENGTH(50)]),
+                                Field('mensaje', type="text", requires=[IS_NOT_EMPTY(error_message='El mensaje no puede estar vacío')]),
+                                Field('userid', type="userid"),
+                                submit_button = 'Enviar')
+
+    if formulario_contactar.process(formname="formulario_contactar").accepted:
+        userid = request.vars.userid
+        asunto = request.vars.asunto
+        mensaje = request.vars.mensaje
+
+        ## Obtenemos el usuario al que deseamos contactar.
+        usuario = db(db.auth_user.id == userid).select().first()
+
+        enviar_correo_contacto(mail, usuario, asunto, mensaje)
+
+        regiter_in_log(db, auth, 'CONTACTO', 'Envio de mensaje de contacto al Usuario %s.'%(usuario.username))
+
+        session.flash = 'Correo enviado satisfactoriamente'
+        redirect(URL(c='transcriptions', f='transcriptors'))
+
+    if formulario_contactar.errors:
+        response.flash = "No se pudo enviar el correo al Usuario."
+
+    return dict(message=message,
+                usuarios = lista_usuarios,
+                formulario_contactar = formulario_contactar)
 
 
 @auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
