@@ -4,6 +4,7 @@ def index():
 	"""
 		Inicio en la vista de ayuda.
 	"""
-    message = "Ayuda"
 
-    return dict(message=message)
+	message = "Ayuda"
+
+	return dict(message=message)

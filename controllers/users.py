@@ -182,7 +182,7 @@ def manage():
         regiter_in_log(db, auth, 'CONTACTO', 'Envio de mensaje de contacto al Usuario %s.'%(usuario.username))
 
         session.flash = 'Correo enviado satisfactoriamente'
-        redirect(URL(c='transcriptions', f='transcriptors'))
+        redirect(URL(c='users', f='manage', args=[param]))
 
     if formulario_contactar.errors:
         response.flash = "No se pudo enviar el correo al Usuario."
