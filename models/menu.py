@@ -55,49 +55,18 @@ queries = [
     ((SPAN(_class='fa fa-chevron-down'), '  Estudiantes'),   False, URL('queries', 'students')),
 ]
 
-# Tomado de SPE. Adecuar en futuro de acuerdo a los roles y permisologia definida
-# opciones_estudiante = [
-#     ((SPAN(_class='fa fa-user'), '  Ver Perfil'), False, '/SPE/mi_perfil/ver'),
-#     ((SPAN(_class='fa fa-list'), '  Mis Pasantias'), False, '/SPE/mis_pasantias/listar'),
-#     ((SPAN(_class='fa fa-cog'), '  Configuración '), False, '/SPE/mi_perfil/configuracion'),
-#     ((SPAN(_class='fa fa-sign-out'), '  Cerrar Sesión'), False, URL('default', 'logout'))
-# ]
-#
-# opciones_coordinadorCCT = [
-#     ((SPAN(_class='fa fa-user'), '  Ver Perfil'), False, '/SPE/mi_perfil/ver'),
-#     ((SPAN(_class='fa fa-list'), '  Administracion'), False, '/SPE/pasantias/listar'),
-#     ((SPAN(_class='fa fa-cog'), '  Configuración'), False, '/SPE/mi_perfil/configuracion'),
-#     ((SPAN(_class='fa fa-sign-out'), '  Cerrar Sesión'), False, URL('default', 'logout'))
-# ]
-#
-# opciones_coordinador = [
-#     ((SPAN(_class='fa fa-user'), '  Ver Perfil'), False, '/SPE/mi_perfil/ver'),
-#     ((SPAN(_class='fa fa-list'), '  Mis Pasantias'), False, '/SPE/Coordinador/consultarPasantias'),
-#     ((SPAN(_class='fa fa-cog'), '  Configuración'), False, '/SPE/mi_perfil/configuracion'),
-#     ((SPAN(_class='fa fa-sign-out'), '  Cerrar Sesión'), False, URL('default', 'logout'))
-# ]
-#
-# opciones_profesor = [
-#     ((SPAN(_class='fa fa-user'), '  Ver Perfil'), False, '/SPE/mi_perfil/ver'),
-#     ((SPAN(_class='fa fa-list'), '  Mis Pasantias'), False, '/SPE/mis_pasantias_tutor/listar'),
-#     ((SPAN(_class='fa fa-cog'), '  Configuración'), False, '/SPE/mi_perfil/configuracion'),
-#     ((SPAN(_class='fa fa-sign-out'), '  Cerrar Sesión'), False, URL('default', 'logout'))
-# ]
-#
-# if auth.has_membership(role='CoordinadorCCT'):
-#     opciones = opciones_coordinadorCCT
-# elif auth.has_membership(role='Estudiante'):
-#     opciones = opciones_estudiante
-# elif auth.has_membership(role='Profesor'):
-#     opciones = opciones_profesor
-# elif auth.has_membership(role='Coordinador'):
-#     opciones = opciones_coordinador
+opciones_estudiante = [
+    ((SPAN(_class='fa fa-check'), '  Asignaturas Aprobadas'), False, URL('students', 'list')),
+]
 
 menu_autenticado = [
     (texto_principal, False, '#', opciones)
 ]
 
 menu_opciones_rol = []
+
+
+# Agregando el menu de acuerdo a las permisologias de los usuarios
 
 if auth.has_permission('manage_users', 'auth_user'):
     menu_opciones_rol.append(('Administración', False, '#', manejo_administrador ))
@@ -115,7 +84,8 @@ if auth.has_permission('create_transcription'):
 if auth.has_permission('manage_transcription'):
     menu_opciones_rol.append(('Transcripciones', False, '#', manejar_transcripciones))
 
-
+if auth.has_permission('consult_ap'):
+    menu_opciones_rol.append(('Estudiantes', False, '#', opciones_estudiante))
 
 response.menu = [
     (T('Iniciar Sesión'), False , 'https://secure.dst.usb.ve/login?service=' + settings.returnurl, []),
