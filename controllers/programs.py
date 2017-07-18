@@ -49,15 +49,35 @@ def generate():
     if not cod:
         redirect(URL(c='default', f='not_authorized'))
 
+    # Obtener el programa
     programa = db(db.PROGRAMA.id == cod).select().first()
-    print programa.anio
+
+    # Obtener extras
+    extras = {}
+    for e in db(db.CAMPOS_ADICIONALES_PROGRAMA.programa == programa).select():
+        extras[e.nombre] = e.contenido
+
+    #WebService para Obtener nombre departamento segun el codigo
+    try:
+        page = urllib2.urlopen(
+            'http://127.0.0.1:8000/SIGPAE_WS/default/webservices/departamentos').read()
+        department_data = json.loads(page)
+    except urllib2.URLError as e:
+        response.flash = 'Error de conexión con el Web Service.'
+        return dict(error=e.reason)
+    cod_depto = programa.codigo[:2] # Dos primeros digitos codigo del departamento
+    for depto in department_data:
+        if depto.get("siglas_depto") == cod_depto:
+            nombre_depto = depto.get("nombre")
+
+
 
     buffer = cStringIO.StringIO()
     generatePDF(buffer=buffer,
                 request=request,
                 cod=programa.codigo,
-                division="Falta obtener esto",
-                depto="Falta obtener esto",
+                division="", #Falta obtener el codigo de división
+                depto=nombre_depto,
                 nombre=programa.denominacion,
                 anio_vig=programa.anio,
                 periodo_vig=programa.periodo,
@@ -73,11 +93,11 @@ def generate():
                 justificacion=programa.justificacion,
                 obj_general=programa.objetivos_generales,
                 obj_especificos=programa.objetivos_especificos,
-                observaciones=programa.observaciones
+                observaciones=programa.observaciones,
+                extras=extras
     )
     pdf = buffer.getvalue()
     buffer.close()
-    print(programa.objetivos_especificos)
 
     header = {'Content-Type':'application/pdf'}
     response.headers.update(header)

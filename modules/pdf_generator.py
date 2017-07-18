@@ -42,12 +42,6 @@ def generatePDF(buffer, request,
                 observaciones,
                 extras=None):
 
-    extras = {}
-    extras = {
-        "Materiales" : "Cemento y piedra",
-        "Software": "Windows 10 Original"
-    }
-
     title = "Programa analítico %s.pdf" % cod
     doc = SimpleDocTemplate(buffer, title=title, pagesize=letter,
                             rightMargin=3*cm,leftMargin=4*cm,
@@ -141,9 +135,10 @@ def generatePDF(buffer, request,
         Story.append(Paragraph(text, styles["Programa"]))
 
     #Extras
-    for key in extras:
-        text = "<b>%s:</b><br/>%s" % (key,replaceBreak(extras[key]))
-        Story.append(Paragraph(text, styles["Programa"]))
+    if extras:
+        for key in extras:
+            text = "<b>%s:</b><br/>%s" % (key,replaceBreak(extras[key]))
+            Story.append(Paragraph(text, styles["Programa"]))
 
     #Observaciones
     if(observaciones):
