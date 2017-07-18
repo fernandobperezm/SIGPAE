@@ -7,3 +7,5 @@ pytesseract
 #tesseract-ocr-spa
 pyocr
 wand
+pillow
+reportlab
