@@ -18,6 +18,7 @@
          <th>Nombre</th>
          <th>Código</th>
          <th>Vigente Desde</th>
+         <th>Vigente Hasta</th>
        </tr>
      </thead>
      <tbody>
@@ -26,6 +27,7 @@
            <td><a href="{{=URL(c='programs', f='view', vars=dict(id=sub['id']))}}">{{=sub['denominacion']}}</a></td>
            <td>{{=sub['codigo']}}</td>
            <td>{{=sub['periodo']}} {{=sub['anio']}}</td>
+           <td>{{ if sub['periodo_hasta']:}} {{=sub['periodo_hasta']}} {{=sub['anio_hasta']}} {{else:}} --- {{pass}}</td>
          </tr>
         {{pass}}
      </tbody>
@@ -62,6 +64,7 @@
                   }
               },
                "columns": [
+                  null,
                   null,
                   null,
                   null
