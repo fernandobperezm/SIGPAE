@@ -21,6 +21,23 @@
     <div class="panel panel-info help-content">
       <div class="panel-heading">Descargas</div>
       <div class="panel-body">
+        <p>
+          <a href="{{=URL(c='programs',f='generate',args=[programa['id']])}}">
+            <button class="btn btn-primary">
+              <i class="fa fa-file-pdf-o" aria-hidden="true"></i> Formato PDF
+            </button>
+          </a>
+        </p>
+        {{if programa['original_pdf']:}}
+          <p>
+            <p>Este Programa tiene disponible la descarga de un PDF Histórico.</p>
+            <a href="{{=URL(c='programs',f='originalpdf',args=[programa['id']])}}">
+              <button class="btn btn-info">
+                <i class="fa fa-file-pdf-o" aria-hidden="true"></i> PDF Histórico
+              </button>
+            </a>
+          </p>
+        {{pass}}
       </div>
     </div>
   </div>

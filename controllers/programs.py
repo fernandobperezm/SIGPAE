@@ -1,8 +1,9 @@
+from   pdf_generator import generatePDF
 import urllib2
 import json
 import re
 import cStringIO
-from pdf_generator import generatePDF
+import os
 
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
@@ -25,6 +26,9 @@ def list():
 
 @auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def view():
+    """
+        Permite visualisar un programa en una vista HTML con todos sus elementos.
+    """
 
     message = "Detalles del Programa"
 
@@ -45,12 +49,18 @@ def view():
 
 
 def generate():
+    """
+        Genera un PDF con los contenidos del programa registrados en el sistema.
+    """
     cod = request.args(0)
     if not cod:
         redirect(URL(c='default', f='not_authorized'))
 
     # Obtener el programa
     programa = db(db.PROGRAMA.id == cod).select().first()
+
+    if not programa:
+        redirect(URL(c='default', f='not_authorized'))
 
     # Obtener extras
     extras = {}
@@ -102,3 +112,25 @@ def generate():
     header = {'Content-Type':'application/pdf'}
     response.headers.update(header)
     return pdf
+
+def originalpdf():
+    """
+        Permite descargar le PDF original de programa. Habilitado solo para los programas que tienen un PDF historico.
+        (Vienen de una Transcripcion.)
+    """
+
+    program_id = request.args(0)
+    if not program_id:
+        redirect(URL(c='default', f='not_authorized'))
+
+    # Obtener el programa
+    programa = db(db.PROGRAMA.id == program_id).select().first()
+
+    if not programa:
+        redirect(URL(c='default', f='not_authorized'))
+
+    if programa.original_pdf:
+        fullpath = os.path.join(request.folder,'static/transcriptions/originalpdf', programa.original_pdf)
+        response.stream(os.path.join(request.folder, fullpath), headers  ={'Content-Disposition': 'filename= HISTORICO_%s.pdf'%(programa.codigo)})
+
+    redirect(URL(c='default', f='not_authorized'))
