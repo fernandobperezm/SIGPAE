@@ -20,7 +20,7 @@ def departments():
 
     return dict(message=message, departments = departments)
 
-@auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def subjects():
     """
         Consulta a través de web services de las asignaturas.
@@ -36,7 +36,9 @@ def subjects():
 
     return dict(message=message, subjects = subjects)
 
-@auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+'''
+    No requiere permiso especial, pues se trata de una vista que puede ser consultada publicamente.
+'''
 def subjectdetail():
     """
         Detalla caracteristicas de la asignatura, numero de creditos, horas asignadas
@@ -70,7 +72,7 @@ def subjectdetail():
 
     return dict(message=message, subject = subject, programas =programas)
 
-@auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def careers():
     """
         Consulta a través de web services de carreras.
@@ -87,7 +89,7 @@ def careers():
 
     return dict(message=message, careers = careers)
 
-@auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def students():
     """
         Consulta a través de web services de los estudiantes.
@@ -111,7 +113,7 @@ def students():
 
     return dict(form=form, message = message)
 
-@auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def studentdetail():
     """
         Consulta relacionada con las asignaturas aproubadas por un estudiante.
@@ -167,7 +169,7 @@ def studentdetail():
         return dict(message=message, student_data = student_data, aproved_subjects = aproved_subjects)
 
 
-@auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def departmentsubjects():
     """
         Consulta a través de web services de las asignaturas por departamento.
@@ -188,7 +190,7 @@ def departmentsubjects():
 
     return dict(message=message, subjects = subjects)
 
-@auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def careersubjects():
     """
         Consulta a través de web services de las asignaturas por carrera.

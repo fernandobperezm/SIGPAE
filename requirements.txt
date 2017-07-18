@@ -9,3 +9,4 @@ pyocr
 wand
 pillow
 reportlab
+whoosh

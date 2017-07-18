@@ -23,8 +23,9 @@ def list():
 
     return dict(message=message, departments = departments)
 
-
-@auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+'''
+    No requiere permiso especial, pues se trata de una vista que puede ser consultada publicamente.
+'''
 def view():
     """
         Permite visualisar un programa en una vista HTML con todos sus elementos.

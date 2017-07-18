@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import os
 
 # -------------------------------------------------------------------------
 # This scaffolding model makes your app work on Google App Engine too
@@ -74,7 +75,7 @@ mail =  Mail()
 
 mail.settings.server = settings.email_server
 mail.settings.sender = settings.email_sender
-mail.settings.login = settings.email_login
+mail.settings.login  = settings.email_login
 mail.settings.tls    = True
 
 # -------------------------------------------------------------------------
@@ -369,6 +370,7 @@ db.define_table('LOG_SIGPAE',
     Field('accion', type="string"),
     Field('descripcion', type="string"),
     )
+
 # -------------------------------------------------------------------------
 # after defining tables, uncomment below to enable auditing
 # -------------------------------------------------------------------------

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from usbutils import get_ldap_data, random_key
-from logs     import *
+from   usbutils import get_ldap_data, random_key
+from   logs     import *
+import urllib2
+import json
 
 def reroute():
     """
@@ -23,7 +25,39 @@ def index():
 
     response.flash = T("¡Bienvenido al SIGPAE!")
 
-    return dict(message=T('Sistema de Gestión de Planes Académicos de Estudio'))
+    message = 'Sistema de Gestión de Planes Académicos de Estudio'
+
+    # formulario de busqueda publica
+    departamentos = []
+
+    try:
+        page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/departamentos/').read()
+        departments =  json.loads(page, "ascii")
+        for department in departments:
+            departamentos.append(('%s (%s)'%(department['nombre'], department['siglas_depto'])).encode('ascii','ignore'))
+
+    except urllib2.URLError as e:
+        return dict(message=T('Sistema de Gestión de Planes Académicos de Estudio'))
+
+    form_busqueda = SQLFORM.factory(Field('departamento', type="string",
+                                          requires = IS_EMPTY_OR(IS_IN_SET(departamentos,
+                                          error_message = 'Seleccione un Rol de Usuario.',
+                                          zero = "Seleccione..."))),
+                                    Field('codigo', type="string"),
+                                    Field('denominacion', type="string"),
+                                    labels={'departamento':'Departamento',
+                                            'codigo' : 'Código',
+                                            'denominacion' : 'Denominación'},
+                                    col3 = {'denominacion' : 'Nombre de la Asignatura.'})
+
+    if form_busqueda.process(formname='form_busqueda').accepted:
+        response.flash = "Accepted!"
+        redirect(URL(c='default', f='search_results', vars=form_busqueda.vars))
+
+    if form_busqueda.errors:
+        pass
+
+    return dict(message=message, form_busqueda =  form_busqueda)
 
 def user():
     """
@@ -209,3 +243,40 @@ def inactive():
     """
     message = "Usuario Inactivo"
     return dict(message=message)
+
+def search_results():
+    '''
+        Muestra los resultados de la busqueda publica o general
+    '''
+
+    message = 'Resultados de Búsqueda'
+
+    subjects = []
+
+    if request.vars.departamento:
+        #Extraemos las siglas del departamento
+        siglas  = request.vars.departamento[-3:-1]
+
+        if not(request.vars.codigo) and not(request.vars.denominacion):
+            subjects = db(db.PROGRAMA.codigo.startswith(siglas)).select()
+        else:
+            if request.vars.codigo and not(request.vars.denominacion):
+                subjects = db((db.PROGRAMA.codigo.startswith(siglas)) &
+                              (db.PROGRAMA.codigo.contains(request.vars.codigo, case_sensitive=False))).select()
+            if request.vars.denominacion and not(request.vars.codigo):
+                subjects = db((db.PROGRAMA.codigo.startswith(siglas)) &
+                              (db.PROGRAMA.denominacion.contains(request.vars.denominacion, case_sensitive=False))).select()
+            if request.vars.codigo and request.vars.denominacion:
+                subjects = db((db.PROGRAMA.codigo.startswith(siglas)) &
+                              (db.PROGRAMA.codigo.contains(request.vars.codigo, case_sensitive=False)) &
+                              (db.PROGRAMA.denominacion.contains(request.vars.denominacion, case_sensitive=False))).select()
+    else:
+        if request.vars.codigo and not(request.vars.denominacion):
+            subjects = db(db.PROGRAMA.codigo.contains(request.vars.codigo, case_sensitive=False)).select()
+        if request.vars.denominacion and not(request.vars.codigo):
+            subjects = db(db.PROGRAMA.denominacion.contains(request.vars.denominacion, case_sensitive=False)).select()
+        if request.vars.codigo and request.vars.denominacion:
+            subjects = db((db.PROGRAMA.codigo.contains(request.vars.codigo, case_sensitive=False)) &
+                          (db.PROGRAMA.denominacion.contains(request.vars.denominacion, case_sensitive=False))).select()
+
+    return dict(message = message, subjects =  subjects)

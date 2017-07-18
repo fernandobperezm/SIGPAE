@@ -13,12 +13,34 @@
 {{pass}}
 
 
-<div class="public-search col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
-  <h3>Búsquedas Públicas</h3>
-  <form>
-    <div class="input-group margin-bottom-sm">
-      <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
-      <input class="form-control" type="text" placeholder="Buscar por código, nombre...">
+<div class="public-search col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
+
+  {{if 'form_busqueda' in globals():}}
+    <div class="panel panel-info help-content">
+      <div class="panel-heading">Búsquedas Públicas</div>
+      <div class="panel-body">
+        {{=form_busqueda.custom.begin}}
+        <p>
+          <b>Departamento</b> <br>
+          {{=form_busqueda.custom.widget.departamento}}
+        </p>
+        <p>
+          <b>Código</b> <br>
+          {{=form_busqueda.custom.widget.codigo}}
+        </p>
+        <p>
+          <b>Denominación</b> <br>
+          {{=form_busqueda.custom.widget.denominacion}}
+        </p>
+
+        <button type="submit" class="btn btn-primary" style="float: right">
+          <i class="fa fa-search" aria-hidden="true"></i> Buscar
+        </button>
+
+        {{=form_busqueda.custom.end}}
+      </div>
     </div>
-  </form>
+
+  {{pass}}
+
 </div>
