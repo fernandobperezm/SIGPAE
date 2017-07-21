@@ -183,9 +183,6 @@ auth.add_permission(auth.id_group(role="BIBLIOTECA"), 'consult_references')
 # Ver Programas Academicos de Materias Aprobadas
 auth.add_permission(auth.id_group(role="ESTUDIANTE"), 'consult_ap')
 
-# ASEGURA QUE EL PRIMER USUARIO EN INCIAR SESION EL EL SISTEMA (ID=1) SEA EL ADMIN.
-auth.add_membership(auth.id_group(role="DACE-ADMINISTRADOR"), 1)
-
 # -------------------------------------------------------------------------
 # Transcripciones
 # -------------------------------------------------------------------------
