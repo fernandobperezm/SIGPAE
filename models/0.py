@@ -22,6 +22,6 @@ settings.plugins      = []
 # DESCOMENTAR LA URL DEPENDIENDO DE SI SE ESTA TRABAJANDO LOCALMENTE O ES
 # LA VERSION USADA EN EL SERVIDOR.
 # LOCAL:
-settings.returnurl = "http%3A%2F%2Flocalhost%3A8000%2FSIGPAE%2Fdefault%2Flogin_cas"
+#settings.returnurl = "http%3A%2F%2Flocalhost%3A8000%2FSIGPAE%2Fdefault%2Flogin_cas"
 # SERVIDOR:
-#settings.returnurl =
+settings.returnurl = "http%3A%2F%2F159.90.61.100%3A8000%2FSIGPAE%2Fdefault%2Flogin_cas"

@@ -1,5 +1,5 @@
-wheel
 setuptools
+wheel
 python-ldap
 pytesseract
 #tesseract-ocr
