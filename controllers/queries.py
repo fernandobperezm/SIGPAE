@@ -169,7 +169,7 @@ def studentdetail():
         return dict(message=message, student_data = student_data, aproved_subjects = aproved_subjects)
 
 
-@auth.requires(auth.is_logged_in() and auth.has_permission('manage_users', 'auth_user') and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
+@auth.requires(auth.is_logged_in() and not(auth.has_membership(auth.id_group(role="INACTIVO"))))
 def departmentsubjects():
     """
         Consulta a través de web services de las asignaturas por departamento.

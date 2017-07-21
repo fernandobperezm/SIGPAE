@@ -132,6 +132,6 @@ def originalpdf():
 
     if programa.original_pdf:
         fullpath = os.path.join(request.folder,'static/transcriptions/originalpdf', programa.original_pdf)
-        response.stream(os.path.join(request.folder, fullpath), headers  ={'Content-Disposition': 'filename= HISTORICO_%s.pdf'%(programa.codigo)})
+        response.stream(os.path.join(request.folder, fullpath))
 
     redirect(URL(c='default', f='not_authorized'))
