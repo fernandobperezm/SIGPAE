@@ -11,7 +11,7 @@ def list():
     message = "Programas Analíticos de Estudio de Asignaturas Aprobadas"
 
     try:
-        page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/estudiantes/asig-aprobadas/?carnet=%s'%(auth.user.username)).read()
+        page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/estudiantes/asig-aprobadas/?carnet=%s'%(auth.user.username)).read()
         aproved_subjects = json.loads(page)
     except urllib2.URLError as e:
         response.flash = 'Error de conexión con el Web Service.'

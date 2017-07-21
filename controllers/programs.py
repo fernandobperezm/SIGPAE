@@ -15,7 +15,7 @@ def list():
     message = "Programas Analíticos de Estudio por Departamento"
 
     try:
-        page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/departamentos/').read()
+        page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/departamentos/').read()
         departments =  json.loads(page)
     except urllib2.URLError as e:
         response.flash = 'Error de conexión con el Web Service.'
@@ -71,7 +71,7 @@ def generate():
     #WebService para Obtener nombre departamento segun el codigo
     try:
         page = urllib2.urlopen(
-            'http://127.0.0.1:8000/SIGPAE_WS/default/webservices/departamentos').read()
+            'http://159.90.61.100/SIGPAE_WS/default/webservices/departamentos').read()
         department_data = json.loads(page)
     except urllib2.URLError as e:
         response.flash = 'Error de conexión con el Web Service.'

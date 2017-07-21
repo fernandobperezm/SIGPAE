@@ -31,7 +31,7 @@ def index():
     departamentos = []
 
     try:
-        page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/departamentos/').read()
+        page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/departamentos/').read()
         departments =  json.loads(page, "ascii")
         for department in departments:
             departamentos.append(('%s (%s)'%(department['nombre'], department['siglas_depto'])).encode('ascii','ignore'))

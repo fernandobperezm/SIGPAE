@@ -12,7 +12,7 @@ def departments():
     message = "Departamentos"
 
     try:
-        page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/departamentos/').read()
+        page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/departamentos/').read()
         departments =  json.loads(page)
     except urllib2.URLError as e:
         response.flash = 'Error de conexión con el Web Service.'
@@ -28,7 +28,7 @@ def subjects():
     message = "Asignaturas"
 
     try:
-        page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/asignaturas/').read()
+        page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/asignaturas/').read()
         subjects =  json.loads(page)
     except urllib2.URLError as e:
         response.flash = 'Error de conexión con el Web Service.'
@@ -52,7 +52,7 @@ def subjectdetail():
     message =  "Asignatura %s"%(cod)
 
     try:
-        page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/asignaturas/%s/'%(cod)).read()
+        page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/asignaturas/%s/'%(cod)).read()
         subject = json.loads(page)
         if len(subject) > 0:
             subject = subject[0]
@@ -81,7 +81,7 @@ def careers():
     message = "Carreras"
 
     try:
-        page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/carreras/').read()
+        page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/carreras/').read()
         careers =  json.loads(page)
     except urllib2.URLError as e:
         response.flash = 'Error de conexión con el Web Service.'
@@ -129,7 +129,7 @@ def studentdetail():
 
     if pattern_carnet.match(identificador):
         try:
-            page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/estudiantes?carnet=%s'%(identificador)).read()
+            page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/estudiantes?carnet=%s'%(identificador)).read()
             student_data = json.loads(page)
             if len(student_data) > 0:
                 student_data = student_data[0]
@@ -138,7 +138,7 @@ def studentdetail():
             return dict(message=message, error = e.reason, student_data = [], aproved_subjects = [])
 
         try:
-            page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/estudiantes/asig-aprobadas/?carnet=%s'%(identificador)).read()
+            page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/estudiantes/asig-aprobadas/?carnet=%s'%(identificador)).read()
             aproved_subjects = json.loads(page)
         except urllib2.URLError as e:
             response.flash = 'Error de conexión con el Web Service.'
@@ -149,7 +149,7 @@ def studentdetail():
     # en caso contrario, se trata de una cedula
     else:
         try:
-            page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/estudiantes?cedula=%s'%(identificador)).read()
+            page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/estudiantes?cedula=%s'%(identificador)).read()
             student_data = json.loads(page)
             if len(student_data) > 0:
                 student_data = student_data[0]
@@ -160,7 +160,7 @@ def studentdetail():
         carnet = student_data['carnet']
 
         try:
-            page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/estudiantes/asig-aprobadas/?carnet=%s'%(carnet)).read()
+            page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/estudiantes/asig-aprobadas/?carnet=%s'%(carnet)).read()
             aproved_subjects = json.loads(page)
         except urllib2.URLError as e:
             response.flash = 'Error de conexión con el Web Service.'
@@ -182,7 +182,7 @@ def departmentsubjects():
     message =  "Asignaturas del Departamento %s"%(cod)
 
     try:
-        page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/asignaturas?siglas_depto=%s'%(cod)).read()
+        page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/asignaturas?siglas_depto=%s'%(cod)).read()
         subjects = json.loads(page)
     except urllib2.URLError as e:
         response.flash = 'Error de conexión con el Web Service.'
@@ -203,7 +203,7 @@ def careersubjects():
     message =  "Asignaturas de la Carrera %s"%(cod)
 
     try:
-        page = urllib2.urlopen('http://127.0.0.1:8000/SIGPAE_WS/default/webservices/asignaturas?cod_carrera=%s'%(cod)).read()
+        page = urllib2.urlopen('http://159.90.61.100/SIGPAE_WS/default/webservices/asignaturas?cod_carrera=%s'%(cod)).read()
         subjects = json.loads(page)
     except urllib2.URLError as e:
         response.flash = 'Error de conexión con el Web Service.'
