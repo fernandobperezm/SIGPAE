@@ -2,11 +2,7 @@ wheel
 setuptools
 python-ldap
 pytesseract
-#tesseract-ocr
-#tesseract-ocr-eng
-#tesseract-ocr-spa
 pyocr
 wand
 pillow
 reportlab
-whoosh
