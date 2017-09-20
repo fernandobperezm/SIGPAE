@@ -1,0 +1,8 @@
+Leeme: SIGPAE
+
+- Para instalar el sistema en el servidor, vea el proceso de instalacion en el "Manual de Instalacion.pdf" que se encuentra en este mismo directorio.
+- Para conocer como se usa el sistema vea las instrucciones en el "Manual de Usuarios.pdf".
+
+
+Atentamente, 
+Equipo desarrollador de SIGPAE : GUAVA SOLUTIONS
